@@ -123,8 +123,17 @@ function renderUploadBanner(containerId, shipmentData) {
   el.innerHTML = '<span style="font-size:0.8125rem;color:var(--text-muted)">Last upload: <strong style="color:var(--text)">' + when + '</strong> &nbsp;by <strong style="color:var(--text)">' + who + '</strong></span>';
 }
 
+// Short date formatter (no time)
+function formatShortDate(isoStr) {
+  if (!isoStr) return '—';
+  try { return new Date(isoStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); }
+  catch { return isoStr; }
+}
+
 // ── Table rendering ──────────────────────────────────────────
+// Columns: Status | (Rep) | Clinic | Region | Order Date | Ship Date | Pharmacy | Order ID | Tracking
 // assignments: optional map of clinic_id → {account_manager, clinic_name}
+const TABLE_ROW_CAP = 300;
 function renderTable(shipments, tableBodyId, showRepCol, globalLastUpdated, globalUpdatedBy, assignments) {
   const tbody = document.getElementById(tableBodyId);
   if (!tbody) return;
@@ -133,22 +142,29 @@ function renderTable(shipments, tableBodyId, showRepCol, globalLastUpdated, glob
     return;
   }
   const assignMap = assignments || {};
-  tbody.innerHTML = shipments.map(s => {
+  const capped = shipments.length > TABLE_ROW_CAP;
+  const visible = capped ? shipments.slice(0, TABLE_ROW_CAP) : shipments;
+  const cols = 8 + (showRepCol ? 1 : 0);
+  const capRow = capped
+    ? '<tr><td colspan="' + cols + '" style="text-align:center;padding:0.75rem;background:var(--bg-alt);color:var(--text-muted);font-size:0.8125rem">Showing first ' + TABLE_ROW_CAP + ' of ' + shipments.length.toLocaleString() + ' results — narrow your filters to see more</td></tr>'
+    : '';
+  tbody.innerHTML = visible.map(s => {
     const cancelled = s.status === 'cancelled' ? ' row-cancelled' : '';
     const repCol = showRepCol ? '<td>' + (s.rep_name || '—') + '</td>' : '';
-    const lu = s.import_date ? formatDate(s.import_date) : (globalLastUpdated ? formatDate(globalLastUpdated) : '—');
-    const ub = s.updated_by || globalUpdatedBy || '';
     const am = getAMForShipment(s, assignMap);
-    const amText = am ? '<div class="sub-text" style="margin-top:2px">Account Manager: ' + am + '</div>' : '';
+    const amText = am ? '<div class="sub-text">AM: ' + am + '</div>' : '';
     return '<tr class="' + cancelled + '">' +
       '<td>' + statusBadge(s.status) + '</td>' +
       repCol +
-      '<td><div>' + lu + '</div>' + (ub ? '<div class="sub-text">Entered by ' + ub + '</div>' : '') + '</td>' +
+      '<td><div>' + (s.clinic_name || '—') + '</div>' + amText + '</td>' +
+      '<td>' + (s.region || '—') + '</td>' +
+      '<td>' + formatShortDate(s.order_date) + '</td>' +
+      '<td>' + formatShortDate(s.ship_date) + '</td>' +
       '<td>' + (s.pharmacy_name || '—') + '</td>' +
-      '<td><div>' + (s.invoice_number || '—') + '</div>' + amText + '</td>' +
+      '<td>' + (s.order_id || '—') + '</td>' +
       '<td>' + trackingLink(s) + '</td>' +
       '</tr>';
-  }).join('');
+  }).join('') + capRow;
 }
 
 // ── GitHub API ───────────────────────────────────────────────
@@ -359,6 +375,7 @@ function mapImportRow(row, assignments) {
 
     // Account manager (resolved from clinic assignment)
     account_manager: accountManager,
+    region: str('region'),
 
     import_date: new Date().toISOString()
   };

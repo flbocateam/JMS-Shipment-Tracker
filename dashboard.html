@@ -16,6 +16,7 @@
       <div class="sidebar-user" id="sidebar-user"></div>
       <nav class="sidebar-nav">
         <button class="nav-item active">📦 Shipments</button>
+        <button class="nav-item" id="import-nav-btn" style="display:none" onclick="window.location.href='import.html'">⬆ Import Data</button>
       </nav>
       <div class="sidebar-footer">
         <button class="btn btn-outline" style="width:100%;color:rgba(255,255,255,0.7);border-color:rgba(255,255,255,0.2)" onclick="logout()">Sign Out</button>
@@ -33,7 +34,7 @@
       <!-- KPI Strip -->
       <div class="kpi-strip" id="kpi-strip"></div>
 
-      <!-- Date Range -->
+      <!-- Date Range Pills -->
       <div class="filters-bar" style="margin-bottom:0.5rem">
         <div class="filter-pills" id="date-pills">
           <button class="pill" data-range="today">Today</button>
@@ -61,7 +62,6 @@
         <select class="rep-filter" id="am-filter" style="display:none">
           <option value="">All Account Managers</option>
         </select>
-        <button class="btn btn-teal btn-sm" id="import-toggle" style="display:none">⬆ Import Data</button>
       </div>
 
       <!-- Table -->
@@ -74,18 +74,6 @@
             </tbody>
           </table>
         </div>
-      </div>
-
-      <!-- Import Section -->
-      <div class="table-card import-section" id="import-section" style="display:none;margin-top:1.5rem;padding:1.5rem">
-        <h3 style="margin-bottom:1rem">Import ProRx Shipments</h3>
-        <div class="file-drop" id="file-drop" onclick="document.getElementById('file-input').click()">
-          <div style="font-size:2rem;margin-bottom:0.5rem">📂</div>
-          <p>Click to select an .xlsx or .csv file</p>
-          <p style="font-size:0.8125rem;margin-top:0.25rem;color:var(--text-muted)">Supports ProRx export format</p>
-        </div>
-        <input type="file" id="file-input" accept=".xlsx,.csv" style="display:none">
-        <div id="import-preview"></div>
       </div>
     </main>
   </div>
@@ -100,6 +88,7 @@
     let assignments = {};
     let currentUser = null;
     let currentFilter = { status: 'all', search: '', repFilter: '', amFilter: '', dateRange: 'last30' };
+    let searchTimer = null;
 
     async function init() {
       currentUser = checkAuth();
@@ -114,11 +103,13 @@
 
       document.getElementById('page-subtitle').textContent = elevated ? 'All rep shipments' : 'Your assigned shipments';
 
+      if (elevated) document.getElementById('import-nav-btn').style.display = '';
+
       // Table header
       document.getElementById('table-head').innerHTML = '<tr>' +
         '<th>Status</th>' +
         (elevated ? '<th>Rep</th>' : '') +
-        '<th>Last Updated</th><th>Pharmacy</th><th>Order #</th><th>Tracking</th>' +
+        '<th>Clinic</th><th>Region</th><th>Order Date</th><th>Ship Date</th><th>Pharmacy</th><th>Order ID</th><th>Tracking</th>' +
         '</tr>';
 
       try {
@@ -127,59 +118,26 @@
         assignments = assigns;
 
         let shipments = data.shipments || [];
-
-        if (!elevated) {
-          // Reps see only their own shipments
-          shipments = shipments.filter(s => s.rep_name === currentUser.name);
-        }
+        if (!elevated) shipments = shipments.filter(s => s.rep_name === currentUser.name);
         allShipments = shipments;
 
         if (elevated) {
-          // Rep filter
           const repFilter = document.getElementById('rep-filter');
           repFilter.style.display = '';
           const reps = [...new Set(shipments.map(s => s.rep_name).filter(Boolean))].sort();
-          reps.forEach(r => {
-            const o = document.createElement('option');
-            o.value = r; o.textContent = r;
-            repFilter.appendChild(o);
-          });
+          reps.forEach(r => { const o = document.createElement('option'); o.value = r; o.textContent = r; repFilter.appendChild(o); });
           repFilter.addEventListener('change', () => { currentFilter.repFilter = repFilter.value; applyFilters(); });
 
-          // Account Manager filter
           const amFilter = document.getElementById('am-filter');
           amFilter.style.display = '';
-          // Build the list of AMs from the assignments data
-          const amNames = [...new Set(Object.values(assignments).map(v => v.account_manager).filter(Boolean))].sort();
-          amNames.forEach(am => {
-            const o = document.createElement('option');
-            o.value = am; o.textContent = am;
-            amFilter.appendChild(o);
-          });
-          // Add Unassigned option
-          const unassigned = document.createElement('option');
-          unassigned.value = '__unassigned__'; unassigned.textContent = 'Unassigned';
-          amFilter.appendChild(unassigned);
-
-          // Pre-filter to logged-in AM's own name
+          const amNames = [...new Set(Object.values(assigns).map(v => v.account_manager).filter(Boolean))].sort();
+          amNames.forEach(am => { const o = document.createElement('option'); o.value = am; o.textContent = am; amFilter.appendChild(o); });
+          const uOpt = document.createElement('option'); uOpt.value = '__unassigned__'; uOpt.textContent = 'Unassigned'; amFilter.appendChild(uOpt);
           if (currentUser.role === 'account_manager') {
-            const myName = currentUser.name;
-            const matchOption = [...amFilter.options].find(o => o.value === myName);
-            if (matchOption) {
-              amFilter.value = myName;
-              currentFilter.amFilter = myName;
-            }
+            const match = [...amFilter.options].find(o => o.value === currentUser.name);
+            if (match) { amFilter.value = currentUser.name; currentFilter.amFilter = currentUser.name; }
           }
-
           amFilter.addEventListener('change', () => { currentFilter.amFilter = amFilter.value; applyFilters(); });
-
-          // Show import button
-          document.getElementById('import-toggle').style.display = '';
-          document.getElementById('import-toggle').addEventListener('click', () => {
-            const s = document.getElementById('import-section');
-            s.style.display = s.style.display === 'none' ? '' : 'none';
-          });
-          document.getElementById('file-input').addEventListener('change', handleFileImport);
         }
 
         applyFilters();
@@ -215,89 +173,15 @@
     });
 
     document.getElementById('search-input').addEventListener('input', e => {
-      currentFilter.search = e.target.value;
-      // When search is active, remind user date filter is bypassed
+      clearTimeout(searchTimer);
+      const val = e.target.value;
       const hint = document.getElementById('search-hint');
-      if (hint) hint.style.display = e.target.value ? '' : 'none';
-      applyFilters();
+      if (hint) hint.style.display = val ? '' : 'none';
+      searchTimer = setTimeout(() => {
+        currentFilter.search = val;
+        applyFilters();
+      }, 300);
     });
-
-    async function handleFileImport(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const preview = document.getElementById('import-preview');
-      preview.innerHTML = '<p style="margin-top:1rem;color:var(--text-muted)">Parsing file…</p>';
-      try {
-        const rows = await parseFile(file);
-        const mapped = rows.map(r => mapImportRow(r, assignments)).filter(r => r.invoice_number);
-        if (!mapped.length) { preview.innerHTML = '<p style="color:var(--red);margin-top:1rem">No valid rows found.</p>'; return; }
-
-        const existing = shipmentData.shipments || [];
-        const existingMap = new Map(existing.map(s => [s.invoice_number, s]));
-        let newCount = 0, updatedCount = 0, unmatched = 0;
-        mapped.forEach(r => {
-          if (existingMap.has(r.invoice_number)) updatedCount++;
-          else newCount++;
-          if (!r.account_manager) unmatched++;
-        });
-
-        preview.innerHTML =
-          '<p style="margin:1rem 0 0.5rem;font-weight:600">' +
-          newCount + ' new &nbsp;·&nbsp; ' + updatedCount + ' updated' +
-          (unmatched ? ' &nbsp;·&nbsp; <span style="color:var(--orange)">' + unmatched + ' unmatched AM</span>' : '') +
-          '</p>' +
-          '<div class="import-preview"><table><thead><tr><th>Invoice</th><th>Rep</th><th>Clinic</th><th>Account Mgr</th><th>Status</th><th>Tracking</th></tr></thead><tbody>' +
-          mapped.slice(0, 5).map(r =>
-            '<tr><td>' + r.invoice_number + '</td><td>' + (r.rep_name || '—') + '</td><td>' + (r.clinic_name || '—') + '</td><td>' + (r.account_manager || '<span style="color:var(--text-muted)">Unassigned</span>') + '</td><td>' + statusBadge(r.status) + '</td><td>' + (r.tracking_number || '—') + '</td></tr>'
-          ).join('') +
-          (mapped.length > 5 ? '<tr><td colspan="6" style="color:var(--text-muted)">…and ' + (mapped.length - 5) + ' more</td></tr>' : '') +
-          '</tbody></table></div>' +
-          '<div class="import-actions"><button class="btn btn-teal" id="confirm-import-btn">Commit to GitHub</button>' +
-          '<button class="btn btn-outline" onclick="document.getElementById(\'import-preview\').innerHTML=\'\'">Cancel</button>' +
-          '<span id="import-status" style="font-size:0.875rem;color:var(--text-muted)"></span></div>';
-
-        document.getElementById('confirm-import-btn').addEventListener('click', () => confirmImport(mapped));
-      } catch (err) {
-        preview.innerHTML = '<p style="color:var(--red);margin-top:1rem">Parse error: ' + err.message + '</p>';
-      }
-    }
-
-    async function parseFile(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = e => {
-          try {
-            const data = new Uint8Array(e.target.result);
-            const wb = XLSX.read(data, { type: 'array' });
-            const ws = wb.Sheets[wb.SheetNames[0]];
-            resolve(XLSX.utils.sheet_to_json(ws, { defval: '' }));
-          } catch (err) { reject(err); }
-        };
-        reader.onerror = reject;
-        reader.readAsArrayBuffer(file);
-      });
-    }
-
-    async function confirmImport(newRows) {
-      const btn = document.getElementById('confirm-import-btn');
-      const status = document.getElementById('import-status');
-      btn.disabled = true;
-      btn.innerHTML = '<span class="spinner"></span> Saving…';
-      status.textContent = '';
-      try {
-        const { data: newData } = await commitShipments(newRows, currentUser.email, 'Import shipments (' + newRows.length + ' rows)');
-        shipmentData = newData;
-        allShipments = newData.shipments || [];
-        status.style.color = 'var(--teal)';
-        status.textContent = '✓ Saved! Reloading…';
-        setTimeout(() => window.location.reload(), 1500);
-      } catch (err) {
-        btn.disabled = false;
-        btn.textContent = 'Commit to GitHub';
-        status.style.color = 'var(--red)';
-        status.textContent = err.message;
-      }
-    }
 
     init();
   </script>

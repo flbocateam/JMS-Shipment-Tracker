@@ -16,7 +16,7 @@
       <div class="sidebar-user" id="sidebar-user"></div>
       <nav class="sidebar-nav">
         <button class="nav-item active" data-tab="shipments">📦 Shipments</button>
-        <button class="nav-item" data-tab="import">⬆ Import Data</button>
+        <button class="nav-item" onclick="window.location.href='import.html'">⬆ Import Data</button>
         <button class="nav-item" data-tab="users">👥 Users</button>
         <button class="nav-item" data-tab="settings">⚙ Settings</button>
         <button class="nav-item" data-tab="history">⏪ History</button>
@@ -66,24 +66,10 @@
         <div class="table-card">
           <div class="table-wrapper">
             <table>
-              <thead><tr><th>Status</th><th>Rep</th><th>Last Updated</th><th>Pharmacy</th><th>Order #</th><th>Tracking</th></tr></thead>
+              <thead><tr><th>Status</th><th>Rep</th><th>Clinic</th><th>Region</th><th>Order Date</th><th>Ship Date</th><th>Pharmacy</th><th>Order ID</th><th>Tracking</th></tr></thead>
               <tbody id="table-body"><tr><td colspan="10" style="text-align:center;padding:2rem">Loading…</td></tr></tbody>
             </table>
           </div>
-        </div>
-      </div>
-
-      <!-- ── Import Tab ── -->
-      <div class="tab-panel" id="tab-import">
-        <div class="page-header"><h1>Import Data</h1><p>Upload a ProRx .xlsx or .csv export to update shipments.</p></div>
-        <div class="table-card" style="padding:1.5rem">
-          <div class="file-drop" id="file-drop" onclick="document.getElementById('file-input').click()">
-            <div style="font-size:2.5rem;margin-bottom:0.5rem">📂</div>
-            <p style="font-weight:600">Click to select file</p>
-            <p style="font-size:0.8125rem;margin-top:0.25rem;color:var(--text-muted)">.xlsx or .csv — ProRx export format</p>
-          </div>
-          <input type="file" id="file-input" accept=".xlsx,.csv" style="display:none">
-          <div id="import-preview"></div>
         </div>
       </div>
 
@@ -241,15 +227,15 @@
         currentFilter.dateRange = pill.dataset.range;
         applyFilters();
       });
+      let searchTimer = null;
       document.getElementById('search-input').addEventListener('input', e => {
-        currentFilter.search = e.target.value;
         const hint = document.getElementById('search-hint');
         if (hint) hint.style.display = e.target.value ? '' : 'none';
-        applyFilters();
+        clearTimeout(searchTimer);
+        const val = e.target.value;
+        searchTimer = setTimeout(() => { currentFilter.search = val; applyFilters(); }, 300);
       });
 
-      // File import
-      document.getElementById('file-input').addEventListener('change', handleFileImport);
     }
 
     function switchTab(tab) {
@@ -449,66 +435,6 @@
       if (!val) return;
       sessionStorage.setItem('jms_user', val);
       window.open('dashboard.html', '_blank');
-    }
-
-    // ── File Import ────────────────────────────────────────
-    async function handleFileImport(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const preview = document.getElementById('import-preview');
-      preview.innerHTML = '<p style="margin-top:1rem;color:var(--text-muted)">Parsing…</p>';
-      try {
-        const rows = await parseFile(file);
-        const mapped = rows.map(r => mapImportRow(r, assignments)).filter(r => r.invoice_number);
-        if (!mapped.length) { preview.innerHTML = '<p style="color:var(--red);margin-top:1rem">No valid rows found. Check column names.</p>'; return; }
-        const existingMap = new Map((shipmentData.shipments || []).map(s => [s.invoice_number, s]));
-        let newCount = 0, updatedCount = 0, unmatched = 0;
-        mapped.forEach(r => { existingMap.has(r.invoice_number) ? updatedCount++ : newCount++; if (!r.account_manager) unmatched++; });
-        preview.innerHTML = '<p style="margin:1rem 0 0.5rem;font-weight:600">' + newCount + ' new &nbsp;·&nbsp; ' + updatedCount + ' updated' +
-          (unmatched ? ' &nbsp;·&nbsp; <span style="color:var(--orange)">' + unmatched + ' unmatched AM</span>' : '') + '</p>' +
-          '<div style="overflow-x:auto"><table><thead><tr><th>Invoice</th><th>Rep</th><th>Clinic</th><th>Account Mgr</th><th>Status</th><th>Tracking</th></tr></thead><tbody>' +
-          mapped.slice(0, 5).map(r => '<tr><td>' + r.invoice_number + '</td><td>' + (r.rep_name||'—') + '</td><td>' + (r.clinic_name||'—') + '</td><td>' + (r.account_manager || '<span style="color:var(--text-muted)">Unassigned</span>') + '</td><td>' + statusBadge(r.status) + '</td><td>' + (r.tracking_number||'—') + '</td></tr>').join('') +
-          (mapped.length > 5 ? '<tr><td colspan="6" style="color:var(--text-muted)">…and ' + (mapped.length-5) + ' more</td></tr>' : '') +
-          '</tbody></table></div>' +
-          '<div class="import-actions"><button class="btn btn-teal" id="confirm-import-btn">Confirm & Save to GitHub</button><button class="btn btn-outline" onclick="document.getElementById(\'import-preview\').innerHTML=\'\'">Cancel</button><span id="import-status" style="font-size:0.875rem;margin-left:0.5rem"></span></div>';
-        document.getElementById('confirm-import-btn').addEventListener('click', () => confirmImport(mapped));
-      } catch (err) {
-        preview.innerHTML = '<p style="color:var(--red);margin-top:1rem">Parse error: ' + err.message + '</p>';
-      }
-    }
-
-    async function parseFile(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = ev => {
-          try {
-            const wb = XLSX.read(new Uint8Array(ev.target.result), { type: 'array' });
-            resolve(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: '' }));
-          } catch (err) { reject(err); }
-        };
-        reader.onerror = reject;
-        reader.readAsArrayBuffer(file);
-      });
-    }
-
-    async function confirmImport(newRows) {
-      const btn = document.getElementById('confirm-import-btn');
-      const status = document.getElementById('import-status');
-      btn.disabled = true;
-      btn.innerHTML = '<span class="spinner"></span> Saving…';
-      try {
-        const { data: newData } = await commitShipments(newRows, currentUser.email, 'Import ' + newRows.length + ' shipments');
-        shipmentData = newData;
-        allShipments = newData.shipments || [];
-        applyFilters();
-        status.style.color = 'var(--teal)';
-        status.textContent = '✓ ' + newRows.length + ' rows saved!';
-        btn.disabled = false; btn.textContent = 'Confirm & Save to GitHub';
-      } catch (err) {
-        btn.disabled = false; btn.textContent = 'Confirm & Save to GitHub';
-        status.style.color = 'var(--red)';
-        status.textContent = err.message;
-      }
     }
 
     // ── History / Rewind ───────────────────────────────────
