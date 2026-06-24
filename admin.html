@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JMS Admin — Shipment Tracker</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <h2>JMS Shipment Tracker</h2>
+        <p>Admin Panel</p>
+      </div>
+      <div class="sidebar-user" id="sidebar-user"></div>
+      <nav class="sidebar-nav">
+        <button class="nav-item active" data-tab="shipments">📦 Shipments</button>
+        <button class="nav-item" data-tab="import">⬆ Import Data</button>
+        <button class="nav-item" data-tab="users">👥 Users</button>
+        <button class="nav-item" data-tab="settings">⚙ Settings</button>
+        <button class="nav-item" data-tab="preview">👁 Preview As</button>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="btn btn-outline" style="width:100%;color:rgba(255,255,255,0.7);border-color:rgba(255,255,255,0.2)" onclick="logout()">Sign Out</button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <!-- PAT Banner -->
+      <div class="banner" id="pat-banner" style="display:none">
+        <span class="banner-icon">⚠️</span>
+        <div>
+          <strong>GitHub token not configured.</strong> To enable saving changes, enter your GitHub Personal Access Token in <a href="#" onclick="switchTab('settings');return false">Settings</a>. This token is stored only in your browser and never uploaded anywhere.
+        </div>
+      </div>
+
+      <!-- ── Shipments Tab ── -->
+      <div class="tab-panel active" id="tab-shipments">
+        <div class="page-header"><h1>All Shipments</h1></div>
+        <div class="kpi-strip" id="kpi-strip"></div>
+        <div class="filters-bar">
+          <div class="filter-pills" id="filter-pills">
+            <button class="pill active" data-status="all">All</button>
+            <button class="pill" data-status="received">Received</button>
+            <button class="pill" data-status="shipped">Shipped</button>
+            <button class="pill" data-status="cancelled">Cancelled</button>
+          </div>
+          <input type="text" class="search-input" id="search-input" placeholder="Search shipments…">
+          <select class="rep-filter" id="rep-filter"><option value="">All Reps</option></select>
+        </div>
+        <div class="table-card">
+          <div class="table-wrapper">
+            <table>
+              <thead><tr><th>Status</th><th>Rep</th><th>Last Updated</th><th>Clinician</th><th>Pharmacy</th><th>Order #</th><th>Tracking</th></tr></thead>
+              <tbody id="table-body"><tr><td colspan="10" style="text-align:center;padding:2rem">Loading…</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Import Tab ── -->
+      <div class="tab-panel" id="tab-import">
+        <div class="page-header"><h1>Import Data</h1><p>Upload a ProRx .xlsx or .csv export to update shipments.</p></div>
+        <div class="table-card" style="padding:1.5rem">
+          <div class="file-drop" id="file-drop" onclick="document.getElementById('file-input').click()">
+            <div style="font-size:2.5rem;margin-bottom:0.5rem">📂</div>
+            <p style="font-weight:600">Click to select file</p>
+            <p style="font-size:0.8125rem;margin-top:0.25rem;color:var(--text-muted)">.xlsx or .csv — ProRx export format</p>
+          </div>
+          <input type="file" id="file-input" accept=".xlsx,.csv" style="display:none">
+          <div id="import-preview"></div>
+        </div>
+      </div>
+
+      <!-- ── Users Tab ── -->
+      <div class="tab-panel" id="tab-users">
+        <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div><h1>Users</h1><p>Manage reps and account managers.</p></div>
+          <div style="display:flex;gap:0.5rem">
+            <button class="btn btn-primary" onclick="showAddUserModal('rep')">+ Add Rep</button>
+            <button class="btn btn-outline" onclick="showAddUserModal('account_manager')">+ Add Account Manager</button>
+          </div>
+        </div>
+        <div id="users-list"></div>
+      </div>
+
+      <!-- ── Settings Tab ── -->
+      <div class="tab-panel" id="tab-settings">
+        <div class="page-header"><h1>Settings</h1></div>
+        <div class="table-card" style="padding:1.5rem;max-width:520px;margin-bottom:1.5rem">
+          <h3 style="margin-bottom:1.25rem">GitHub Personal Access Token</h3>
+          <p style="font-size:0.875rem;color:var(--text-muted);margin-bottom:1rem">
+            Required to save import changes and user updates to GitHub. Stored only in your browser's localStorage — never sent to any server.
+          </p>
+          <div class="form-group">
+            <label>Personal Access Token</label>
+            <input type="password" id="pat-input" placeholder="github_pat_…" autocomplete="off">
+          </div>
+          <button class="btn btn-primary" onclick="savePAT()">Save Token</button>
+          <span id="pat-save-status" style="margin-left:1rem;font-size:0.875rem;color:var(--teal)"></span>
+        </div>
+        <div class="table-card" style="padding:1.5rem;max-width:520px">
+          <h3 style="margin-bottom:1.25rem">Admin Account</h3>
+          <div class="form-group">
+            <label>New Password</label>
+            <input type="password" id="new-password" placeholder="Leave blank to keep current">
+          </div>
+          <button class="btn btn-primary" onclick="updateAdminPassword()">Update Password</button>
+          <span id="pw-save-status" style="margin-left:1rem;font-size:0.875rem;color:var(--teal)"></span>
+        </div>
+      </div>
+
+      <!-- ── Preview As Tab ── -->
+      <div class="tab-panel" id="tab-preview">
+        <div class="page-header"><h1>Preview As</h1><p>Impersonate a user to see their dashboard view.</p></div>
+        <div class="table-card" style="padding:1.5rem;max-width:400px">
+          <div class="form-group">
+            <label>Select User</label>
+            <select id="preview-user-select" class="rep-filter" style="width:100%"></select>
+          </div>
+          <button class="btn btn-primary" onclick="previewAsUser()">Preview as this User</button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Add/Edit User Modal -->
+  <div class="modal-overlay" id="user-modal" style="display:none">
+    <div class="modal">
+      <h3 id="modal-title">Add User</h3>
+      <div class="form-group"><label>Full Name</label><input type="text" id="modal-name" placeholder="Jane Smith"></div>
+      <div class="form-group"><label>Email</label><input type="email" id="modal-email" placeholder="jane@boomrx.com"></div>
+      <div class="form-group"><label id="modal-pin-label">PIN (4+ digits)</label><input type="password" id="modal-pin" placeholder="1234"></div>
+      <input type="hidden" id="modal-role">
+      <input type="hidden" id="modal-edit-email">
+      <div class="modal-actions">
+        <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveUser()">Save</button>
+      </div>
+      <div id="modal-error" class="error-msg" style="margin-top:0.75rem;display:none"></div>
+    </div>
+  </div>
+
+  <script src="lib/bcryptjs.min.js"></script>
+  <script src="lib/xlsx.min.js"></script>
+  <script src="app.js"></script>
+  <script>
+    let allShipments = [];
+    let shipmentData = null;
+    let configData = null;
+    let currentUser = null;
+    let currentFilter = { status: 'all', search: '', repFilter: '' };
+
+    async function init() {
+      currentUser = checkAuth('admin');
+      if (!currentUser) return;
+
+      document.getElementById('sidebar-user').innerHTML = '<strong>' + currentUser.name + '</strong>' + currentUser.email;
+
+      // PAT banner
+      if (!localStorage.getItem('jms_github_pat')) document.getElementById('pat-banner').style.display = 'flex';
+      // Show existing PAT masked
+      const existingPAT = localStorage.getItem('jms_github_pat');
+      if (existingPAT) document.getElementById('pat-input').placeholder = '••••••••••••••• (set)';
+
+      // Tab nav
+      document.querySelectorAll('.nav-item[data-tab]').forEach(btn => {
+        btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+      });
+
+      try {
+        [configData, shipmentData] = await Promise.all([loadConfig(), loadShipments()]);
+        allShipments = shipmentData.shipments || [];
+
+        // Populate rep filter
+        const repFilter = document.getElementById('rep-filter');
+        const reps = [...new Set(allShipments.map(s => s.rep_name).filter(Boolean))].sort();
+        reps.forEach(r => { const o = document.createElement('option'); o.value = r; o.textContent = r; repFilter.appendChild(o); });
+        repFilter.addEventListener('change', () => { currentFilter.repFilter = repFilter.value; applyFilters(); });
+
+        applyFilters();
+        renderUsers();
+        populatePreviewSelect();
+      } catch (err) {
+        document.getElementById('table-body').innerHTML = '<tr><td colspan="10" style="color:var(--red);padding:1rem">Error: ' + err.message + '</td></tr>';
+      }
+
+      // Filters
+      document.getElementById('filter-pills').addEventListener('click', e => {
+        const pill = e.target.closest('.pill');
+        if (!pill) return;
+        document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        currentFilter.status = pill.dataset.status;
+        applyFilters();
+      });
+      document.getElementById('search-input').addEventListener('input', e => { currentFilter.search = e.target.value; applyFilters(); });
+
+      // File import
+      document.getElementById('file-input').addEventListener('change', handleFileImport);
+    }
+
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+      document.getElementById('tab-' + tab).classList.add('active');
+      document.querySelector('.nav-item[data-tab="' + tab + '"]').classList.add('active');
+    }
+
+    function applyFilters() {
+      const filtered = filterShipments(allShipments, currentFilter);
+      renderKPI(filtered, 'kpi-strip');
+      renderTable(filtered, 'table-body', true, shipmentData.last_updated, shipmentData.updated_by);
+    }
+
+    // ── Users ──────────────────────────────────────────────
+    function renderUsers() {
+      if (!configData) return;
+      const container = document.getElementById('users-list');
+      const allUsers = [
+        ...(configData.account_managers || []).map(u => ({ ...u, role: 'account_manager' })),
+        ...(configData.reps || []).map(u => ({ ...u, role: 'rep' }))
+      ];
+      if (!allUsers.length) { container.innerHTML = '<p style="color:var(--text-muted)">No reps or account managers yet.</p>'; return; }
+      container.innerHTML = allUsers.map(u => `
+        <div class="users-section" style="margin-bottom:0.75rem">
+          <div class="user-card">
+            <div class="user-card-info">
+              <strong>${u.name}</strong>
+              <p>${u.email} &nbsp;<span class="badge ${u.active !== false ? 'badge-active' : 'badge-inactive'}">${u.active !== false ? 'Active' : 'Inactive'}</span> &nbsp;<span class="badge badge-unknown">${u.role === 'account_manager' ? 'Account Manager' : 'Rep'}</span></p>
+            </div>
+            <div class="user-card-actions">
+              <button class="btn btn-outline btn-sm" onclick="showEditUserModal('${u.email}')">Edit</button>
+              <button class="btn btn-outline btn-sm" onclick="resetPIN('${u.email}')">Reset PIN</button>
+              <button class="btn btn-outline btn-sm" onclick="toggleActive('${u.email}', ${u.active !== false})">${u.active !== false ? 'Deactivate' : 'Activate'}</button>
+              <button class="btn btn-danger btn-sm" onclick="removeUser('${u.email}')">Remove</button>
+            </div>
+          </div>
+        </div>`).join('');
+    }
+
+    function showAddUserModal(role) {
+      document.getElementById('modal-title').textContent = role === 'rep' ? 'Add Rep' : 'Add Account Manager';
+      document.getElementById('modal-pin-label').textContent = role === 'account_manager' ? 'Password' : 'PIN (4+ digits)';
+      document.getElementById('modal-name').value = '';
+      document.getElementById('modal-email').value = '';
+      document.getElementById('modal-pin').value = '';
+      document.getElementById('modal-role').value = role;
+      document.getElementById('modal-edit-email').value = '';
+      document.getElementById('modal-error').style.display = 'none';
+      document.getElementById('user-modal').style.display = 'flex';
+    }
+
+    function showEditUserModal(email) {
+      const allUsers = [...(configData.account_managers || []), ...(configData.reps || [])];
+      const u = allUsers.find(x => x.email === email);
+      if (!u) return;
+      document.getElementById('modal-title').textContent = 'Edit User';
+      document.getElementById('modal-pin-label').textContent = 'New PIN (leave blank to keep)';
+      document.getElementById('modal-name').value = u.name;
+      document.getElementById('modal-email').value = u.email;
+      document.getElementById('modal-pin').value = '';
+      document.getElementById('modal-role').value = u.role;
+      document.getElementById('modal-edit-email').value = u.email;
+      document.getElementById('modal-error').style.display = 'none';
+      document.getElementById('user-modal').style.display = 'flex';
+    }
+
+    function closeModal() { document.getElementById('user-modal').style.display = 'none'; }
+
+    async function saveUser() {
+      const name = document.getElementById('modal-name').value.trim();
+      const email = document.getElementById('modal-email').value.trim().toLowerCase();
+      const pin = document.getElementById('modal-pin').value;
+      const role = document.getElementById('modal-role').value;
+      const editEmail = document.getElementById('modal-edit-email').value;
+      const errEl = document.getElementById('modal-error');
+      errEl.style.display = 'none';
+      if (!name || !email) { errEl.textContent = 'Name and email are required.'; errEl.style.display = 'block'; return; }
+      if (!editEmail && !pin) { errEl.textContent = 'PIN/Password is required for new users.'; errEl.style.display = 'block'; return; }
+      const hashField = role === 'account_manager' ? 'password_hash' : 'pin_hash';
+      let newUser = { name, email, role, active: true };
+      if (pin) { newUser[hashField] = await bcrypt.hash(pin, 10); }
+      if (editEmail) {
+        const list = role === 'account_manager' ? configData.account_managers : configData.reps;
+        const idx = list.findIndex(u => u.email === editEmail);
+        if (idx !== -1) {
+          const existing = list[idx];
+          list[idx] = { ...existing, name, email, ...(pin ? { [hashField]: newUser[hashField] } : {}) };
+        }
+      } else {
+        if (role === 'account_manager') { (configData.account_managers = configData.account_managers || []).push(newUser); }
+        else { (configData.reps = configData.reps || []).push(newUser); }
+      }
+      try {
+        await commitToGitHub('data/config.json', configData, 'Update users');
+        closeModal(); renderUsers(); populatePreviewSelect();
+      } catch (err) { errEl.textContent = err.message; errEl.style.display = 'block'; }
+    }
+
+    async function resetPIN(email) {
+      const pin = prompt('Enter new PIN for ' + email + ':');
+      if (!pin) return;
+      const allUsers = [...(configData.account_managers || []), ...(configData.reps || [])];
+      const u = allUsers.find(x => x.email === email);
+      if (!u) return;
+      const hashField = u.role === 'account_manager' ? 'password_hash' : 'pin_hash';
+      u[hashField] = await bcrypt.hash(pin, 10);
+      try { await commitToGitHub('data/config.json', configData, 'Reset PIN for ' + email); alert('PIN updated!'); }
+      catch (err) { alert('Error: ' + err.message); }
+    }
+
+    async function toggleActive(email, currentlyActive) {
+      const allLists = [configData.account_managers || [], configData.reps || []];
+      for (const list of allLists) {
+        const u = list.find(x => x.email === email);
+        if (u) { u.active = !currentlyActive; break; }
+      }
+      try { await commitToGitHub('data/config.json', configData, (currentlyActive ? 'Deactivate' : 'Activate') + ' user ' + email); renderUsers(); }
+      catch (err) { alert('Error: ' + err.message); }
+    }
+
+    async function removeUser(email) {
+      if (!confirm('Remove user ' + email + '? This cannot be undone.')) return;
+      configData.account_managers = (configData.account_managers || []).filter(u => u.email !== email);
+      configData.reps = (configData.reps || []).filter(u => u.email !== email);
+      try { await commitToGitHub('data/config.json', configData, 'Remove user ' + email); renderUsers(); populatePreviewSelect(); }
+      catch (err) { alert('Error: ' + err.message); }
+    }
+
+    // ── Settings ───────────────────────────────────────────
+    function savePAT() {
+      const val = document.getElementById('pat-input').value.trim();
+      if (!val) return;
+      localStorage.setItem('jms_github_pat', val);
+      document.getElementById('pat-save-status').textContent = '✓ Saved';
+      document.getElementById('pat-banner').style.display = 'none';
+      document.getElementById('pat-input').value = '';
+      document.getElementById('pat-input').placeholder = '••••••••••••••• (set)';
+      setTimeout(() => document.getElementById('pat-save-status').textContent = '', 3000);
+    }
+
+    async function updateAdminPassword() {
+      const pw = document.getElementById('new-password').value;
+      if (!pw) return;
+      const hash = await bcrypt.hash(pw, 10);
+      configData.admin.password_hash = hash;
+      try {
+        await commitToGitHub('data/config.json', configData, 'Update admin password');
+        document.getElementById('pw-save-status').textContent = '✓ Updated';
+        document.getElementById('new-password').value = '';
+        setTimeout(() => document.getElementById('pw-save-status').textContent = '', 3000);
+      } catch (err) { alert('Error: ' + err.message); }
+    }
+
+    // ── Preview As ─────────────────────────────────────────
+    function populatePreviewSelect() {
+      if (!configData) return;
+      const sel = document.getElementById('preview-user-select');
+      sel.innerHTML = '';
+      const allUsers = [
+        ...(configData.account_managers || []).map(u => ({ ...u, role: 'account_manager' })),
+        ...(configData.reps || []).map(u => ({ ...u, role: 'rep' }))
+      ];
+      allUsers.forEach(u => {
+        const o = document.createElement('option');
+        o.value = JSON.stringify({ role: u.role, name: u.name, email: u.email });
+        o.textContent = u.name + ' (' + (u.role === 'account_manager' ? 'Account Manager' : 'Rep') + ')';
+        sel.appendChild(o);
+      });
+    }
+
+    function previewAsUser() {
+      const val = document.getElementById('preview-user-select').value;
+      if (!val) return;
+      sessionStorage.setItem('jms_user', val);
+      window.open('dashboard.html', '_blank');
+    }
+
+    // ── File Import ────────────────────────────────────────
+    async function handleFileImport(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const preview = document.getElementById('import-preview');
+      preview.innerHTML = '<p style="margin-top:1rem;color:var(--text-muted)">Parsing…</p>';
+      try {
+        const rows = await parseFile(file);
+        const mapped = rows.map(mapImportRow).filter(r => r.invoice_number);
+        if (!mapped.length) { preview.innerHTML = '<p style="color:var(--red);margin-top:1rem">No valid rows found. Check column names.</p>'; return; }
+        preview.innerHTML = '<p style="margin:1rem 0 0.5rem;font-weight:600">' + mapped.length + ' rows parsed. Preview (first 5):</p>' +
+          '<div style="overflow-x:auto"><table><thead><tr><th>Invoice</th><th>Rep</th><th>Clinician</th><th>Clinic</th><th>Status</th><th>Tracking</th></tr></thead><tbody>' +
+          mapped.slice(0, 5).map(r => '<tr><td>' + r.invoice_number + '</td><td>' + (r.rep_name||'—') + '</td><td>' + (r.clinician_name||'—') + '</td><td>' + (r.clinic_name||'—') + '</td><td>' + statusBadge(r.status) + '</td><td>' + (r.tracking_number||'—') + '</td></tr>').join('') +
+          (mapped.length > 5 ? '<tr><td colspan="6" style="color:var(--text-muted)">…and ' + (mapped.length-5) + ' more</td></tr>' : '') +
+          '</tbody></table></div>' +
+          '<div class="import-actions"><button class="btn btn-teal" id="confirm-import-btn">Confirm & Save to GitHub</button><button class="btn btn-outline" onclick="document.getElementById(\'import-preview\').innerHTML=\'\'">Cancel</button><span id="import-status" style="font-size:0.875rem;margin-left:0.5rem"></span></div>';
+        document.getElementById('confirm-import-btn').addEventListener('click', () => confirmImport(mapped));
+      } catch (err) {
+        preview.innerHTML = '<p style="color:var(--red);margin-top:1rem">Parse error: ' + err.message + '</p>';
+      }
+    }
+
+    async function parseFile(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = ev => {
+          try {
+            const wb = XLSX.read(new Uint8Array(ev.target.result), { type: 'array' });
+            resolve(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: '' }));
+          } catch (err) { reject(err); }
+        };
+        reader.onerror = reject;
+        reader.readAsArrayBuffer(file);
+      });
+    }
+
+    async function confirmImport(newRows) {
+      const btn = document.getElementById('confirm-import-btn');
+      const status = document.getElementById('import-status');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> Saving…';
+      try {
+        const merged = upsertShipments(shipmentData.shipments || [], newRows);
+        const newData = { ...shipmentData, shipments: merged, last_updated: new Date().toISOString(), updated_by: currentUser.email };
+        await commitToGitHub('data/shipments.json', newData, 'Import ' + newRows.length + ' shipments');
+        shipmentData = newData;
+        allShipments = merged;
+        applyFilters();
+        status.style.color = 'var(--teal)';
+        status.textContent = '✓ ' + newRows.length + ' shipments saved!';
+        btn.disabled = false; btn.textContent = 'Confirm & Save to GitHub';
+      } catch (err) {
+        btn.disabled = false; btn.textContent = 'Confirm & Save to GitHub';
+        status.style.color = 'var(--red)';
+        status.textContent = err.message;
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JMS Shipment Tracker</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <h2>JMS Shipment Tracker</h2>
+        <p>BoomRx</p>
+      </div>
+      <div class="sidebar-user" id="sidebar-user"></div>
+      <nav class="sidebar-nav">
+        <button class="nav-item active">📦 Shipments</button>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="btn btn-outline" style="width:100%;color:rgba(255,255,255,0.7);border-color:rgba(255,255,255,0.2)" onclick="logout()">Sign Out</button>
+      </div>
+    </aside>
+    <main class="main-content">
+      <div class="page-header">
+        <h1>Shipments</h1>
+        <p id="page-subtitle">Your assigned shipments</p>
+      </div>
+
+      <!-- KPI Strip -->
+      <div class="kpi-strip" id="kpi-strip"></div>
+
+      <!-- Filters -->
+      <div class="filters-bar">
+        <div class="filter-pills" id="filter-pills">
+          <button class="pill active" data-status="all">All</button>
+          <button class="pill" data-status="received">Received</button>
+          <button class="pill" data-status="shipped">Shipped</button>
+          <button class="pill" data-status="cancelled">Cancelled</button>
+        </div>
+        <input type="text" class="search-input" id="search-input" placeholder="Search shipments…">
+        <select class="rep-filter" id="rep-filter" style="display:none">
+          <option value="">All Reps</option>
+        </select>
+        <button class="btn btn-teal btn-sm" id="import-toggle" style="display:none">⬆ Import</button>
+      </div>
+
+      <!-- Table -->
+      <div class="table-card">
+        <div class="table-wrapper">
+          <table>
+            <thead id="table-head"></thead>
+            <tbody id="table-body">
+              <tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--gray)">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Import Section -->
+      <div class="import-section" id="import-section" style="display:none">
+        <h3>Import Shipments</h3>
+        <div class="file-drop" id="file-drop" onclick="document.getElementById('file-input').click()">
+          <div style="font-size:2rem;margin-bottom:0.5rem">📂</div>
+          <p>Click to select an .xlsx or .csv file</p>
+          <p style="font-size:0.8125rem;margin-top:0.25rem;color:var(--text-muted)">Supports ProRx export format</p>
+        </div>
+        <input type="file" id="file-input" accept=".xlsx,.csv" style="display:none">
+        <div id="import-preview"></div>
+      </div>
+    </main>
+  </div>
+
+  <script src="lib/bcryptjs.min.js"></script>
+  <script src="lib/xlsx.min.js"></script>
+  <script src="app.js"></script>
+  <script>
+    let allShipments = [];
+    let shipmentData = null;
+    let currentUser = null;
+    let currentFilter = { status: 'all', search: '', repFilter: '' };
+
+    async function init() {
+      currentUser = checkAuth();
+      if (!currentUser) return;
+
+      // Sidebar user info
+      document.getElementById('sidebar-user').innerHTML = '<strong>' + currentUser.name + '</strong>' + currentUser.email;
+      document.getElementById('page-subtitle').textContent = currentUser.role === 'rep' ? 'Your assigned shipments' : 'All rep shipments';
+
+      // Show/hide rep column and filter
+      const isElevated = currentUser.role === 'admin' || currentUser.role === 'account_manager';
+
+      // Table header
+      document.getElementById('table-head').innerHTML = '<tr>' +
+        '<th>Status</th>' +
+        (isElevated ? '<th>Rep</th>' : '') +
+        '<th>Last Updated</th><th>Clinician</th><th>Pharmacy</th><th>Order #</th><th>Tracking</th>' +
+        '</tr>';
+
+      try {
+        const [config, data] = await Promise.all([loadConfig(), loadShipments()]);
+        shipmentData = data;
+
+        let shipments = data.shipments || [];
+        if (currentUser.role === 'rep') {
+          shipments = shipments.filter(s => s.rep_name === currentUser.name);
+        }
+        allShipments = shipments;
+
+        // Populate rep filter
+        if (isElevated) {
+          const repFilter = document.getElementById('rep-filter');
+          repFilter.style.display = '';
+          const reps = [...new Set(shipments.map(s => s.rep_name).filter(Boolean))].sort();
+          reps.forEach(r => {
+            const o = document.createElement('option');
+            o.value = r; o.textContent = r;
+            repFilter.appendChild(o);
+          });
+          repFilter.addEventListener('change', () => { currentFilter.repFilter = repFilter.value; applyFilters(); });
+          document.getElementById('import-toggle').style.display = '';
+        }
+
+        // Import toggle
+        document.getElementById('import-toggle').addEventListener('click', () => {
+          const s = document.getElementById('import-section');
+          s.style.display = s.style.display === 'none' ? '' : 'none';
+        });
+
+        // File input
+        document.getElementById('file-input').addEventListener('change', handleFileImport);
+
+        applyFilters();
+      } catch (err) {
+        document.getElementById('table-body').innerHTML = '<tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--red)">Error loading data: ' + err.message + '</td></tr>';
+      }
+    }
+
+    function applyFilters() {
+      const filtered = filterShipments(allShipments, currentFilter);
+      renderKPI(filtered, 'kpi-strip');
+      const isElevated = currentUser.role === 'admin' || currentUser.role === 'account_manager';
+      renderTable(filtered, 'table-body', isElevated, shipmentData.last_updated, shipmentData.updated_by);
+    }
+
+    // Filter pills
+    document.getElementById('filter-pills').addEventListener('click', e => {
+      const pill = e.target.closest('.pill');
+      if (!pill) return;
+      document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      currentFilter.status = pill.dataset.status;
+      applyFilters();
+    });
+
+    // Search
+    document.getElementById('search-input').addEventListener('input', e => {
+      currentFilter.search = e.target.value;
+      applyFilters();
+    });
+
+    // File import (for account managers on dashboard)
+    async function handleFileImport(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const preview = document.getElementById('import-preview');
+      preview.innerHTML = '<p style="margin-top:1rem;color:var(--text-muted)">Parsing file…</p>';
+      try {
+        const rows = await parseFile(file);
+        const mapped = rows.map(mapImportRow).filter(r => r.invoice_number);
+        if (!mapped.length) { preview.innerHTML = '<p style="color:var(--red);margin-top:1rem">No valid rows found.</p>'; return; }
+        preview.innerHTML = '<p style="margin:1rem 0 0.5rem;font-weight:600">' + mapped.length + ' rows found. Preview:</p>' +
+          '<div class="import-preview"><table><thead><tr><th>Invoice</th><th>Rep</th><th>Clinician</th><th>Status</th><th>Tracking</th></tr></thead><tbody>' +
+          mapped.slice(0, 5).map(r => '<tr><td>' + r.invoice_number + '</td><td>' + r.rep_name + '</td><td>' + r.clinician_name + '</td><td>' + statusBadge(r.status) + '</td><td>' + (r.tracking_number || '—') + '</td></tr>').join('') +
+          (mapped.length > 5 ? '<tr><td colspan="5" style="color:var(--text-muted)">…and ' + (mapped.length - 5) + ' more</td></tr>' : '') +
+          '</tbody></table></div>' +
+          '<div class="import-actions"><button class="btn btn-teal" id="confirm-import-btn">Commit to GitHub</button><button class="btn btn-outline" onclick="document.getElementById(\'import-preview\').innerHTML=\'\'">Cancel</button><span id="import-status" style="font-size:0.875rem;color:var(--text-muted)"></span></div>';
+        document.getElementById('confirm-import-btn').addEventListener('click', () => confirmImport(mapped));
+      } catch (err) {
+        preview.innerHTML = '<p style="color:var(--red);margin-top:1rem">Parse error: ' + err.message + '</p>';
+      }
+    }
+
+    async function parseFile(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = e => {
+          try {
+            const data = new Uint8Array(e.target.result);
+            const wb = XLSX.read(data, { type: 'array' });
+            const ws = wb.Sheets[wb.SheetNames[0]];
+            resolve(XLSX.utils.sheet_to_json(ws, { defval: '' }));
+          } catch (err) { reject(err); }
+        };
+        reader.onerror = reject;
+        reader.readAsArrayBuffer(file);
+      });
+    }
+
+    async function confirmImport(newRows) {
+      const btn = document.getElementById('confirm-import-btn');
+      const status = document.getElementById('import-status');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> Saving…';
+      status.textContent = '';
+      try {
+        const existing = shipmentData.shipments || [];
+        const merged = upsertShipments(existing, newRows);
+        const newData = { ...shipmentData, shipments: merged, last_updated: new Date().toISOString(), updated_by: currentUser.email };
+        await commitToGitHub('data/shipments.json', newData, 'Import shipments via dashboard');
+        status.textContent = '✓ Saved! Reloading…';
+        setTimeout(() => window.location.reload(), 1500);
+      } catch (err) {
+        btn.disabled = false;
+        btn.textContent = 'Commit to GitHub';
+        status.style.color = 'var(--red)';
+        status.textContent = err.message;
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>

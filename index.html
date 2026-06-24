@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JMS Shipment Tracker — Sign In</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="login-page">
+  <div class="login-card">
+    <div class="login-brand">
+      <h1>JMS Shipment Tracker</h1>
+      <p>Powered by BoomRx</p>
+    </div>
+    <form id="login-form">
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" required placeholder="you@boomrx.com" autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label for="pin">PIN / Password</label>
+        <input type="password" id="pin" required placeholder="Enter your PIN or password" autocomplete="current-password">
+      </div>
+      <div id="login-error" class="error-msg" style="display:none"></div>
+      <button type="submit" class="btn btn-primary btn-full" id="submit-btn">Sign In</button>
+    </form>
+  </div>
+  <script src="lib/bcryptjs.min.js"></script>
+  <script>
+    // If already logged in, redirect
+    try {
+      const u = JSON.parse(sessionStorage.getItem('jms_user'));
+      if (u && u.role) window.location.href = u.role === 'admin' ? 'admin.html' : 'dashboard.html';
+    } catch {}
+
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim().toLowerCase();
+      const pin = document.getElementById('pin').value;
+      const errEl = document.getElementById('login-error');
+      const btn = document.getElementById('submit-btn');
+      errEl.style.display = 'none';
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> Signing in…';
+      try {
+        const config = await fetch('data/config.json').then(r => r.json());
+        let user = null;
+        if (config.admin && config.admin.email.toLowerCase() === email) user = config.admin;
+        if (!user) user = (config.account_managers || []).find(u => u.email.toLowerCase() === email);
+        if (!user) user = (config.reps || []).find(u => u.email.toLowerCase() === email);
+        if (!user) { showError('Invalid email or PIN.'); return; }
+        if (user.active === false) { showError('This account has been deactivated.'); return; }
+        const hashField = user.role === 'admin' ? 'password_hash' : (user.role === 'account_manager' ? 'password_hash' : 'pin_hash');
+        const valid = await bcrypt.compare(pin, user[hashField]);
+        if (!valid) { showError('Invalid email or PIN.'); return; }
+        sessionStorage.setItem('jms_user', JSON.stringify({ role: user.role, name: user.name, email: user.email }));
+        window.location.href = user.role === 'admin' ? 'admin.html' : 'dashboard.html';
+      } catch (err) {
+        showError('Login failed. Please try again.');
+        console.error(err);
+      }
+      function showError(msg) {
+        errEl.textContent = msg;
+        errEl.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = 'Sign In';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+{
+  "last_updated": "2026-06-24T12:00:00Z",
+  "updated_by": "jack@boomrx.com",
+  "shipments": [
+    {
+      "invoice_number": "221503",
+      "order_date": "2026-06-23",
+      "rep_name": "Zachary Salazar",
+      "clinician_name": "Joel S Jones",
+      "clinic_name": "Healthon",
+      "pharmacy_name": "Boudreaux's New Drug Store",
+      "drug_name": "Sermorelin",
+      "tracking_number": "380789333411",
+      "carrier": "fedex",
+      "tracking_url": "https://www.fedex.com/fedextrack/?trknbr=380789333411",
+      "status": "shipped",
+      "import_date": "2026-06-24T12:00:00Z"
+    }
+  ]
+}
