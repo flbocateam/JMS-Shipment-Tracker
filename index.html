@@ -26,6 +26,7 @@
     </form>
   </div>
   <script src="lib/bcryptjs.min.js"></script>
+  <script>window.bcrypt = window.bcrypt || (window.dcodeIO && window.dcodeIO.bcrypt);</script>
   <script>
     // If already logged in, redirect
     try {
