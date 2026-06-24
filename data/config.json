@@ -12,6 +12,34 @@
       "role": "account_manager",
       "active": true,
       "password_hash": "$2a$10$bzXZA0LIPi5IEp6m2n7SVeGZmemkyYcd9jrJ2JTohUdxHCZRHIt2m"
+    },
+    {
+      "name": "Maria Michelli",
+      "email": "maria.michelli@boomrx.com",
+      "role": "account_manager",
+      "active": true,
+      "pin_hash": "$2b$10$479QBaBBmAFWfx8Hyr25vunnobnarhaY5tRVEnbFkHe6r9bayQGSW"
+    },
+    {
+      "name": "Nate Graham",
+      "email": "nate.graham@boomrx.com",
+      "role": "account_manager",
+      "active": true,
+      "pin_hash": "$2b$10$0MPRa.I2e8jmAl2yQvBT2.BUG4VJ0bm01BQZjVaFebuaDJR5PSU5K"
+    },
+    {
+      "name": "Nicole Paredes",
+      "email": "nicole.paredes@boomrx.com",
+      "role": "account_manager",
+      "active": true,
+      "pin_hash": "$2b$10$PXFvhvkKY.jqCbLOZIOWpOuOkPX01j2lPsU8tLCqnKsKLo7PtBVz2"
+    },
+    {
+      "name": "Mark Mousseau",
+      "email": "mmousseau@boomrx.com",
+      "role": "vice_president",
+      "active": true,
+      "pin_hash": "$2b$10$xLPuHYD.CyFHAbJsxiSErOoqRNDSsa7rOACdjeoI8OZFPyMKXGbRO"
     }
   ],
   "reps": [

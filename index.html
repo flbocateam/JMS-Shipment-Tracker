@@ -51,8 +51,10 @@
         if (!user) user = (config.reps || []).find(u => u.email.toLowerCase() === email);
         if (!user) { showError('Invalid email or PIN.'); return; }
         if (user.active === false) { showError('This account has been deactivated.'); return; }
-        const hashField = user.role === 'admin' ? 'password_hash' : (user.role === 'account_manager' ? 'password_hash' : 'pin_hash');
-        const valid = await bcrypt.compare(pin, user[hashField]);
+        // Support both password_hash and pin_hash field names across all roles
+        const hash = user.password_hash || user.pin_hash;
+        if (!hash) { showError('Invalid email or PIN.'); return; }
+        const valid = await bcrypt.compare(pin, hash);
         if (!valid) { showError('Invalid email or PIN.'); return; }
         sessionStorage.setItem('jms_user', JSON.stringify({ role: user.role, name: user.name, email: user.email }));
         window.location.href = user.role === 'admin' ? 'admin.html' : 'dashboard.html';

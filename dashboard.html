@@ -24,7 +24,7 @@
     <main class="main-content">
       <div class="page-header">
         <h1>Shipments</h1>
-        <p id="page-subtitle">Your assigned shipments</p>
+        <p id="page-subtitle"></p>
       </div>
 
       <!-- KPI Strip -->
@@ -42,7 +42,10 @@
         <select class="rep-filter" id="rep-filter" style="display:none">
           <option value="">All Reps</option>
         </select>
-        <button class="btn btn-teal btn-sm" id="import-toggle" style="display:none">⬆ Import</button>
+        <select class="rep-filter" id="am-filter" style="display:none">
+          <option value="">All Account Managers</option>
+        </select>
+        <button class="btn btn-teal btn-sm" id="import-toggle" style="display:none">⬆ Import Data</button>
       </div>
 
       <!-- Table -->
@@ -58,8 +61,8 @@
       </div>
 
       <!-- Import Section -->
-      <div class="import-section" id="import-section" style="display:none">
-        <h3>Import Shipments</h3>
+      <div class="table-card import-section" id="import-section" style="display:none;margin-top:1.5rem;padding:1.5rem">
+        <h3 style="margin-bottom:1rem">Import ProRx Shipments</h3>
         <div class="file-drop" id="file-drop" onclick="document.getElementById('file-input').click()">
           <div style="font-size:2rem;margin-bottom:0.5rem">📂</div>
           <p>Click to select an .xlsx or .csv file</p>
@@ -78,39 +81,45 @@
   <script>
     let allShipments = [];
     let shipmentData = null;
+    let assignments = {};
     let currentUser = null;
-    let currentFilter = { status: 'all', search: '', repFilter: '' };
+    let currentFilter = { status: 'all', search: '', repFilter: '', amFilter: '' };
 
     async function init() {
       currentUser = checkAuth();
       if (!currentUser) return;
 
-      // Sidebar user info
-      document.getElementById('sidebar-user').innerHTML = '<strong>' + currentUser.name + '</strong>' + currentUser.email;
-      document.getElementById('page-subtitle').textContent = currentUser.role === 'rep' ? 'Your assigned shipments' : 'All rep shipments';
+      const elevated = isElevatedRole(currentUser.role);
 
-      // Show/hide rep column and filter
-      const isElevated = currentUser.role === 'admin' || currentUser.role === 'account_manager';
+      document.getElementById('sidebar-user').innerHTML =
+        '<strong>' + currentUser.name + '</strong>' +
+        '<span style="font-size:0.75rem;opacity:0.7;text-transform:capitalize">' + currentUser.role.replace('_', ' ') + '</span>' +
+        currentUser.email;
+
+      document.getElementById('page-subtitle').textContent = elevated ? 'All rep shipments' : 'Your assigned shipments';
 
       // Table header
       document.getElementById('table-head').innerHTML = '<tr>' +
         '<th>Status</th>' +
-        (isElevated ? '<th>Rep</th>' : '') +
+        (elevated ? '<th>Rep</th>' : '') +
         '<th>Last Updated</th><th>Pharmacy</th><th>Order #</th><th>Tracking</th>' +
         '</tr>';
 
       try {
-        const [config, data] = await Promise.all([loadConfig(), loadShipments()]);
+        const [config, data, assigns] = await Promise.all([loadConfig(), loadShipments(), loadAssignments()]);
         shipmentData = data;
+        assignments = assigns;
 
         let shipments = data.shipments || [];
-        if (currentUser.role === 'rep') {
+
+        if (!elevated) {
+          // Reps see only their own shipments
           shipments = shipments.filter(s => s.rep_name === currentUser.name);
         }
         allShipments = shipments;
 
-        // Populate rep filter
-        if (isElevated) {
+        if (elevated) {
+          // Rep filter
           const repFilter = document.getElementById('rep-filter');
           repFilter.style.display = '';
           const reps = [...new Set(shipments.map(s => s.rep_name).filter(Boolean))].sort();
@@ -120,17 +129,42 @@
             repFilter.appendChild(o);
           });
           repFilter.addEventListener('change', () => { currentFilter.repFilter = repFilter.value; applyFilters(); });
+
+          // Account Manager filter
+          const amFilter = document.getElementById('am-filter');
+          amFilter.style.display = '';
+          // Build the list of AMs from the assignments data
+          const amNames = [...new Set(Object.values(assignments).map(v => v.account_manager).filter(Boolean))].sort();
+          amNames.forEach(am => {
+            const o = document.createElement('option');
+            o.value = am; o.textContent = am;
+            amFilter.appendChild(o);
+          });
+          // Add Unassigned option
+          const unassigned = document.createElement('option');
+          unassigned.value = '__unassigned__'; unassigned.textContent = 'Unassigned';
+          amFilter.appendChild(unassigned);
+
+          // Pre-filter to logged-in AM's own name
+          if (currentUser.role === 'account_manager') {
+            const myName = currentUser.name;
+            const matchOption = [...amFilter.options].find(o => o.value === myName);
+            if (matchOption) {
+              amFilter.value = myName;
+              currentFilter.amFilter = myName;
+            }
+          }
+
+          amFilter.addEventListener('change', () => { currentFilter.amFilter = amFilter.value; applyFilters(); });
+
+          // Show import button
           document.getElementById('import-toggle').style.display = '';
+          document.getElementById('import-toggle').addEventListener('click', () => {
+            const s = document.getElementById('import-section');
+            s.style.display = s.style.display === 'none' ? '' : 'none';
+          });
+          document.getElementById('file-input').addEventListener('change', handleFileImport);
         }
-
-        // Import toggle
-        document.getElementById('import-toggle').addEventListener('click', () => {
-          const s = document.getElementById('import-section');
-          s.style.display = s.style.display === 'none' ? '' : 'none';
-        });
-
-        // File input
-        document.getElementById('file-input').addEventListener('change', handleFileImport);
 
         applyFilters();
       } catch (err) {
@@ -139,13 +173,12 @@
     }
 
     function applyFilters() {
-      const filtered = filterShipments(allShipments, currentFilter);
+      const filtered = filterShipments(allShipments, currentFilter, assignments);
       renderKPI(filtered, 'kpi-strip');
-      const isElevated = currentUser.role === 'admin' || currentUser.role === 'account_manager';
-      renderTable(filtered, 'table-body', isElevated, shipmentData.last_updated, shipmentData.updated_by);
+      const elevated = isElevatedRole(currentUser.role);
+      renderTable(filtered, 'table-body', elevated, shipmentData.last_updated, shipmentData.updated_by, assignments);
     }
 
-    // Filter pills
     document.getElementById('filter-pills').addEventListener('click', e => {
       const pill = e.target.closest('.pill');
       if (!pill) return;
@@ -155,13 +188,11 @@
       applyFilters();
     });
 
-    // Search
     document.getElementById('search-input').addEventListener('input', e => {
       currentFilter.search = e.target.value;
       applyFilters();
     });
 
-    // File import (for account managers on dashboard)
     async function handleFileImport(e) {
       const file = e.target.files[0];
       if (!file) return;
@@ -169,14 +200,33 @@
       preview.innerHTML = '<p style="margin-top:1rem;color:var(--text-muted)">Parsing file…</p>';
       try {
         const rows = await parseFile(file);
-        const mapped = rows.map(mapImportRow).filter(r => r.invoice_number);
+        const mapped = rows.map(r => mapImportRow(r, assignments)).filter(r => r.invoice_number);
         if (!mapped.length) { preview.innerHTML = '<p style="color:var(--red);margin-top:1rem">No valid rows found.</p>'; return; }
-        preview.innerHTML = '<p style="margin:1rem 0 0.5rem;font-weight:600">' + mapped.length + ' rows found. Preview:</p>' +
-          '<div class="import-preview"><table><thead><tr><th>Invoice</th><th>Rep</th><th>Clinician</th><th>Status</th><th>Tracking</th></tr></thead><tbody>' +
-          mapped.slice(0, 5).map(r => '<tr><td>' + r.invoice_number + '</td><td>' + r.rep_name + '</td><td>' + r.clinician_name + '</td><td>' + statusBadge(r.status) + '</td><td>' + (r.tracking_number || '—') + '</td></tr>').join('') +
-          (mapped.length > 5 ? '<tr><td colspan="5" style="color:var(--text-muted)">…and ' + (mapped.length - 5) + ' more</td></tr>' : '') +
+
+        const existing = shipmentData.shipments || [];
+        const existingMap = new Map(existing.map(s => [s.invoice_number, s]));
+        let newCount = 0, updatedCount = 0, unmatched = 0;
+        mapped.forEach(r => {
+          if (existingMap.has(r.invoice_number)) updatedCount++;
+          else newCount++;
+          if (!r.account_manager) unmatched++;
+        });
+
+        preview.innerHTML =
+          '<p style="margin:1rem 0 0.5rem;font-weight:600">' +
+          newCount + ' new &nbsp;·&nbsp; ' + updatedCount + ' updated' +
+          (unmatched ? ' &nbsp;·&nbsp; <span style="color:var(--orange)">' + unmatched + ' unmatched AM</span>' : '') +
+          '</p>' +
+          '<div class="import-preview"><table><thead><tr><th>Invoice</th><th>Rep</th><th>Clinic</th><th>Account Mgr</th><th>Status</th><th>Tracking</th></tr></thead><tbody>' +
+          mapped.slice(0, 5).map(r =>
+            '<tr><td>' + r.invoice_number + '</td><td>' + (r.rep_name || '—') + '</td><td>' + (r.clinic_name || '—') + '</td><td>' + (r.account_manager || '<span style="color:var(--text-muted)">Unassigned</span>') + '</td><td>' + statusBadge(r.status) + '</td><td>' + (r.tracking_number || '—') + '</td></tr>'
+          ).join('') +
+          (mapped.length > 5 ? '<tr><td colspan="6" style="color:var(--text-muted)">…and ' + (mapped.length - 5) + ' more</td></tr>' : '') +
           '</tbody></table></div>' +
-          '<div class="import-actions"><button class="btn btn-teal" id="confirm-import-btn">Commit to GitHub</button><button class="btn btn-outline" onclick="document.getElementById(\'import-preview\').innerHTML=\'\'">Cancel</button><span id="import-status" style="font-size:0.875rem;color:var(--text-muted)"></span></div>';
+          '<div class="import-actions"><button class="btn btn-teal" id="confirm-import-btn">Commit to GitHub</button>' +
+          '<button class="btn btn-outline" onclick="document.getElementById(\'import-preview\').innerHTML=\'\'">Cancel</button>' +
+          '<span id="import-status" style="font-size:0.875rem;color:var(--text-muted)"></span></div>';
+
         document.getElementById('confirm-import-btn').addEventListener('click', () => confirmImport(mapped));
       } catch (err) {
         preview.innerHTML = '<p style="color:var(--red);margin-top:1rem">Parse error: ' + err.message + '</p>';
@@ -209,7 +259,7 @@
         const existing = shipmentData.shipments || [];
         const merged = upsertShipments(existing, newRows);
         const newData = { ...shipmentData, shipments: merged, last_updated: new Date().toISOString(), updated_by: currentUser.email };
-        await commitToGitHub('data/shipments.json', newData, 'Import shipments via dashboard');
+        await commitToGitHub('data/shipments.json', newData, 'Import shipments');
         status.textContent = '✓ Saved! Reloading…';
         setTimeout(() => window.location.reload(), 1500);
       } catch (err) {

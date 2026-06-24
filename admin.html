@@ -48,6 +48,7 @@
           </div>
           <input type="text" class="search-input" id="search-input" placeholder="Search shipments…">
           <select class="rep-filter" id="rep-filter"><option value="">All Reps</option></select>
+          <select class="rep-filter" id="am-filter"><option value="">All Account Managers</option></select>
         </div>
         <div class="table-card">
           <div class="table-wrapper">
@@ -155,8 +156,9 @@
     let allShipments = [];
     let shipmentData = null;
     let configData = null;
+    let assignments = {};
     let currentUser = null;
-    let currentFilter = { status: 'all', search: '', repFilter: '' };
+    let currentFilter = { status: 'all', search: '', repFilter: '', amFilter: '' };
 
     async function init() {
       currentUser = checkAuth('admin');
@@ -176,7 +178,7 @@
       });
 
       try {
-        [configData, shipmentData] = await Promise.all([loadConfig(), loadShipments()]);
+        [configData, shipmentData, assignments] = await Promise.all([loadConfig(), loadShipments(), loadAssignments()]);
         allShipments = shipmentData.shipments || [];
 
         // Populate rep filter
@@ -184,6 +186,13 @@
         const reps = [...new Set(allShipments.map(s => s.rep_name).filter(Boolean))].sort();
         reps.forEach(r => { const o = document.createElement('option'); o.value = r; o.textContent = r; repFilter.appendChild(o); });
         repFilter.addEventListener('change', () => { currentFilter.repFilter = repFilter.value; applyFilters(); });
+
+        // Populate AM filter
+        const amFilterEl = document.getElementById('am-filter');
+        const amNames = [...new Set(Object.values(assignments).map(v => v.account_manager).filter(Boolean))].sort();
+        amNames.forEach(am => { const o = document.createElement('option'); o.value = am; o.textContent = am; amFilterEl.appendChild(o); });
+        const uOpt = document.createElement('option'); uOpt.value = '__unassigned__'; uOpt.textContent = 'Unassigned'; amFilterEl.appendChild(uOpt);
+        amFilterEl.addEventListener('change', () => { currentFilter.amFilter = amFilterEl.value; applyFilters(); });
 
         applyFilters();
         renderUsers();
@@ -215,9 +224,9 @@
     }
 
     function applyFilters() {
-      const filtered = filterShipments(allShipments, currentFilter);
+      const filtered = filterShipments(allShipments, currentFilter, assignments);
       renderKPI(filtered, 'kpi-strip');
-      renderTable(filtered, 'table-body', true, shipmentData.last_updated, shipmentData.updated_by);
+      renderTable(filtered, 'table-body', true, shipmentData.last_updated, shipmentData.updated_by, assignments);
     }
 
     // ── Users ──────────────────────────────────────────────
@@ -225,16 +234,17 @@
       if (!configData) return;
       const container = document.getElementById('users-list');
       const allUsers = [
-        ...(configData.account_managers || []).map(u => ({ ...u, role: 'account_manager' })),
-        ...(configData.reps || []).map(u => ({ ...u, role: 'rep' }))
+        ...(configData.account_managers || []),
+        ...(configData.reps || []).map(u => ({ ...u, role: u.role || 'rep' }))
       ];
-      if (!allUsers.length) { container.innerHTML = '<p style="color:var(--text-muted)">No reps or account managers yet.</p>'; return; }
+      if (!allUsers.length) { container.innerHTML = '<p style="color:var(--text-muted)">No users yet.</p>'; return; }
+      const roleLabel = r => ({ account_manager: 'Account Manager', vice_president: 'Vice President', rep: 'Rep' }[r] || r);
       container.innerHTML = allUsers.map(u => `
         <div class="users-section" style="margin-bottom:0.75rem">
           <div class="user-card">
             <div class="user-card-info">
               <strong>${u.name}</strong>
-              <p>${u.email} &nbsp;<span class="badge ${u.active !== false ? 'badge-active' : 'badge-inactive'}">${u.active !== false ? 'Active' : 'Inactive'}</span> &nbsp;<span class="badge badge-unknown">${u.role === 'account_manager' ? 'Account Manager' : 'Rep'}</span></p>
+              <p>${u.email} &nbsp;<span class="badge ${u.active !== false ? 'badge-active' : 'badge-inactive'}">${u.active !== false ? 'Active' : 'Inactive'}</span> &nbsp;<span class="badge badge-unknown">${roleLabel(u.role)}</span></p>
             </div>
             <div class="user-card-actions">
               <button class="btn btn-outline btn-sm" onclick="showEditUserModal('${u.email}')">Edit</button>
@@ -288,19 +298,20 @@
       if (!editEmail && !pin) { errEl.textContent = 'PIN/Password is required for new users.'; errEl.style.display = 'block'; return; }
       saveBtn.disabled = true; saveBtn.textContent = 'Saving…';
       try {
-        const hashField = role === 'account_manager' ? 'password_hash' : 'pin_hash';
+        // Always use pin_hash for non-admin users
         let newUser = { name, email, role, active: true };
-        if (pin) { newUser[hashField] = await bcrypt.hash(pin, 10); }
+        if (pin) { newUser.pin_hash = await bcrypt.hash(pin, 10); }
         // Re-fetch latest config to avoid SHA conflicts from prior commits
         const freshConfig = await loadConfig();
+        const isAM = role === 'account_manager' || role === 'vice_president';
         if (editEmail) {
-          const list = role === 'account_manager' ? freshConfig.account_managers : freshConfig.reps;
+          const list = isAM ? freshConfig.account_managers : freshConfig.reps;
           const idx = list.findIndex(u => u.email === editEmail);
           if (idx !== -1) {
-            list[idx] = { ...list[idx], name, email, ...(pin ? { [hashField]: newUser[hashField] } : {}) };
+            list[idx] = { ...list[idx], name, email, ...(pin ? { pin_hash: newUser.pin_hash } : {}) };
           }
         } else {
-          if (role === 'account_manager') { (freshConfig.account_managers = freshConfig.account_managers || []).push(newUser); }
+          if (isAM) { (freshConfig.account_managers = freshConfig.account_managers || []).push(newUser); }
           else { (freshConfig.reps = freshConfig.reps || []).push(newUser); }
         }
         configData = freshConfig;
@@ -316,8 +327,7 @@
       const allUsers = [...(configData.account_managers || []), ...(configData.reps || [])];
       const u = allUsers.find(x => x.email === email);
       if (!u) return;
-      const hashField = u.role === 'account_manager' ? 'password_hash' : 'pin_hash';
-      u[hashField] = await bcrypt.hash(pin, 10);
+      u.pin_hash = await bcrypt.hash(pin, 10);
       try { await commitToGitHub('data/config.json', configData, 'Reset PIN for ' + email); alert('PIN updated!'); }
       catch (err) { alert('Error: ' + err.message); }
     }
@@ -385,13 +395,14 @@
       const sel = document.getElementById('preview-user-select');
       sel.innerHTML = '';
       const allUsers = [
-        ...(configData.account_managers || []).map(u => ({ ...u, role: 'account_manager' })),
-        ...(configData.reps || []).map(u => ({ ...u, role: 'rep' }))
+        ...(configData.account_managers || []),
+        ...(configData.reps || []).map(u => ({ ...u, role: u.role || 'rep' }))
       ];
+      const roleLabel = r => ({ account_manager: 'Account Manager', vice_president: 'Vice President', rep: 'Rep' }[r] || r);
       allUsers.forEach(u => {
         const o = document.createElement('option');
         o.value = JSON.stringify({ role: u.role, name: u.name, email: u.email });
-        o.textContent = u.name + ' (' + (u.role === 'account_manager' ? 'Account Manager' : 'Rep') + ')';
+        o.textContent = u.name + ' (' + roleLabel(u.role) + ')';
         sel.appendChild(o);
       });
     }
@@ -411,11 +422,15 @@
       preview.innerHTML = '<p style="margin-top:1rem;color:var(--text-muted)">Parsing…</p>';
       try {
         const rows = await parseFile(file);
-        const mapped = rows.map(mapImportRow).filter(r => r.invoice_number);
+        const mapped = rows.map(r => mapImportRow(r, assignments)).filter(r => r.invoice_number);
         if (!mapped.length) { preview.innerHTML = '<p style="color:var(--red);margin-top:1rem">No valid rows found. Check column names.</p>'; return; }
-        preview.innerHTML = '<p style="margin:1rem 0 0.5rem;font-weight:600">' + mapped.length + ' rows parsed. Preview (first 5):</p>' +
-          '<div style="overflow-x:auto"><table><thead><tr><th>Invoice</th><th>Rep</th><th>Clinician</th><th>Clinic</th><th>Status</th><th>Tracking</th></tr></thead><tbody>' +
-          mapped.slice(0, 5).map(r => '<tr><td>' + r.invoice_number + '</td><td>' + (r.rep_name||'—') + '</td><td>' + (r.clinician_name||'—') + '</td><td>' + (r.clinic_name||'—') + '</td><td>' + statusBadge(r.status) + '</td><td>' + (r.tracking_number||'—') + '</td></tr>').join('') +
+        const existingMap = new Map((shipmentData.shipments || []).map(s => [s.invoice_number, s]));
+        let newCount = 0, updatedCount = 0, unmatched = 0;
+        mapped.forEach(r => { existingMap.has(r.invoice_number) ? updatedCount++ : newCount++; if (!r.account_manager) unmatched++; });
+        preview.innerHTML = '<p style="margin:1rem 0 0.5rem;font-weight:600">' + newCount + ' new &nbsp;·&nbsp; ' + updatedCount + ' updated' +
+          (unmatched ? ' &nbsp;·&nbsp; <span style="color:var(--orange)">' + unmatched + ' unmatched AM</span>' : '') + '</p>' +
+          '<div style="overflow-x:auto"><table><thead><tr><th>Invoice</th><th>Rep</th><th>Clinic</th><th>Account Mgr</th><th>Status</th><th>Tracking</th></tr></thead><tbody>' +
+          mapped.slice(0, 5).map(r => '<tr><td>' + r.invoice_number + '</td><td>' + (r.rep_name||'—') + '</td><td>' + (r.clinic_name||'—') + '</td><td>' + (r.account_manager || '<span style="color:var(--text-muted)">Unassigned</span>') + '</td><td>' + statusBadge(r.status) + '</td><td>' + (r.tracking_number||'—') + '</td></tr>').join('') +
           (mapped.length > 5 ? '<tr><td colspan="6" style="color:var(--text-muted)">…and ' + (mapped.length-5) + ' more</td></tr>' : '') +
           '</tbody></table></div>' +
           '<div class="import-actions"><button class="btn btn-teal" id="confirm-import-btn">Confirm & Save to GitHub</button><button class="btn btn-outline" onclick="document.getElementById(\'import-preview\').innerHTML=\'\'">Cancel</button><span id="import-status" style="font-size:0.875rem;margin-left:0.5rem"></span></div>';

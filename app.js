@@ -6,6 +6,11 @@ const AUTH_KEY = 'jms_user';
 const PAT_KEY = 'jms_github_pat';
 const REPO = 'flbocateam/JMS-Shipment-Tracker';
 
+// Roles that can see all shipments, upload, and use AM filter
+function isElevatedRole(role) {
+  return role === 'admin' || role === 'account_manager' || role === 'vice_president';
+}
+
 // ── Auth ─────────────────────────────────────────────────────
 function getUser() {
   try { return JSON.parse(sessionStorage.getItem(AUTH_KEY)); } catch { return null; }
@@ -34,6 +39,33 @@ async function loadShipments() {
   const r = await fetch('data/shipments.json?t=' + Date.now());
   if (!r.ok) throw new Error('Failed to load shipments');
   return r.json();
+}
+
+async function loadAssignments() {
+  try {
+    const r = await fetch('data/clinic_assignments.json?t=' + Date.now());
+    if (!r.ok) return {};
+    const j = await r.json();
+    return j.assignments || {};
+  } catch { return {}; }
+}
+
+// ── Account manager lookup ────────────────────────────────────
+function getAMForShipment(shipment, assignments) {
+  // 1. Already stamped on the shipment (new imports)
+  if (shipment.account_manager) return shipment.account_manager;
+  // 2. Look up by clinic_id
+  if (shipment.clinic_id && assignments[shipment.clinic_id]) {
+    return assignments[shipment.clinic_id].account_manager;
+  }
+  // 3. Fall back to clinic_name match (case-insensitive)
+  if (shipment.clinic_name) {
+    const cn = shipment.clinic_name.toLowerCase().trim();
+    for (const v of Object.values(assignments)) {
+      if (v.clinic_name && v.clinic_name.toLowerCase().trim() === cn) return v.account_manager;
+    }
+  }
+  return null;
 }
 
 // ── Carrier detection ────────────────────────────────────────
@@ -83,24 +115,28 @@ function renderKPI(shipments, containerId) {
 }
 
 // ── Table rendering ──────────────────────────────────────────
-function renderTable(shipments, tableBodyId, showRepCol, globalLastUpdated, globalUpdatedBy) {
+// assignments: optional map of clinic_id → {account_manager, clinic_name}
+function renderTable(shipments, tableBodyId, showRepCol, globalLastUpdated, globalUpdatedBy, assignments) {
   const tbody = document.getElementById(tableBodyId);
   if (!tbody) return;
   if (!shipments.length) {
     tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--gray)">No shipments found.</td></tr>';
     return;
   }
+  const assignMap = assignments || {};
   tbody.innerHTML = shipments.map(s => {
     const cancelled = s.status === 'cancelled' ? ' row-cancelled' : '';
     const repCol = showRepCol ? '<td>' + (s.rep_name || '—') + '</td>' : '';
     const lu = s.import_date ? formatDate(s.import_date) : (globalLastUpdated ? formatDate(globalLastUpdated) : '—');
     const ub = s.updated_by || globalUpdatedBy || '';
+    const am = getAMForShipment(s, assignMap);
+    const amText = am ? '<div class="sub-text" style="margin-top:2px">Account Manager: ' + am + '</div>' : '';
     return '<tr class="' + cancelled + '">' +
       '<td>' + statusBadge(s.status) + '</td>' +
       repCol +
       '<td><div>' + lu + '</div>' + (ub ? '<div class="sub-text">Entered by ' + ub + '</div>' : '') + '</td>' +
       '<td>' + (s.pharmacy_name || '—') + '</td>' +
-      '<td>' + (s.invoice_number || '—') + '</td>' +
+      '<td><div>' + (s.invoice_number || '—') + '</div>' + amText + '</td>' +
       '<td>' + trackingLink(s) + '</td>' +
       '</tr>';
   }).join('');
@@ -139,23 +175,45 @@ function normalizeStatus(raw) {
   return 'received';
 }
 
-function mapImportRow(row) {
+// assignments param is optional — if provided, stamps account_manager on each row
+function mapImportRow(row, assignments) {
   let repName = String(row['sales_rep'] || row['rep_name'] || '').trim();
-  repName = repName.replace(/JMS\s*-\s*Jack\s+L['']Hommedieu\s*\/\s*Mark\s+Mousseau\s*/gi, '').trim();
+  // Strip the JMS house-account prefix; keep the actual rep name after it
+  repName = repName.replace(/^JMS\s*-\s*Jack\s+L['']Hommedieu\s*\/\s*Mark\s+Mousseau\s*/i, '').trim();
+  // If nothing left, it IS the JMS/house account — preserve the original name
+  if (!repName) repName = String(row['sales_rep'] || row['rep_name'] || '').trim();
+
   const trackingNum = String(row['tracking_number'] || '').trim();
   const { carrier, url } = detectCarrier(trackingNum);
+
+  // Clinic ID — try several possible column names
+  const clinicId = String(
+    row['clinic_id'] || row['Clinic ID'] || row['BoomRx Clinic ID'] ||
+    row['clinic id'] || row['boomrx_clinic_id'] || ''
+  ).trim();
+
+  const clinicName = String(row['clinic_name'] || row['Clinic Name'] || '').trim();
+
+  // Look up account manager from assignments
+  let accountManager = null;
+  if (assignments) {
+    const probe = { clinic_id: clinicId, clinic_name: clinicName };
+    accountManager = getAMForShipment(probe, assignments) || null;
+  }
+
   return {
     invoice_number: String(row['invoice_number'] || '').trim(),
     order_date: row['order_date'] || '',
     rep_name: repName,
-    clinician_name: row['clinician_full_name'] || row['clinician_name'] || '',
-    clinic_name: row['clinic_name'] || '',
-    pharmacy_name: row['pharmacy_name'] || '',
-    drug_name: row['drug_name'] || '',
+    clinic_id: clinicId,
+    clinic_name: clinicName,
+    pharmacy_name: String(row['pharmacy_name'] || '').trim(),
+    drug_name: String(row['drug_name'] || '').trim(),
     tracking_number: trackingNum,
     carrier,
     tracking_url: url,
     status: normalizeStatus(row['status']),
+    account_manager: accountManager,
     import_date: new Date().toISOString()
   };
 }
@@ -167,13 +225,21 @@ function upsertShipments(existing, incoming) {
 }
 
 // ── Filter/search ────────────────────────────────────────────
-function filterShipments(shipments, { status, search, repFilter }) {
+function filterShipments(shipments, { status, search, repFilter, amFilter }, assignments) {
   return shipments.filter(s => {
     if (status && status !== 'all' && s.status !== status) return false;
     if (repFilter && s.rep_name !== repFilter) return false;
+    if (amFilter) {
+      const am = getAMForShipment(s, assignments || {});
+      if (amFilter === '__unassigned__') {
+        if (am && am !== 'Unassigned') return false;
+      } else {
+        if (am !== amFilter) return false;
+      }
+    }
     if (search) {
       const q = search.toLowerCase();
-      const fields = [s.clinic_name, s.clinician_name, s.invoice_number, s.tracking_number, s.rep_name, s.pharmacy_name];
+      const fields = [s.clinic_name, s.invoice_number, s.tracking_number, s.rep_name, s.pharmacy_name];
       if (!fields.some(f => f && String(f).toLowerCase().includes(q))) return false;
     }
     return true;

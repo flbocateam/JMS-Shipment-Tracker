@@ -1,0 +1,3450 @@
+{
+  "last_updated": "2026-06-24",
+  "assignments": {
+    "249ff778-d9f9-43d3-8694-dac6ecbae794": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Atlanta Wellness Clinic",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "63e4b3b9-53fb-4bec-80ce-b79064c27936": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Shor Medical",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "28563040-11a9-4f09-87d1-a2e119969807": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Sakara Spa",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "02aea26a-a218-4022-8ab6-0b4f1719a409": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Dr. Rowe's Essence of Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "b92cfd2e-72f6-40de-afa5-42b4104b081e": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Revibe Men's Health - Tucson",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "13965575-c98d-4d64-9e4f-79fd99e75ec7": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Weight Loss M.D.",
+      "salesperson": "Zachary Salazar"
+    },
+    "6f315534-6307-48b6-b784-e96d77b3bc19": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Monarch Master Injectors",
+      "salesperson": "Mark Mousseau"
+    },
+    "fcc66375-4910-4492-9efa-1a344c17550f": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Serenity Med Spa Georgia",
+      "salesperson": "Jonathan Izquierdo"
+    },
+    "9056306f-8246-4316-be82-2d94d746940a": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Evexia Weight Loss and Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "2778ce9c-080d-4f00-86e6-949b576def41": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "yakima mens clinic",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "c56fc90f-c04e-44d4-9e84-2b8fa920749f": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Dominion HealthCare Services",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "b19f8856-fdd0-4f31-bc67-80bdccac2c0f": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "East to West Functional Medicine",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "0e2ad606-c446-4012-8676-c4496f170f8f": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Vein and Wellness Centers of Texas",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "6718805e-459c-43db-8842-d38cb4339f0a": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Nova Health",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "869c232f-3b62-4ecb-8bca-2e744dd4a710": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Tucson Wellness MD",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "fd261489-932b-45a0-bac0-22f594692087": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Vita IV Solutions",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "43dde8f7-5420-49f7-83fe-b27a9db3182c": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Ultimate Men's Clinic - Tulsa",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "db36f2fb-e9dd-4ef8-93b1-e818f56a6630": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Elite Health HRT - Hickory Flat",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "333dd141-8cd4-4ab2-8327-bee672b41e96": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Elevate IV, PLLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "eeeacedb-905a-41cf-8734-18fb473a0200": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Kukui Lifestyle Medicine Clinic",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "2d5847cd-20a0-4c0e-9500-d8eaef39d2fc": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Love Lee Health",
+      "salesperson": "Ashlyn Smith"
+    },
+    "fe718015-e5ed-477c-a67f-d3174da18918": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "LEGENDARY FAMILY HEALTHCARE PLLC dba Legendary Total Wellness & Longevity Spa",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "7e19d732-0cdd-46d6-9dc8-5b68ae8a63fa": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Knights Family Health NP PLLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "005b6c00-9b8d-427f-9b5c-b8b713be1641": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Prompt Care Inc.",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "1f5eee4c-8d85-4deb-99a6-585c9525eb45": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "RenuU Health",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "48128fd0-68ba-4472-824a-995f1ddcb659": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "MODO Urgent Care",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "9829ca08-9343-4344-8dbe-1446d35af253": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "NWI Integrative Health & Wellness",
+      "salesperson": "Jonathan Izquierdo"
+    },
+    "b3857475-40e5-4cb2-a6df-7e4f99de95bb": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Nirvanix Health",
+      "salesperson": "Zachary Salazar"
+    },
+    "50dd6703-b002-4f45-83c6-7b50e0873129": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Stocks Medical, PLLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "99858c25-3037-490b-89d6-cd88be54086b": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Renegade Health",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "2b892941-4671-4a95-a5e9-90a7dbaf5487": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Built To Be Well LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "69f85672-0f76-4735-b2b5-258f28f812a8": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Next Level Health at Virapel",
+      "salesperson": "Mark Mousseau"
+    },
+    "78003ffe-53b6-403d-9c2f-b9f3656cc091": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "The Stoehr Center",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "9b365a70-1f3f-448e-8793-7864ba8ea38a": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "CLT Aesthetics",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "f436a289-763c-40d0-aa37-fff6ae1f17cc": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Boomtown Health and Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "cf4c0d05-d493-4ce7-8d8c-3b9d07c90dc1": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Reset TRT & Weight Loss",
+      "salesperson": "Mark Mousseau"
+    },
+    "510070cf-f26c-4179-a20a-db98f7c2d12a": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "First Step Health & Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "db6a4c2a-0536-448e-8bad-8c7a0479930f": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "White Lotus Aesthetics & Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "31d8ac77-7803-4b29-a44b-94be3eb35c05": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "South Carolina Elite Physicians",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "29e978ad-d963-4836-8b99-38e3c85c29d2": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "chatuge med spa and fitness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "f66a3200-1ed1-4df4-b0ef-7fc9dfe36a05": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Re-Gen-U",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "84cc3753-b8be-40f7-b6eb-ef86620bcc33": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Aesthetic Oasis",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "8db36f53-3375-4d26-b021-92134e1e1f61": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Gladden Longevity",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "78932440-04c9-4f60-8d60-d506c5e11d77": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Stonegate Wellness & Weight Management",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "0fa44215-71a5-4a62-895d-ab9ecda33233": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Wilkes Rejuvenation MD",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "0ed5929e-d3dd-4630-a401-bba66b930b92": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Doctor Paria Naturopathic Inc",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "1185847b-2634-4c15-8b42-5eb02206e98b": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Intercoastal Health",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "75f672f6-4786-4cb6-bc4a-7de8833aeee0": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Renove Med Spa",
+      "salesperson": "Mark Mousseau"
+    },
+    "d4849f2b-79be-46e9-a2b0-4162c3ce1417": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "THE LAB MN",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "e55690a0-3e73-47c8-b177-81a4fe423361": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "EROS Medical",
+      "salesperson": "Mark Mousseau"
+    },
+    "3b7cf41a-f287-4b1f-8cf8-3190366e433b": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Restore Functional Medicine",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "74855039-3eaa-4573-94f3-6400e45d34eb": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "77 Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "082d6bf3-bab5-4ea9-a6cb-fcc2ce09a756": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Evolve Wellness Clinic",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "f10a6ce3-f9ba-404e-8e62-a33335072a3e": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Phoenix Weight Loss",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "c5c7c709-259a-4dee-a376-bb5bc56e0721": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "LOU LOU Med Spa",
+      "salesperson": "Mark Mousseau"
+    },
+    "c48144e2-3a02-4a24-90de-46d3252d4983": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "QwikMed Clinic",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "2035c781-afd8-4cd9-b509-af13be6b27c1": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Giddie Skin MedSpa",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "29d0b2ba-61c6-4a97-9297-b974e46c2528": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Y-City Telemedicine",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "e0609aac-d3cb-4e65-b6e8-4be5e109c396": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Rimi Med & Aesthetics",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "edcb9161-1b5f-4ca1-a789-439d1a24ebdd": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Paragon Sports Medicine",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "373895cf-4511-4199-a176-2c5d109e916a": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Focused Men's Health Care Inc",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "21d9c8a8-1bfd-49de-89db-8ae789b6a260": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "The DripBar Grand Forks",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "230025c3-3cf8-4c10-beea-29fe175665db": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Personified Aesthetics",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "6ea1926b-0e9e-4460-9055-35dba50bbf86": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Beaute PC",
+      "salesperson": "Mark Mousseau"
+    },
+    "d9e4db10-58e9-4793-8e49-3917c4cffcc9": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Holy City Healthcare Consultants",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "d5fc5c07-9080-4ca7-a6d6-f3e3f37960d8": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "RCMC Medical Center - Leander",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "1f828bf0-1b38-43c9-bd96-5dc1f8106d92": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "RCMC Medical Center - Hesperia",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "85781e54-8442-4d63-bde3-69fabcbaf4f6": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "RCMC Medical Center - Cucamonga",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "ec01180b-04cc-4dbf-b029-09a8b79e0f2d": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "RCMC Medical Center - Banning",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "89cb4823-ab01-430b-b7c0-2f3a755a465d": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Evolve Anti-Aging and Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "ae01ab00-b5e2-47ec-bdb2-f9cf4d914045": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Solutions Integrative Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "f9753baf-aa94-4cba-95bd-49efbb6507ab": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "S2G Medical Spa - West Bloomfield",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "3463c999-2a63-46fd-a5b2-6fe2bfada3b4": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "S2G Medical Spa - Commerce",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "262f4d72-e7f9-4144-b0a9-3c44cf391287": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "GameDay Men's Health - Egg Harbor",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "925f8523-eec3-45c7-ab7d-f224feacf32f": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Advanced Medical Weight Loss Rx",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "0370ad2c-1915-46ed-9714-3e6bfdcbe2d0": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "MedPure Weight-Loss, Inc. (dba MedPure)",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "05f6d945-4d59-479b-adbc-e8ee52cf0ccc": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "NEW MOON HEALTH AND WELLNESS, PLLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "4cecd91e-e99c-410d-8fc6-06a258fcd9ea": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Revibe Men's Health - Sacramento",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "0ca6b91c-dd38-40c7-a289-4a6cc661323d": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Rock Body Clinic",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "15c9de2e-2d62-468e-9649-43a9821e7e1f": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Peak Healthspan",
+      "salesperson": "Mark Mousseau"
+    },
+    "73942a25-8565-4f69-93a0-cafef1d211b6": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "West Asheville Aesthetics & Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "5271a309-4695-491b-8f73-c64c762ead8c": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Mesa Natural Medicine",
+      "salesperson": "Mark Mousseau"
+    },
+    "ab7f8744-e355-4b81-90e6-fd363d9fa650": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "New Beginnings Wellness Clinic",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "184f9e3e-c4db-4ea5-9d9d-f8fffff2bb3d": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Wisdom of Ages, LLC",
+      "salesperson": "Mark Mousseau"
+    },
+    "cc3e3521-03d9-4d24-bb82-718a0c70e66a": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Vitality Health & Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "cb38a8df-d72b-437d-b25b-7fbe1b84883c": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Lotus Med Spa",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "afdce33d-db18-4047-ba54-d9d68cba0499": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "The Aesthetic Studio",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "7ef14a34-e914-446b-a442-895eef5b3ebc": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Geo N. Tabbal M.D. PLLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "7561a08f-6d84-4e31-8a14-85931ce96472": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "802 North Wellness and Aesthetics, LLC",
+      "salesperson": "Mark Mousseau"
+    },
+    "459a2a97-dc0c-4451-8490-8f3993e970e1": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Elite Health HRT - Roswell",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "58794dc2-c385-4f15-9ff5-4ecfdd17fd2a": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "ThriveX",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "44b95cc0-682e-4ca6-87fc-c0b77ff4b092": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Paull Allergy & Rheumatology",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "594884f2-b89f-4440-89b9-73dfc7ac3d4c": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Virginia Healthy Weight",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "9eeb5508-42a7-460f-8138-e81230f8dc1e": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "NuLife Institute",
+      "salesperson": "Zachary Salazar"
+    },
+    "914b4dcb-5e0f-4a2a-83bf-32af3cbfba99": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Hydrate 315",
+      "salesperson": "Mark Mousseau"
+    },
+    "0083123a-a582-4830-afca-13a38c2717a5": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Dreams Aesthetics and Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "87601303-ce61-47b5-8472-5c3f0d243135": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Gameday Men's Health - East Brunswick",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "91b2e739-1390-47b2-9c05-06e5c2c80e65": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Medy Weight Loss",
+      "salesperson": "Mark Mousseau"
+    },
+    "9cd2587a-4d12-4070-979f-99f0887e5d98": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Optimization Clinic",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "cfc77fb1-baf2-428f-8038-fb4eb0c11663": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Lotus Medical LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "34387f28-b16d-44b9-bfb4-86af62829877": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Claris Concierge Health",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "c4642a1f-f664-4a8d-8a82-8aa75edbba8f": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Salus Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "b4b0d500-7336-425b-9acd-0a3f101f9006": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "D&G Optimized Wellness and Hormones, LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "68016c08-983c-4e3b-a091-c99664f75b33": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Age Well",
+      "salesperson": "Mark Mousseau"
+    },
+    "b024e1d9-08ba-4b9b-a0b8-389583c05499": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Legacy Health",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "79cd819c-8c69-4e1d-b0ec-b1dce421b93e": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Southeast Neurology and Pain Management Specialists",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "ace5aae9-2804-4afc-9edc-4999d080a269": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Absolute Hormone",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "f7a31493-93be-4a0a-b333-60e48c47b33d": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "BayouSide Health & Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "cf568e73-43e1-42a9-ac31-68bc9516d5d4": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Orangeview Las Vegas Healthcare",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "c03b1c1e-8012-472d-9521-941785274d94": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Priority You MD",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "49dea0ec-b170-44c5-a4f9-6940aa31a56c": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Pashen Health",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "6bfd50ff-03c1-493d-83c4-79eb12502dd8": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "the holistic and wellness institute of tampa",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "7c46ea09-187c-4051-a0e7-c873a30ab01a": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Hormone Health and Wellness of the Palm Beaches",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "0707bab1-5985-470a-9233-8529f4385e18": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Seven Medical Aesthetics",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "227bed92-660a-45fc-98b0-52e7a6e144e0": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Mountain Park Medical Aesthetics & Wellness, PLLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "c36b54df-ab9a-4abb-8df4-1f8b49c12727": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Aesthetic Enhancements",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "f494b456-58e1-4ac5-b922-6e32ec086db6": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "AscendMed",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "d6ba0565-d4fc-453f-9e0f-6687673a8023": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Synergy Behavioral Health LLC",
+      "salesperson": "Mark Mousseau"
+    },
+    "d93eca80-7d79-4db9-8305-099ca91b790b": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Prime Vitality Men's Health",
+      "salesperson": "Zachary Salazar"
+    },
+    "ef4bbeda-8cf0-46c5-a559-3232e35627da": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "NXT Level Chiropractic & Integrated Health",
+      "salesperson": "Mark Mousseau"
+    },
+    "626e8422-2153-42f4-aa26-f6d3ae3cd94d": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Cardiology Center of Amarillo",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "fe70b32d-2e83-45b4-84cb-d5baf18088be": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Ivy Aesthetics Med Spa",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "36db3d5d-1b47-4f77-aaa3-9c78d8062f82": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Verve Health",
+      "salesperson": "Mark Mousseau"
+    },
+    "22209190-863a-4dc8-92ad-2f8041ce3fff": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Andromeda MedSpa",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "f9c1982d-3fab-4d14-ac40-761a5e97e530": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Badillo Longevity Lab",
+      "salesperson": "Mark Mousseau"
+    },
+    "2b2700dc-c55c-4244-b04d-88d00a484e78": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Evolved Medical",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "886ab140-a7d0-4e30-b525-d38b17864584": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Active Medical Group",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "6aeebb1b-bba7-4ee3-acd3-6ccdab23f94a": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Veritas Medical Center",
+      "salesperson": "Mark Mousseau"
+    },
+    "508466e4-ed4d-458d-bcb6-b29011e19d89": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Epic Med Spa & Weight Loss Clinic",
+      "salesperson": "Mark Mousseau"
+    },
+    "d2257405-5f0f-4520-b12a-ce4d67511016": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "So Cal Slim",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "ffbc3a3b-966e-4ccd-a34e-001eab84706e": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Grace Wellness & Aesthetics Studio, PLLC",
+      "salesperson": "Mark Mousseau"
+    },
+    "f6744e11-7872-40f8-a971-917818472569": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Gameday Men's Health - Holmdel",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "c5bc8f46-b748-4636-9b2e-dbe19dd25c9b": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Drc360",
+      "salesperson": "Mark Mousseau"
+    },
+    "a1789e67-fb65-46c1-b745-826211d1b2c1": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "CA Concierge Medicine",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "70ba03f8-9b08-4977-be77-d0681ac09d29": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "GameDay Men's Health - Exton",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "c18c183b-43ac-4395-af5c-a68327acdd42": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "GameDay Men's Health - Owings Mills",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "a5c1006a-d399-4c0c-8785-ee210b53ae31": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "JCPC Health",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "834b469f-5fee-407b-98a7-1dde36972b30": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Improved Health Solutions",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "c7e1f70d-711a-4689-a8c2-76f44126d033": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "MedFIT Weight Loss and Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "8391699e-7d69-496f-8209-03fb4b110112": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Peptides First",
+      "salesperson": "Mark Mousseau"
+    },
+    "6d6a6d72-a5b3-4dfc-9f20-2ff87822caa7": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "207 Wellness, LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "3fd9bbf1-2887-49f3-a86a-f1cb19844124": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "GameDay Men's Health - Roxbury",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "feb426cd-0253-4210-973a-55f594902bf5": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "JumpStart MD",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "c59bd3e8-6d05-4c01-a320-454d9b6b2312": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Norma Roche MD PA",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "1b5fb0c3-afac-4433-9418-589ff2109fe7": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "TMates.com (MD Exam)",
+      "salesperson": "Mark Mousseau"
+    },
+    "2daf8a83-5f1d-4bff-b38e-d20da03adea9": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Sano Longevity",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "8f521f5b-56d9-4334-ab24-d447734d4ef6": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Sculpt Aesthetics",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "80e64d25-dfd9-44c0-870e-2a97c7562edd": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Luxe Aesthetics and Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "30302c77-a894-4f61-a7d3-1abf014e86dc": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Restoration Wellness, LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "ce21cdcf-8299-41ad-8a28-25b44f25966f": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "NuHealth Medical Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "719af83c-574d-4626-ba49-01c5f5b5dfd5": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "The DRIPBaR Huntington Beach",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "145a6f58-26b9-4ed6-b23d-a103f38e4940": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Gameday Men's Health Haddonfield",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "b73015e0-699c-484a-ad0b-9e9a796d2c3a": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Carolina Trim Clinic",
+      "salesperson": "Mark Mousseau"
+    },
+    "9101803d-04e0-4cb5-a736-75ed0a2da6d9": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Optimal Wellness Group LLC",
+      "salesperson": "Zachary Salazar"
+    },
+    "8ef79a69-1ad2-4171-acc7-97d985853f7e": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Lean Dose",
+      "salesperson": "Mark Mousseau"
+    },
+    "a953eb37-ffc9-43c1-af96-98ea10dccdfc": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Strunk Direct Care",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "7316a886-cfeb-4ed5-bdfe-ccb9203c0823": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Jomon Wellness LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "3fd068c6-34cf-4bde-b7f4-d00d1b6e61b4": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Life Medical SC",
+      "salesperson": "Zachary Salazar"
+    },
+    "6f048325-1e64-45fb-9045-5cfa4a95b01c": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Viva Care Solutions",
+      "salesperson": "Zachary Salazar"
+    },
+    "82610687-da41-433e-aff0-d61670475b34": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "West Coast CA Concierge Medicine",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "17b2f274-9e63-4f77-bdc0-69cbf6ecb99d": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "JumpStartMD - Walnut Creek",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "0b2876d9-9d0b-40c6-a6c5-3fa0253b639b": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "JumpStartMD - Santa Cruz (Capitola)",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "0f02feaf-7880-4340-a5f1-bfe86f408fd5": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "JumpStartMD - San Jose",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "8b4a1688-25cc-4359-8de5-3c575467173d": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "JumpStartMD - SF/Laurel Heights",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "ff61d79e-bc7f-4cda-a0d5-6d8c1b907ff7": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "JumpStartMD - SF/Embarcadero",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "80f11d33-cdb2-448e-a3e2-9b82b4f44757": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "JumpStartMD - Redwood City",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "d9a54f14-6153-42b1-94b2-67af9ab1925b": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "JumpStartMD - Pleasanton",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "b3d40192-15a5-48f7-8f01-80f149d36206": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "JumpStartMD - Piedmont",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "b6f3a740-b630-434c-b358-25b58cccd69d": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "JumpStartMD - Mountain View",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "32146ccb-b73d-42da-8ee6-8c123cbf297a": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "JumpStartMD - Monterey Bay",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "a7b11a39-cc6b-4235-a3da-80b1dbdf76c5": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "JumpStartMD - Marin",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "78bf8a2e-e274-4211-8dc5-5ae972b2f257": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "JumpStartMD - Irvine",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "da21560d-d8a6-4a4e-8a78-c53241a38b8b": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "JumpStartMD - Campbell",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "10b95a4f-3a04-41cb-b3fe-13377fa47104": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "JumpStartMD - Burlingame",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "2cdbff1c-4741-4cf4-8d3e-806dbfc1b794": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Simply Wurth It, Medical Weight Loss - St. Peters",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "a71ee00a-77db-447e-9af5-0113cf16e2ad": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "June M. Castner, Md",
+      "salesperson": "Mark Mousseau"
+    },
+    "0db5f047-b7c0-4f35-b88e-919a85e4ed60": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Athena Medical (AMWL PLLC)",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "4df4ebab-e4c3-4d35-92b6-55984e78eca4": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Refine Vitality",
+      "salesperson": "Zachary Salazar"
+    },
+    "6564aa6b-e48a-47d4-93cb-c58e58d00baf": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "The Aesthetics & Wellness Studio",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "566f0828-5994-49f1-8312-f72ee2936624": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Balance Medical",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "b4c3ab97-42b6-441f-a95f-74ac204fe85e": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Ultimate Men's Clinic - Oklahoma City",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "66311954-23e1-4f41-9f61-78b612ae8000": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Balanced BHRT",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "e3830f14-7ae9-4170-9b4c-0fb4be50694f": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Mosaic Men's Health & Testosterone",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "70204b46-fb3e-48b9-bac9-b4432b0d6ab6": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Mosaic Women's Health",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "4de271b8-f686-4d83-8a2c-8bd557a8d416": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "The Waltzman Institute",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "06075491-70ba-4535-a284-50371445c5b2": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "OptihealthRx",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "3aeb4c28-91aa-4d75-8e47-e329364f0a08": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Rainier Blossom Aesthetics",
+      "salesperson": "Zachary Salazar"
+    },
+    "906d2e32-9f43-47ce-b167-f4a93321fd67": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Allele Healthcare Inc",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "ca95b750-f621-47a6-9a2b-bd9d08620aa6": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "SoundMind Healthcare LLC.",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "c0d8ca74-14d0-4381-982a-f3311e2fa4f7": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Seven Reveries",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "800f02c6-4193-4165-9526-d827eee7494d": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Bliss Wellness, PA",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "c71e2e92-52f2-492d-a33f-63df306b5073": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Integrated Health and Wellness Center, PC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "17eeaee7-800d-4d2e-b824-7d25cc34fbd6": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Apex Healthcare Solutions",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "5775b24d-a3e5-4d27-96eb-2183eff9a922": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Go Vita Shot",
+      "salesperson": "Zachary Salazar"
+    },
+    "fd0eb5e2-22e5-496c-9730-2d3fdf98e121": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Aetheria Wellness Medical Clinic",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "96c6384a-cf27-4859-b26f-814701480605": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Vitalify Wellness North Port",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "3b97d851-3053-4e05-9418-92c2f896aeb1": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Medi-Weightloss",
+      "salesperson": "Mark Mousseau"
+    },
+    "fb516c5c-e500-4d68-9f84-1f869283bc22": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Revive IV Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "07b4b569-12cc-43d0-be84-16e46d839dec": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Get Healthy Medicine",
+      "salesperson": "Mark Mousseau"
+    },
+    "224e4d2f-90d5-4555-b505-d45a958ed013": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Physlim Physician Guided Weight Loss",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "ca2959ed-17bc-4808-afda-9aeb8d7a5ba2": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "MiraMed and Day Spa",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "30b43b48-279e-40fe-96ef-101aaad97fa2": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Skinny Formularies",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "80f1b5e3-f06e-49d3-8f21-0efb1cd0a8c2": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Convenient Virtual Care",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "489683f4-aac1-4729-9ad8-b29d275e3972": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Total Healthcare MD",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "18fadfa9-8cde-4587-8cdc-736231161bc7": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Tranquilicare",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "4b744f56-d6e5-4faf-90a7-f3bf1582f1f4": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "SCOTTSDALE RESTORATIVE MEDICINE",
+      "salesperson": "Mark Mousseau"
+    },
+    "6498e98b-0112-4605-944f-83dbb9f656c2": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Omar Health",
+      "salesperson": "Zachary Salazar"
+    },
+    "ea2d25c9-2564-478c-801d-a10e1be4cd13": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "LunaLuxe",
+      "salesperson": "Mark Mousseau"
+    },
+    "c7f463bb-9a99-4f15-babb-6dd07134c7c9": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "New Health Family Care",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "378988a7-ac73-4904-b27f-595dae6b7d19": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "THE DISTRICT INJECTOR",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "02c4fe6a-1d62-4c8f-bdba-9f2bfb1ece7a": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "PBLA",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "a518219c-878a-49d5-89c4-a2f1f3520b94": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Glow Aesthetics & Hormone LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "dfb88614-4425-42e9-9184-294da3b649c8": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Simply U Luxury Spa, LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "e6704f7f-3055-4247-b37f-4f9b4f34e110": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Capri Health and Wellness",
+      "salesperson": "Mark Mousseau"
+    },
+    "e3b66442-fc84-4b4c-9281-b857d9e0a9f0": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Genesis Integrative Medicine S.C.",
+      "salesperson": "Mark Mousseau"
+    },
+    "5a8e6eb6-a773-4fc5-a7fb-ebaa1239a95b": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Gameday Men's Health - Lancaster",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "6495022e-1a5d-4681-a2f3-3a8ff2527950": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Gameday Men's Health - King of Prussia",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "406c600f-fddb-47ef-acb4-e4457d223d06": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "GameDay Men's Health - Frederick",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "db85ad9c-9536-41e6-ab86-8ba29271d62e": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Great Hydration & Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "755ef3dc-8fb6-4d41-bad8-cf8c40558eba": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Talon Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "74e65e4b-d54e-427b-9416-79d9c2d8998b": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "GlowCo Wellness & Aesthetics",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "3809be5f-0116-4821-b2eb-fd7f1db616c2": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Gameday Men's Health - Marlton",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "f89223f1-7fef-4eb5-8a83-5308055edcf4": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Drip Wellness LLC DBA IVolution",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "bae639a3-0d08-4e7b-b17d-1ce4d8837fa6": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Gameday Men's Health - Media",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "fd2e788a-045c-41cc-8244-aae01420d19f": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "The Skin Clinic",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "e95050ae-f9e5-40ba-805a-3440a3365f6e": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "1st Wellness Clinic",
+      "salesperson": "Mark Mousseau"
+    },
+    "db1ca995-05f8-46cd-a62d-f26d1aa7cfce": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "IV Wellness Infusion Services, LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "f18246b2-1f46-4ff9-bc05-551e42e8970c": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Tropical Telemedicine",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "88bf4679-14bb-4eca-8059-fa1a4d659e79": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Toledo Blade Weight Loss",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "c73efa7a-0aab-4ad4-8f71-51d63d401268": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "George Carroll MD PA",
+      "salesperson": "Zachary Salazar"
+    },
+    "c0d73aa6-3937-42a6-bed6-49d85b1877fd": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Sky Health",
+      "salesperson": "Mark Mousseau"
+    },
+    "8bfb2131-f878-45e0-a415-fbff250bedba": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Energy Health & Wellness, LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "974f3d3b-f253-4f40-9d73-55115017bc7d": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Advanced Medical and Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "d1c2908e-ce3d-498d-9cd8-f9f130934c6d": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Bexar Longevity and Aesthetics",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "b44eb737-4140-4dd5-afc5-97730b0bc89e": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Thrive Well Oasis",
+      "salesperson": "Mark Mousseau"
+    },
+    "dc286ef2-7843-4c68-984c-264daa783e41": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Driven Health and Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "79ee5fd6-1bb8-4188-bb2e-bc196271e79e": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Optimize 360",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "2c0724d0-9bab-4a5a-9c10-cba98523412f": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Almost Heaven Mobile Hydration LLC",
+      "salesperson": "Zachary Salazar"
+    },
+    "7491ba3d-8d17-4f1a-a477-1f4066761bbc": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Med.ish Laser Spa and WeightLoss, PLLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "d22598cb-28b4-4518-8e4b-7d65f8e55604": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Selene Skin and Medspa",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "2945b19e-b656-4f70-ac19-af3a9366af74": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Evolution Health & Wellness Center",
+      "salesperson": "Zachary Salazar"
+    },
+    "ddab57dd-6520-489a-8cbc-6b1ac5a50f09": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Rockland Wellness Center",
+      "salesperson": "Zachary Salazar"
+    },
+    "d7d9cd33-3c77-46cc-af22-e7ee1ecac8b7": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Tang Naturopathic",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "209708b0-176f-4db0-a0a5-1903ec8f354c": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "PaigeMarieNP - Indiana",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "1fc07771-8089-4276-a2a1-3f6bfef00e00": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Energy Wellness",
+      "salesperson": "Mark Mousseau"
+    },
+    "89874cb9-3ccd-4476-bc9c-d5ceab6ff093": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Vista Wellness",
+      "salesperson": "Zachary Salazar"
+    },
+    "3d7ec305-6b5b-46f3-8760-4324e74f4ae4": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Faith Internal Medicine",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "3e0143d3-f8c7-4249-a516-cc7773091f11": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Just Lavender Functional Medicine",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "be5d0146-dbdf-461a-b403-1e16a2f70527": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Ageless Functional Medicine APC",
+      "salesperson": "Mark Mousseau"
+    },
+    "b460720b-c9df-477a-9947-396cb5439596": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Neos Functional Medicine",
+      "salesperson": "Mark Mousseau"
+    },
+    "969f19d9-1404-4fc4-a028-09da15fbc0c9": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Lifestyle Physicians",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "1b55a8f5-cb64-4d47-93bf-19539f348a44": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "UltraTrim Clinic of VA",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "e57eb04a-126e-47a4-9608-f542a391cca9": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Seaside; Primary Care, Weight Loss & HRT Clinic",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "13ceae59-fde8-4f73-8a30-db8471d99d12": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Coastal Healthcare",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "f6a2a348-ab43-4e1a-a54b-9ddc22ef7896": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "UltraTrim Clinic of NC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "39d5e87e-0856-44f6-8d0a-404548e38892": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "The B12 Store - Myrtle Beach",
+      "salesperson": "Zachary Salazar"
+    },
+    "e5bd1107-1a68-4129-8a2f-6a230ae82b4f": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "The Repaire Room",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "31f8b5c3-3603-4012-9c17-5c5b204f2612": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Lifelong Balance",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "d6772a88-c7cd-4797-907b-5c3db587dd1c": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Viva MD Aesthetics",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "70ae9ec3-3c14-4f35-8b22-3b341a5506b6": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Pathway Health & Beauty",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "26a22e39-9d61-42f4-93b3-017e6d5fe9ae": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Live Well Lounge",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "5eb2accb-3f52-40e4-90f9-511e93998684": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Juvenis Medical",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "73485f84-531e-4eef-9fa1-5985accba60d": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "LuXe Concierge Aesthetics, LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "2611b00b-949e-40ac-9c52-a3f39537c770": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Privvy Health",
+      "salesperson": "Mark Mousseau"
+    },
+    "ebdc7271-16b4-4fa1-a7e1-0dc08bf7a9bd": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Integrated Wellness",
+      "salesperson": "Mark Mousseau"
+    },
+    "6162f11a-1a66-466e-b78a-d07c4cd82d9c": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Harmony Health and Wellness Clinic",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "8715b51c-9cc5-4c5e-afbf-e3242200319e": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Aqua Fusion IV Therapy PLLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "7221293b-aae6-46f4-a66f-374081eb9c37": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Edgewater Medical Clinic",
+      "salesperson": "Mark Mousseau"
+    },
+    "3fc61cf5-502a-4435-af4f-deffa22e9cc2": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Camden Cosmetics LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "38be90c2-d779-4f04-b27e-309e2a556a35": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Palm Beach beauty and wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "6ed3067c-05d8-4ed3-a55f-fbab220d521f": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Anew Med Spa & Clinic - Savannah",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "dce69ae2-7c20-4857-9c8f-44ab666c6896": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Modernized Wellness",
+      "salesperson": "Zachary Salazar"
+    },
+    "4159c559-933a-46dd-bd23-c6456127e3aa": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "The Center for Functional Aesthetic and Anti Aging Medicine",
+      "salesperson": "Zachary Salazar"
+    },
+    "805b22b0-3b04-481a-990a-403bd338522c": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Astra Health and Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "d536f011-6897-44d5-b70e-bdc7d4c76a87": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Feel Better Health Alaska dba Idgie Health",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "62874289-00ae-472e-b382-1d87fbb5d47d": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Summit Lifestyle Medicine",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "2a0bf2be-5758-4764-9f88-f9b7ace488f4": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Elegance Empire Aesthetics",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "99814da2-feae-4942-8b30-4b7fa1252dc9": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Skyy Aesthetics",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "494c35ac-6227-4aa8-9c7d-d10a3aebe6dc": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "New Level Healing",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "249835fe-edb3-430d-b5da-57610516cc14": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Luma Health",
+      "salesperson": "Mark Mousseau"
+    },
+    "ed6d16bd-adbc-42a9-a742-4c392f8f8165": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Careolina Wellness and Infusion Center",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "3f8c4047-0c51-4379-a773-09b3da0019ad": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Restore Health and Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "5f8b09ec-f0fd-4816-9cbb-2d3ef629cd80": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Integrative Women\u2019s Health Hawaii",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "c95721e9-a392-45d6-b960-43048444ea1a": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Look Rejuvenated Medical",
+      "salesperson": "Mark Mousseau"
+    },
+    "70c5a829-86d9-4342-a064-34bdd0a01001": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Functional Med of LV",
+      "salesperson": "Mark Mousseau"
+    },
+    "c0b603e3-b4ad-4c57-bf35-22554cb1e06d": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "LiveAgelessly",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "1d19007d-6640-4c83-9b59-019ebb33408e": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Super Longevity Clinic",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "44baed1a-12f1-4355-8b89-5164d5bd4c51": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Center For Men",
+      "salesperson": "Zachary Salazar"
+    },
+    "7aa153e3-7516-4bb2-87e8-1c6c2d6825d0": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Adara Beauty & Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "935c2a76-45b5-4fa1-bd1b-b831bf5c8ce4": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Iv Hydrate Anywhere",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "ad824ef6-b6ca-4381-a723-616c265ac049": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Skokie Family Clinic",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "b96250e4-6f59-4d57-b771-fa9bd89241ae": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Revitalize You Weight Loss Center LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "5df49230-6b36-476f-9de1-6be757d86635": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Healthier You Weight Loss and Wellness",
+      "salesperson": "Zachary Salazar"
+    },
+    "e68529d1-e76a-4b95-b0b1-35d748d947e6": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Oak and Stone Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "61cc8f99-4f1e-4273-843f-b9f00bcf7342": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Zen Regen",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "2f764484-f2fa-47ee-853d-f993e80db0dd": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Spring Life Health and Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "d2e3e73c-4bb3-474a-8c55-bc97f85dc048": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Balance Lab Aesthetics",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "c47c5917-f118-448f-93eb-102c7795c7f0": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Reno Premier Medicine, PLLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "c63fb7b7-79ca-4a60-91bd-1fbdc46f008d": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Transformity LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "64dd41a3-439c-451a-9548-999f31c8c6f3": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Simply Wurth It, Medical Weight Loss - Wentzville",
+      "salesperson": "Zachary Salazar"
+    },
+    "b5a72bc5-838e-43d9-83a1-7f45cd33ba8b": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "RI-VIVE Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "2c4f1d56-6197-457d-9206-2c85e53a75ca": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Appalachian RevIVal",
+      "salesperson": "Zachary Salazar"
+    },
+    "e7e6939a-04f7-4402-a715-d25d3b992259": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Island Medical Group LLC",
+      "salesperson": "Zachary Salazar"
+    },
+    "e4290e38-0588-46e1-a303-d56fa7de0523": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Vytalia",
+      "salesperson": "Mark Mousseau"
+    },
+    "750263bc-52dd-4013-a41c-5957b1bf06bf": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "NP Modalities",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "df4e0cec-763d-4959-9a50-716c40768545": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "MC HealthCare Solutions",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "d9ba58d7-65e4-43b5-8123-bdca4660f0f1": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Liora Health",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "48965b14-0b96-43f7-9f40-9e584841c0ea": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Beltre Bariatrics",
+      "salesperson": "Mark Mousseau"
+    },
+    "39eca1c2-a5c6-44de-b76b-2e3fe7648904": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Tronehealth LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "f82c4294-8729-49d8-8004-cf1104084946": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "RealCare Wellness (RealCare Wellness LLC)",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "0c655855-82c7-4f59-99e4-00abfc325f70": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Re-Balance Health and Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "6041a165-abca-4f2a-814a-e27a25fcefdf": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Osita Health Clinic",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "0f0b510e-d6ad-4d5f-b195-18c66f1c1f6b": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Mosaic Weight Loss",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "7adad6de-ffa4-4175-b74e-3cabd679741a": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Metromed Health",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "f6e4421e-6658-41fd-82f8-6f744c7aa3fb": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "IV Hydration Vitamin Therapy",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "1ce0099c-a0db-4004-898f-be3c7567e2d8": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Huma-Netics, LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "5298e391-b18e-43b5-b166-1bc5cd5d897a": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "GoWell Med Spa",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "770e8edc-bb56-4dbb-af5b-ac8cf194b354": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Ferrara Medical Aesthetics",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "f66c380b-14ed-4a4b-a25f-24c4a8844176": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Eden Aesthetics & Wellness LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "32840536-e044-4580-95e9-0f8781a844d9": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "DV Wellness Miami",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "699c107a-36fb-48a4-a2a6-3c8c14aae9f0": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Drexler Aesthetics & Weight Loss",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "7383b735-4a4c-4d05-a35a-df2e855fc46d": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Thrive Wellness Clinic",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "13b9c9fe-00e9-4076-b7c3-8bfe4a331c09": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "StonyBrook Holistic Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "6bafac6c-1ec4-4010-857f-16853ac6d9f2": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "SP Wellness Company",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "f7f86883-4926-407d-9237-fc3f0e160096": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "SlimNow MD Medical Weight Loss Clinic",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "7cd22d03-0386-4c6d-af92-91981f931c43": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Serena Medical Spa",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "10e342a4-911a-482b-ba13-d5625ac34332": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Seattle Wellness Programs",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "0e7ecc40-e12e-4078-8e31-57606b95f885": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Restorative Wellness Med Spa",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "5cc766c4-27a2-4de7-8aca-5becded788be": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Off Weight Loss Solutions",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "a02d8407-e850-457b-b543-cb84afc21cc7": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Longevity Center Beverly Hills",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "dcb259b3-0445-49a1-b601-b27fb52e64ff": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Beyond the Spine Therapy, Inc",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "24bd4ce1-aa68-4cfa-a707-5db9068d1953": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Bellecutis",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "ebcae0ba-00d2-40fa-a91e-e42c754dff79": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Healthon",
+      "salesperson": "Mark Mousseau"
+    },
+    "c299027e-5572-4479-a782-680028f86e6d": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Optimal Wellness NP",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "700e9af0-80ae-4d54-8046-5a19a5d49358": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Western Wellness and Weight Loss",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "d54994de-5984-4a16-8a1b-2a9b99fd9b53": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Balance Point Total Body Wellness",
+      "salesperson": "Zachary Salazar"
+    },
+    "08b38240-ba3f-424e-a594-0e7d9e74bce4": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Turn Back Time Aesthetics and Wellness LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "b6898215-d7b3-42c1-a079-985ae263e2f5": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "ReCELLebrate",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "b117bcae-01b7-4841-99ed-56dc0ea10f9f": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Restore Regenerative & Sports Medicine",
+      "salesperson": "Zachary Salazar"
+    },
+    "99c4e17c-aa1d-4c8c-b5b7-995d28fd37d5": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Elite Med Spa Corp",
+      "salesperson": "Mark Mousseau"
+    },
+    "b2cbb500-6ac4-4d91-93df-e51334dfd718": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Thrivewell Wellness and Aesthetics",
+      "salesperson": "Mark Mousseau"
+    },
+    "d3c3669a-f13e-4fbc-95bf-65618b9b6539": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "208Healthcare",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "9854dc54-4e21-41f6-bd73-6ac16d683ebc": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "129 Health & Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "971ab171-e9e8-4542-9264-4e8615cb2649": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Elevate Medical Group",
+      "salesperson": "Zachary Salazar"
+    },
+    "0aa5848b-81e7-4222-9c56-a9623931a92d": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Medstation Clinic",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "be81e0d3-2c5e-47cc-82ad-8062dcdf9d39": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Quantum Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "bbb6a26a-6a7a-4d15-9f8a-ad8024d3366f": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Essence Medical Clinic",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "15ba092d-10e6-4997-aaf2-e1242346b299": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Thrive Wellness Studio",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "4d7dc40c-88e4-4d2d-81d5-764058580eae": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Direct Primary Care of Oklahoma",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "39275a40-18a1-4034-be78-ef0a915d8ffe": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Mettetal Family Medicine",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "84c3812a-4de2-4006-abb5-fbc14e836a0b": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Mahelet Mamo",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "a078f214-9997-44ce-a7bc-de91abd8f9de": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Synchronicity Health",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "8cfbd774-5d07-47a1-93ad-beac9c13a0b0": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Perfect Skin Laser Center, LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "44cb467b-e2b2-426f-9a82-897a172f68b9": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Trim IV Infusions",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "fb106ff3-5fce-42ff-a162-5f81516c23c8": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Healthy Enhancements",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "d7386fc6-278c-4b44-a74d-b0fbee78ed36": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "LivingWell Med Spa, LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "031d4609-a23a-4313-821b-bfdbcf5d9c3a": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Only Med Glam",
+      "salesperson": "Dylan White"
+    },
+    "46afcac1-03e3-40da-a825-382c7d3e6f12": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "the wellness lab iv",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "4b964771-8696-4980-adcd-17c13fa6fa9d": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Vita Mobile",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "7a093b2a-b7c7-4cf7-81af-d87f61e2b0e7": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "WB global care",
+      "salesperson": "Dylan White"
+    },
+    "ad829743-9150-41df-b2b4-974e6540606f": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Mito Health Holdings Corp.",
+      "salesperson": "Jonathan Izquierdo"
+    },
+    "bc70ab57-597b-4c86-aec3-7e4e5946a08c": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Balanced Wellness",
+      "salesperson": "Jonathan Izquierdo"
+    },
+    "77a1a4f0-b210-44c8-8d26-b46ec8cffb83": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Advanced Pure Wellness",
+      "salesperson": "Dylan White"
+    },
+    "812a8d97-17df-482f-81c5-0e956e255b1f": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Sun City Medical Clinic",
+      "salesperson": "Jonathan Izquierdo"
+    },
+    "833b034d-8330-4abf-8124-e15b3a2179ff": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Altheia Integrative",
+      "salesperson": "Jonathan Izquierdo"
+    },
+    "544dd617-e2ea-4c51-987d-bdd91867fab3": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Adorne Aesthetics",
+      "salesperson": "Darryl Fleming"
+    },
+    "310f0ed1-2a25-4f58-a5d8-a851906a224e": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "QUALITY HEALTH CLINIC",
+      "salesperson": "Dylan White"
+    },
+    "b2671b95-5757-43f6-9cbf-a0cd4889a66d": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Vitalis Performance & Longevity",
+      "salesperson": "Jonathan Izquierdo"
+    },
+    "a61aa8ba-d684-4a8a-ba7b-58c30adc9584": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "BBM Health and Wellness Reviva4Wellness",
+      "salesperson": "Jonathan Izquierdo"
+    },
+    "fe3b4df3-2786-40b7-90ab-611a365c90ea": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Kul Contour Studio",
+      "salesperson": "Jonathan Izquierdo"
+    },
+    "1ede05a7-70f4-4362-956f-150bd2c054cb": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Cornell Wellness and Aesthetics",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "3d8eeb42-07e7-48ba-bc3d-9f1ef394c90c": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Lienso Salud MedSpa",
+      "salesperson": "Zachary Salazar"
+    },
+    "380151c7-4047-48ba-b6d8-753b8940ec7c": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Swan Medical Group",
+      "salesperson": "Jonathan Izquierdo"
+    },
+    "9022bfa3-2f6c-42f6-b29a-b700af0cc5c9": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Apex Health & Wellness",
+      "salesperson": "Jonathan Izquierdo"
+    },
+    "d5536fbd-bbf1-4cb8-a429-5d7003e06b8e": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "TruGlow Wellness & Aesthetics",
+      "salesperson": "Darryl Fleming"
+    },
+    "27cadf49-21d9-4586-beeb-3a5dfd7440fa": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Belavie Wellness Clinic PLLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "2d38d305-9e26-48da-acd0-d3fd6eee417c": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Carpathia Health",
+      "salesperson": "Jonathan Izquierdo"
+    },
+    "f03673f4-aa0a-468c-b7ed-a9e9f6237c65": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Front Door Medspa",
+      "salesperson": "Jonathan Izquierdo"
+    },
+    "b7f4c838-4c4d-4bb2-9af5-e7eb87e2bac3": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Game Day Men's Health Waldorf",
+      "salesperson": "Jonathan Izquierdo"
+    },
+    "79ebf69b-9857-40d5-890b-235376010356": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Summer Skin Medical",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "d3f56eca-3bfc-4907-afb7-0a52bee38cdd": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "laccura",
+      "salesperson": "Darryl Fleming"
+    },
+    "4ba88f7b-2362-4b91-86a5-492fd724a0fd": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Lauren Lucas",
+      "salesperson": "Jonathan Izquierdo"
+    },
+    "afca5c05-8dcd-456d-816d-a0d093101a75": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "The Renewal Lab",
+      "salesperson": "Jonathan Izquierdo"
+    },
+    "fe772efa-d5b9-4d20-a825-d87318113fe1": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Englerston Health Corporation",
+      "salesperson": "Zachary Salazar"
+    },
+    "b7f201ea-13a6-4784-bcb9-8b3a05857a4a": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "CA Skin&Body Clinic",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "67bc3677-db9c-4f80-8912-79b1b529de35": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Solidago Integrative Health",
+      "salesperson": "Jonathan Izquierdo"
+    },
+    "0c852280-5bd5-4eba-b8bb-c42364007127": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "VitaLee Wellness Group LLC",
+      "salesperson": "Jonathan Izquierdo"
+    },
+    "6787f388-ffb5-4790-87fd-45032fa98a32": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Uplift Longevity PLLC",
+      "salesperson": "Mark Mousseau"
+    },
+    "ff68da2d-c101-40c8-afa2-8ba7c1fdba87": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Entyre-Sophia Cogliano",
+      "salesperson": "Dylan White"
+    },
+    "5132a933-3b78-4355-8967-8a45fbb2a280": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Lumora Aesthetics & Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "6560d885-b578-42df-bd71-15f0c9a865f8": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "HydraHealth & Wellness",
+      "salesperson": "Zachary Salazar"
+    },
+    "78393699-c49e-418a-a88c-910f08e550c2": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "CRAFT \u00d7 PEPTIDES",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "e29748bc-0b20-4ec1-bf58-9cc0775c89d9": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Grants Pass Clinic",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "b3bf14da-39f6-4fd0-a7bb-8a493e117ce6": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "On Demand Healthcare",
+      "salesperson": "Zachary Salazar"
+    },
+    "bc6b5b13-a127-4c07-b0c1-1d2237fe417a": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "ThinFastMD Rockford",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "f9ec6459-70b4-45d7-975c-61aafbee501c": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "ThinFastMD Hinsdale",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "51c4042f-c645-4a7a-8f3c-48627aa4bc89": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Toxbar Aesthetic Boutique",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "e7ab61b4-cde9-454b-bef8-e087cc467ce1": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "GREEN HEALTH CLINIC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "214a1373-0ec4-4c9b-990f-15273bfc5f38": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "medrite health llc",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "fa2bd17a-c142-4946-92b8-769aedc4cf8c": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "TruWellness Charlotte PLLC",
+      "salesperson": "Darryl Fleming"
+    },
+    "0065c5cb-da27-4190-a784-d8bdb86e0ee6": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Balance & Restore Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "cf135f1b-acb4-4571-8b52-d31841af4f17": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "North Idaho Regenerative Medicine",
+      "salesperson": "Jonathan Izquierdo"
+    },
+    "016a8840-7037-483a-857c-6966a1c255c9": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Vital Flow Hydration & Wellness",
+      "salesperson": "Jonathan Izquierdo"
+    },
+    "b625736b-ce1d-4211-b5da-6e2bdcb88731": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "High Country Care Connect",
+      "salesperson": "Darryl Fleming"
+    },
+    "33c8bafd-f404-4231-96b5-86046d8d77d8": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Comprehensive Health Ok",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "146b3680-e33a-467a-b54e-258ebf918a04": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "ReNue Health",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "1c67271a-3f9a-49cf-b005-50f91e6c5f54": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Vibrant Me Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "343dc279-7e2f-44ce-84c5-578fb966cdf2": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Monogram MedSpa",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "1ec419b0-fba9-4c23-aac0-7cd21988e7c1": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Livea Medical- Woodbury",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "26f3ecdd-124f-43e8-bd7d-b11da72f544b": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Livea Medical- St. Cloud",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "9558325e-94f9-4607-8e2b-42de944ab251": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Livea Medical- Roseville",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "0e10ff40-7185-4f5d-8348-cccdd2101d9a": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Livea Medical- Minnetonka",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "d84a10fc-54fe-4be6-8bdf-acc3a2f28b0b": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Livea Medical- Edina",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "bf0364cb-2b17-4ccc-8d3f-b805d4fabf10": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Livea Medical- Eau Claire",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "56bfa591-6498-4638-a408-f197dc5f07b7": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Livea Medical- Apple Valley",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "771e340a-3df0-4b6f-bcaf-d8e89fec0128": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Rooted Wellness & Primary Care",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "47b63814-fe2f-4b1c-ba97-fa6a7d77e4d5": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "LI Total Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "8804f43c-f1bd-4c00-9caa-8364c9a35b00": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Revive Lounge",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "5d99afb8-99a1-4ae7-8aa2-5bf5de0275ba": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "GT3 Health",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "fdbe7b07-9d07-49aa-9956-886276f87552": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "24Sculpt Aesthetics",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "5dc05070-344e-4742-bb69-7616e847869b": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Specialized Medical",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "9b477230-9060-493d-9e29-3523507845c5": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Dr. Yamen S. Korab",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "f62702ee-5071-407a-ad99-4588841214d7": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Luxe Wellness CA",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "346ffcbb-2ed5-4784-a61f-4aa54d46d523": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Silver Sweet",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "cf5bc59b-f8cc-41ad-8abc-f89f4a1319be": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "RITZ XV, PLLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "88cd2b91-3b7d-45a8-a340-44fd5800fbee": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "D3 Beauty and Wellness",
+      "salesperson": "Mark Mousseau"
+    },
+    "49e7f258-b0ac-4458-ada2-fbbb7aec32aa": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Old Mission Lifestyle Medicine",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "159b1c35-f1e4-4260-883c-6a6613602aaa": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Med 1 Aesthetics- Ann Arbor",
+      "salesperson": "Mark Mousseau"
+    },
+    "d016a0f4-e341-4e36-b1cb-73790994c4fc": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Doral Acupuncture",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "e2e105d8-fe6f-4e13-9baa-7d17bb759e29": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Health Arising LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "1bcbf337-c123-4416-b5d4-3a15ecb93499": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "TRIM FITT LLC",
+      "salesperson": "Dylan White"
+    },
+    "9c0ae71d-7195-4cff-8f35-4b0ff8d2920d": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Live Alive Health Optimization",
+      "salesperson": "Mark Mousseau"
+    },
+    "1f935f15-513b-4989-bf76-df24835c9ded": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "4S HEALTH & WELLNESS",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "139f27ca-e151-440b-a7ab-65343fcd1cea": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "San Diego Center for Restorative Medicine",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "97473063-ace6-435c-807a-6f91e26a5930": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Esthetics Wellness International Inc",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "6e7e0284-9af6-43ff-bc58-f6e6ade06b7b": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "EMG HEALTH AND WELLNESS",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "ed4b4910-dc8b-4212-b571-5651f5b5f946": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Mindful Living Solutions",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "16a6d2f7-b729-404f-aae5-f9dab2b65430": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Harmony Medical Concierge & Wellness Studio LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "0d84a22e-4018-44fd-b572-891ec245e9c5": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Mindful Over Matter",
+      "salesperson": "Dylan White"
+    },
+    "3717cdf2-8826-4946-9b95-a3a5922d142e": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Universal Medical & Wellness Center",
+      "salesperson": "Mark Mousseau"
+    },
+    "2a937771-7871-4535-abfe-8e5af4791e45": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "EuroPro Health & Aesthetics",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "a93e34a1-a028-4ea7-bf99-4da372fa86de": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Health & Wellness Medical Hydration",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "f45cbc7c-60a5-4fc1-b977-ac7138e09a38": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Above and Beyond Aesthetics and Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "8d1f69b1-427a-4f27-918c-98127ed9610b": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "OPTIMAL U WELLNESS PLLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "7915afa7-fe48-4c7d-b872-3d29a44b2b71": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "RevIVe",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "2d7e090e-6bd8-42ac-abea-45090a96e251": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Albright Wellness Center LLC",
+      "salesperson": "Mark Mousseau"
+    },
+    "3e25119e-773a-4ae0-8fd7-07b674b4e293": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "The Longevity Center Greenville",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "52a66422-8da4-4fc1-abc8-6905841e3259": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "The Glo Company",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "038fc869-b303-4e55-9533-c4000fae0e0a": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Jouvence Med Spa",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "2ea7cca2-1b9a-4ea3-ab89-ef619d17d253": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Balanced Weight Loss Solutions",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "d850b8b9-8270-4dd0-9bbd-4d410c6699ea": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Maine Mobile Health and Virtual Care, PLLC",
+      "salesperson": "Zachary Salazar"
+    },
+    "c6c9ee10-0205-4a4b-940b-e2a5a896a5c1": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Glow Health and Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "9aff8a3b-3060-43b8-9482-c66198b1e242": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Halo Clinical Services",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "669b6b46-9401-444a-8ca0-03fb1118879d": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "VitalUty Wellness",
+      "salesperson": "Mark Mousseau"
+    },
+    "74d8bf0a-3081-4e9f-82ad-b8ba06a95c57": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "AUTUMN SUN WELLNESS LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "572cb455-4848-4606-baf6-bb780ba47ad0": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Lucedale Aesthetics and Wellness LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "0484554b-aa84-4e18-bf0e-b927ab615abd": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Majestic Noir Aesthetic and Wellness, PLCC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "158658c9-33bc-4ee3-aedd-b12f4c61ecfa": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Generations HealthCare",
+      "salesperson": "Mark Mousseau"
+    },
+    "a248b44d-d8b5-42c0-b8ae-4bf4bfdd655e": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Family First Primary Care",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "917bf9fd-b2ee-4266-9fd5-4298b1f6ad3a": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "PLEASANT VIEW HEALTH, PLLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "444ea610-3009-4f04-b79c-689b5de7f26b": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Eaton Health Clinic",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "0d8f1f47-585b-47e8-bff1-c95eb4101d34": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Recrea Health and Wellness",
+      "salesperson": "Mark Mousseau"
+    },
+    "6dc379cb-4897-4905-97f7-83180b401f54": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "BRIGHTLY TELEHEALTH PLLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "200f3b27-5ea2-43e3-accf-d94494301386": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "THE HANSELL CENTER FOR FUNCTIONAL MEDICINE, PLLC",
+      "salesperson": "Mark Mousseau"
+    },
+    "6bc60169-eeea-4990-970d-bbce745f4ba8": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "R&H Rejuvenation and Health- Lafayette",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "19e7e10c-2189-4dda-9aa5-39aa2ea8bfd5": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Taffe Wellness Center",
+      "salesperson": "Mark Mousseau"
+    },
+    "681a50a8-9f89-4ebb-a67d-819db765ce58": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Earth Remedies of Florida, LLC",
+      "salesperson": "Jonathan Izquierdo"
+    },
+    "ad9af73e-800a-4f08-8401-798350b0b3b6": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "GR\u016aV Wellness Clinic",
+      "salesperson": "Mark Mousseau"
+    },
+    "293fbde6-2b65-4fc3-9c02-1c035ec2bdbf": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Hutto Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "d630ab7b-0840-450d-a540-330553a3f094": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Phi MD Aesthetics & Rejuvenation",
+      "salesperson": "Mark Mousseau"
+    },
+    "da1a4cb4-4651-476e-bca7-014eb938bfef": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Applied Wisdom Health Institute",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "29fad0d7-4881-4715-858c-8279e25843ec": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Push MedSpa",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "240c6666-f07c-41e1-a46b-1e19639bd3b7": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Halo Health & Wellness",
+      "salesperson": "Mark Mousseau"
+    },
+    "97d406a7-a468-4ac2-a762-d3d63bfa6ce5": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Next LVL Infusion",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "28e23b35-09b9-4d7b-a06b-e95e829d23b0": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "REVIVE YOU PLLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "8ddf140d-aec8-488d-a35e-8003bf065947": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Banerji Plastic Surgery",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "bc6ce9a3-769a-4f0f-9f9d-6a4209314dd2": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Neria Medical and Wellness",
+      "salesperson": "Dylan White"
+    },
+    "4100dfd9-9bd8-4e6b-ba0d-9bd61d5bdd0b": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Natalia Ermakova, APRN, FNP-C",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "e5ed27af-1b07-41a2-8e61-a2fcc153a140": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "REVIVED MEDSPA LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "0499b14e-2440-4b41-942c-956f0c0c5e08": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Legacy Wellness PLLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "3b7dc97f-8e35-4dec-b864-fb4bec94b8a5": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "EVER FLOWING HEALTH LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "2f66b1cb-5842-485a-9122-802f9b0d50c8": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "HOLLOWAY HEALTH LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "cbac9af1-f28d-4126-9404-cffe24005229": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Resurgence Vitality LLC",
+      "salesperson": "Jonathan Izquierdo"
+    },
+    "37f70024-de9b-477e-b520-a712f498fbb0": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Bates Primary Care",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "cdc3d442-c26f-4e0e-ab98-bcee33e02d13": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Wilson Aesthetic Company",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "d0d58c81-2447-4449-8411-398ae6d077c3": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "AZ Med Spa 48",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "b0def5db-4777-40fb-8d28-66015695f9dc": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Shereef Salem",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "9d2bd245-0c08-441d-b9fc-92922827518d": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Elixir Med Spa",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "a34afdf5-bbfc-4214-a767-e9bda114f285": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Livea Medical - Coon Rapids",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "9392ca71-2429-48e1-ba1c-1538b41ebb9c": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "5th & Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "9998a196-a756-497f-a5db-eb637526e30d": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Elev8 Health & Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "cfd6b56f-21db-4587-b541-0a84af31f424": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "The Physique Boutique",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "f0e5d0a5-c2a3-459f-a2ce-38039a2ca32e": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Entyre",
+      "salesperson": "Dylan White"
+    },
+    "12c2d73b-3a17-413a-b374-6f9c5296c71b": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Denver Regenerative Medicine",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "b62fd14b-7189-484a-a46e-5fa81c523607": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Honest Weight Loss and Hormone Replacement LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "61d9d876-d01b-454f-af4b-69a97082d54c": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Flow & Glow Wellness Med Spa",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "73bb87ff-cf48-41dd-be87-3e6787b0199d": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Valley Trim",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "2924d30f-1e72-44fc-a6ad-d47907531f4d": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "EDEN FUNCTIONAL MEDICINE",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "1b5923dd-e69c-4045-bf79-474c5a47b7ac": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "The SknBar Aesthetics & Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "8e3d191e-60d6-4720-9b85-c87871d74384": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Gameday Men's Health- Las Colinas",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "1c00314c-03c0-496a-9a27-e7b3f7f3682d": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Just Peachie Wellness + Aesthetics",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "df0f1893-f449-4616-9ff7-51459d060143": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Vitality Infusion and Wellness",
+      "salesperson": "Mark Mousseau"
+    },
+    "a12f51b4-5187-4e26-8628-2143cee38f10": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Black Tie Health",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "5091ddbc-e5ce-4cac-866d-bb6f39e1015a": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "MyFitMed Frisco",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "9173bae3-ad8b-411a-9690-a94d7f0d875c": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Elite Options Weight Loss & IV Therapy",
+      "salesperson": "Mark Mousseau"
+    },
+    "20a15559-46c9-4483-bbe5-09acee2ec754": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Todabonita4u Aesthetics & Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "65c0e1b3-53cd-46b1-af5f-d9c90c993f4b": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Klevgard Nursing Service",
+      "salesperson": "Mark Mousseau"
+    },
+    "618d4cac-d16b-4a39-a8ed-ad084f13ba25": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Healthy Habits Wellness Clinic Inc",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "63450018-312a-40e5-b504-b5fe7f1cd5cc": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Game Day Men's Health Gaithersburg",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "ccb09e29-c94f-4b6e-8e66-c63bcd37ad19": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Legacy Health And Longevity",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "6161f162-866c-449a-a105-0ad8f60cdb37": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Revital Health and Wellness Clinics",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "966fd763-4ec6-45a3-ac99-bcdbeac7e1f5": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Fanous MedSpa Medical NC PLLC",
+      "salesperson": "Valentin Zakar"
+    },
+    "773e8e28-64a9-4513-b5b5-6135d1cf1705": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Golden Wellness and Aesthetics, LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "e2c4ab48-e946-4cf4-af2d-16a5f1016c9e": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Game Day Men's Health Burlington",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "4f9a9b46-15dd-422f-9ed6-a27cd84379a5": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "DOERING MEDICAL LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "52644006-25db-478b-8e3a-a99aa85b87c8": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Next Level MD",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "7e86532c-cf4d-4a70-a32f-a6dc7c7f8499": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Evolve Health PLLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "b85cd6e4-97cf-4db5-941c-08ca363f4a63": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "South Florida Trim Clinic",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "65f7acad-f8f8-47c5-93ef-8e9816f47899": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "M2 MEDICAL SPA AND WELLNESS PC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "a2364b5e-cc46-48a7-ab33-4a84f296d110": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Xperience Health, LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "537d1d7b-e208-4031-9a8e-df1a88f9d63d": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "WINMIND INTEGRATIVE HEALTH",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "6b3c6665-43d0-4fac-acf8-c7728eb2f769": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "The Wellness Edit Med Spa & Longevity Center",
+      "salesperson": "Mark Mousseau"
+    },
+    "ec754c99-c9b3-4bf3-9634-ecd42c908b0a": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "ALPHA PERFORMANCE HEALTH LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "bd1c73ae-abc5-4751-96ae-d83995bdce9e": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "MAXIMUM PERFORMANCE MEDICINE",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "8386385c-ca29-4d4b-97ee-7ffce011a213": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "BELFIORE WELLNESS CENTER, LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "e7f9ce69-5d9b-4c60-ae83-d4904e7c5780": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "EmpowerFit Medical LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "5bd83e68-b70d-4715-9a90-890b7e848c40": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "HyClass Hydration",
+      "salesperson": "Mark Mousseau"
+    },
+    "50dc710c-780a-4388-afad-f000e636286a": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "TrueVertex",
+      "salesperson": "Jonathan Izquierdo"
+    },
+    "526b9f6b-ba85-4c70-9a9e-df15058c17b7": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "KAVN Health",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "528df6e5-3cf7-49a1-acba-623780fc0a7a": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "PROGRESSIVE HEALTH & REJUVENATION",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "588ced89-684f-45e5-b42b-8020b9ee5e66": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Game Day Men's Health Columbia",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "22b51025-3cc7-4ccc-95b4-5f2d9db2fe08": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Sunshine Medical Aesthetics",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "4dd39776-c370-4b71-8766-8dd2e94fae20": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Arizona Health and Wellness Clinic",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "fbcadd62-2032-403d-8129-cd756aa2711c": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Body Revival",
+      "salesperson": "Mark Mousseau"
+    },
+    "33699a61-6ca0-4a0c-8012-083bbe128566": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Hopkins Health and Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "9d91ef7b-5ef9-4fb8-b291-ce4d9791124f": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "The Rural Aesthetic Med Spa",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "c3abc7df-2d3a-46b0-b239-8dd5df23de22": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Clinic Infinity LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "e49abe10-1965-4e1f-9eb2-f2de83c23f9d": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Vivid Cosmetic Studio",
+      "salesperson": "Jonathan Izquierdo"
+    },
+    "84b373ac-1e3b-4f40-9416-ab8ab7682701": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Core Wellness and  Recovery",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "23256074-a664-4b74-b806-cef47fa185bf": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Glo Skin Aesthetics West Virginia",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "d2e2da49-28ea-480e-8f3a-1224620a0917": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "NVMedicalAesthetics",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "bddc93cd-0314-4627-9760-5d162907b1ab": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "ALPINE APRES NURSE CONCIERGE, LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "dacac713-40e2-4e69-92e7-eb5f64283114": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Core IV Therapy",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "39f6f378-281b-4d65-a686-ffa0c341da2e": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Snatched Doll Aesthetics",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "b17975a6-475f-4579-9d7c-5aab9d9daa1a": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Bibiana's Medical Concierge & IV Lounge",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "0ef1f00b-2c48-4401-906c-fa298fdf084a": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "SYNERGY INTEGRATIVE MEDICAL CLINIC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "c8f0c196-6bea-4308-9a40-f445b0ea8885": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Optimal Wellness Medical Group",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "4aaf93b1-efed-439a-bb61-fb91eb1bbcb1": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Game day men's health Memphis",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "d420373c-4ae2-4881-89cb-9bb73940487b": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "PINE & SAGE WELLNESS LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "7e2553fa-bdd5-49c4-8461-fabeefca1f5e": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Apollo House",
+      "salesperson": "Mark Mousseau"
+    },
+    "247910a9-dd7f-40ec-8d6e-4e809a1a2b4f": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "The West Wellness and Massage",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "6dbd0332-554f-4b39-b069-238d37081de4": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Leader Health",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "05708249-b4bf-4369-979e-4deee0d96c08": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Medical Weight Loss Solutions",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "13e6229e-a362-4534-8c30-a4aa68de1729": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Be Well Clinic of Mobile LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "32a09904-ff6a-4c4b-ac7a-97aac25bc170": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Endoura Effect, PLLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "516603a4-6912-49d4-92bc-5451b91fc112": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "DaSilva Institute",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "0ffd1134-bff6-4c41-bafb-6c8c973bfe2a": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Emagy Medspa",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "25112ab2-8f24-40a0-8f12-214cd5b654a8": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "THE PAZIO INSTITUTE",
+      "salesperson": "Mark Mousseau"
+    },
+    "75a2212f-c681-45e2-8e42-e89855066506": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "MissionMed Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "5081d125-199d-447f-a45f-9484b6daa752": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Authentic Health Family Care + Precision Medicine",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "293e3112-22d6-4419-8d8c-f3f85ee601c6": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Great Shot",
+      "salesperson": "Mark Mousseau"
+    },
+    "0fa5afc5-b1ef-46b3-a957-e90dfc5e1c79": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "SIGNATURE WEIGHT LOSS WELLNESS",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "3dd68bf8-36e9-4bd5-82e5-708ec9d35339": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "The DripBar Scottsdale",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "2e1612a6-47d4-4181-900a-bc7da2bac678": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Balanced Body Md",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "2fe17eeb-75af-4e92-81c0-9e07c98b68ed": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "St. Louis Men's Clinic",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "627aaf76-6100-4e35-8c52-ad51fd331cba": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Gameday Men's Health - Fort Worth",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "6b318db7-2593-4c83-94b0-8191049943f0": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Lander Hope clinic",
+      "salesperson": "Mark Mousseau"
+    },
+    "71afbc96-7c6f-4c4d-8264-24a96e747319": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Sunshine Clinic - Jasper",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "e9d6c857-94dc-4608-9cbd-35164bb964a2": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Roots Wellness Professional Nursing Corp",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "6b41cab8-97ef-4a5f-8bd4-1cdf7c98d60a": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Trinity Naturopathic",
+      "salesperson": "Zachary Salazar"
+    },
+    "b5d9c396-612e-4996-be74-1d37de254995": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Revive Injection Clinic",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "c88192ab-c59f-4f48-b0ac-a266812dc448": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Bloom Beauty by Fiorella",
+      "salesperson": "Mark Mousseau"
+    },
+    "b445e986-c0ec-4bcb-9e07-19acedf3dbd6": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "LaGrazia Aesthetics and Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "688ce3c5-2001-424d-8146-bbffd3045014": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "The Bougie Bee MD",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "6956ea13-dd3e-4a01-984d-5d12aff8a304": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Gameday Men's Health South Charlotte",
+      "salesperson": "Jonathan Izquierdo"
+    },
+    "49f6ab75-0de0-4868-9330-732e40c7ff8f": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "New You Weight Loss & Wellness Center",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "ed097f21-9a56-475e-be0f-e1c46a080ec1": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "GLOW 365 LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "bd40a709-4fe2-4c3f-affa-05010c119a0d": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "LeanLife Wellness Center",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "0915ac8d-1127-43c8-ac7e-d4ccf8faa3a2": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "EnviouSkin Aesthetics",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "6d7e8dd4-949e-4801-b57b-b1760a842bbf": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Lo Med",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "b4678430-d940-43e2-a4d1-9bbf9a1f81ed": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Sorrell MD PLLC",
+      "salesperson": "Zachary Salazar"
+    },
+    "739eb369-3d95-40a4-86e3-b66691f8a57a": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Premier Med Spa",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "efcc161b-ed80-40c1-86cc-ce538f9a86a9": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "TRAN PHAM FAMILY PRACTICE, LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "8aff0822-cac6-4c71-8a41-4e42d129c5a2": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "ME Wellness and Beauty Spot",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "7fd179e8-f90e-41ac-b8b0-da0ac5e650d3": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "ELAN MEDSPA LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "49ed5fe7-b483-49b1-bda9-f7a4a4f5da85": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Baynes BioHax",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "4acbe85c-dec2-4ac7-a1df-86893c328172": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "806Aesthetics",
+      "salesperson": "Darryl Fleming"
+    },
+    "90e084ba-3d70-4f94-a21f-bc3695c88b8a": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "BodyIV",
+      "salesperson": "Mark Mousseau"
+    },
+    "6556f04e-7b00-45df-b3d4-6265611e31a7": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Pure Bliss Aesthetics",
+      "salesperson": "Valentin Zakar"
+    },
+    "cf43bb24-5c6e-447b-a7ab-41b592bed537": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Vivid Aesthetics",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "ebacee56-4327-4ddd-83fd-21f840369211": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Alchemized BioHealing Institute",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "3c4d25c6-132a-4071-8c6c-f8d206b90989": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Roots Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "1c975b69-b710-449d-83d1-40c029043fa9": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Apex Care & Wellness PLLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "b66fb7cd-1f72-4e1f-b206-fd0531377b1a": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "ER\u00c1 AESTHETICS",
+      "salesperson": "Mark Mousseau"
+    },
+    "a380a4b8-de89-4b5a-9db5-4d7a1c16b79c": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Vibrant Life Medicine",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "04ce70f2-83de-43e5-a5c1-186da07b426c": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Five Star Medical Clinic",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "0f396aab-9ffc-4f51-b249-5c48654d8032": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Living Well Health Center",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "08babfbb-6171-418e-aea2-c69a01e715a2": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Stairway To Health Urgent Care",
+      "salesperson": "Zachary Salazar"
+    },
+    "f31eb9af-62f2-487a-8c10-b695c945ca7b": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "The Longevity Center",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "d4c44f5c-8bcb-4182-a59e-160bdb4e0b0f": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "True Insight Direct Care, PLLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "1a17aa1f-8521-4bc7-8e47-68a5a64a82cf": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Emorie Wyatt's Aesthetics & Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "a1444032-fe04-4d74-bb3f-5cd3737b73e1": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Revive Modern Health",
+      "salesperson": "Zachary Salazar"
+    },
+    "cc14b3e4-33fe-436d-ba11-a485477cf993": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Legacy Family Medicine",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "810901dd-b9df-4036-af88-673c75311179": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Bennett Integrative Health",
+      "salesperson": "Dylan White"
+    },
+    "3ee0fdcf-dc9a-47ca-bbe4-fce1fd68e8d7": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Embracing You Aesthetics",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "63f4c574-4917-4edd-845f-9900611645f2": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Love Thy Neighbor Clinic",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "50d74d7f-d8b9-41c2-8486-e9eccf91d646": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Hometown Health Direct Primary Care, PLLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "9a58ce61-0461-46f9-aa86-759351b7c800": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Bear Creek Weight Loss",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "74321926-1270-4dba-acc4-0c1e666a8a7e": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Thrive Home Hydration",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "bd9560e5-7abd-4c23-ac3f-575ff76c1b89": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Advanced Med Fargo",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "3340ef61-d45a-4e44-839d-9fc62afae1f1": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Knights Consulting & Next Level Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "dd6ca8a1-69e8-4208-a3ba-45af29b861c3": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Perform Rx Integrative Health",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "c36edfc8-8411-4f8c-b64f-c29c1a895555": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "AM INJECTION STUDIO, LLC",
+      "salesperson": "Dylan White"
+    },
+    "551922fb-82a4-49cc-ba06-291f49ef830c": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Rivers to Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "762c0abb-6a71-4884-a1e2-0bfca04da247": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "NSPIRE PRIMARY CARE LLC",
+      "salesperson": "Dylan White"
+    },
+    "78c3f35e-80e1-4c45-9904-1374cd48ce33": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Ada Family Wellness Clinic",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "134b5556-5666-44e9-8210-5caf524e3d6c": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "NUD Medical Spa",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "5c54f416-591c-49d4-a866-eedca88ba89d": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "PURELY NOURISHED SPA LLC",
+      "salesperson": "Dylan White"
+    },
+    "09b6109f-5a0d-4d8d-98c9-d27932c069b7": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Unbound Weight Loss & Medical Clinic, PLLC",
+      "salesperson": "Zachary Salazar"
+    },
+    "7bab42d2-38c2-4982-9bb3-9e7f2f162ff1": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "BALANCED HORMONE HEALTH AND WELLNESS, LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "2e95e481-4433-421d-ab0e-347e11f3d369": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Sunflower Mental Health & Wellness, LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "1c7337ed-dce6-4fb1-a392-33696c7bf7eb": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "SYNERGY MEDICINE FL LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "a3944142-7a41-4653-bda5-9fd65d7a7dc1": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "House of Health",
+      "salesperson": "Dylan White"
+    },
+    "060bc867-9fbe-4380-a8d3-acde64847fc5": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "The DRIPBaR Town and Country",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "446fe248-efb0-4968-86b6-5a662dfa3ab6": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Hormonal Health MD",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "edd098d2-7059-4fcb-b86a-1dcfe5d949fb": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Bougie and Beautified Luxury Med Spa and Primary Care Services PLLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "a167544e-eaef-4c4d-aef9-8649c356928e": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "JLU Renew",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "c8745bb5-5327-4a70-8054-7873f5b64b2e": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "R&H Rejuvenation and Health- San Jose",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "89b0571e-7a19-4e0c-ad4c-725894aa0654": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Journey To Success Weight Loss Clinic, LLC",
+      "salesperson": "Dylan White"
+    },
+    "c66dfe1c-c43d-422e-ae85-987a4a013233": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "A-NU Health",
+      "salesperson": "Dylan White"
+    },
+    "ffb29c66-7bf0-4c33-83de-16a7eaa949ef": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Polk Concierge",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "43079719-21c4-4b99-84a6-c7768bbca90a": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "SEQUOIA INFUSION & AESTHETICS LLC",
+      "salesperson": "Dylan White"
+    },
+    "d7155001-900f-4ed2-86f8-c13ae56ced4b": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Vitality Anti Aging Center",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "561ed8ed-5146-47f6-9d4f-47381394a066": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "MEDSMART WELLNESS CENTERS INC.",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "677fee9b-471e-46c1-863f-7696b7997966": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "SecondWind IV & Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "b17b5e42-c45b-4646-a1f2-7ae83d188976": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "DevotedDoc",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "71331b0e-6a73-4bf8-b9f8-240bbc605f50": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Pure Medical Weight Loss",
+      "salesperson": "Dylan White"
+    },
+    "fc984b3d-969f-4a1f-8cd6-0c1848e5a2c7": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Revolve Anti Aging",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "ac2a1584-e78b-40f7-ae26-d3e267599a79": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Stillwater Infusion Company 2",
+      "salesperson": "Dylan White"
+    },
+    "dbf507e3-8e25-4333-bdca-6a91f78dd159": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Redefine ME Wellness and Aesthetics LLC",
+      "salesperson": "Dylan White"
+    },
+    "119c9631-8336-42d3-afee-4f78084a2969": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "LIGHT Family Wellness",
+      "salesperson": "Dylan White"
+    },
+    "aed96353-a3a9-4749-b4af-96be920cabb4": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "JUDY L JONES FAMILY NURSE PRACTITIONER LLC",
+      "salesperson": "Dylan White"
+    },
+    "427af438-f2e5-4442-b567-2211d9ef56e2": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "AK LIVE WELL LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "7c8a9ce9-61c9-4a58-8142-6e0a139a41f7": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "PURE WEIGHT MANAGEMENT LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "86846664-c98f-48e8-a095-be9ff03008b6": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Magnolia Family Wellness Clinic",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "0b432a8c-5ed6-42ef-9817-665736fcef7b": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "timeless aesthetics.rn",
+      "salesperson": "Dylan White"
+    },
+    "a2aac18f-808b-42df-9bad-5f908ad85015": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "The Aesthetics Lounge and Spa",
+      "salesperson": "Dylan White"
+    },
+    "fd24463c-0d54-42af-9cc7-06f0463dd5e1": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Preventive Medicine Anti-Aging and Chelation Therapy- CA",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "c77c4151-79a5-4961-8213-421c74564c0f": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Sunmed Health and Weight Management",
+      "salesperson": "Zachary Salazar"
+    },
+    "63f2bcdb-8d5e-42d9-a19a-a5658d9413df": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Lake Med, PLLC",
+      "salesperson": "Dylan White"
+    },
+    "a767bcbf-92f3-4a2b-aa89-d28b7df454e3": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "UNIVERSAL FAMILY CARE",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "8d559111-dde3-4acd-9d8b-2a5c8907b87f": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Point to Point Health and Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "1a1331ae-2fba-4026-8dc7-41a3219fae67": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Health Outside the Box PLLC- AZ",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "f6010b12-1d43-43a0-ac69-0cd1b43ad715": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Elite Wellness",
+      "salesperson": "Zachary Salazar"
+    },
+    "5fcbcdd3-5554-4b41-9884-dec04d70ce6d": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Dana M Goldberg, MD",
+      "salesperson": "Jonathan Izquierdo"
+    },
+    "c4ce4f6d-26f3-4d08-b37b-caf821389a6d": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Radiate Healthy LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "0ee15bfe-7828-4a8d-8ddd-94d2b5fb7758": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Elite 360 Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "d1eba9d8-24eb-47de-ada5-b9f77a2cd3a6": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Evolving Vitality Clinic",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "51b40901-93c2-45ba-bc61-d6afd6ce16ca": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Vitality Restorative Medicine",
+      "salesperson": "Mark Mousseau"
+    },
+    "caf46a79-4ccc-4107-a92e-f51e7d2eccf0": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Legacy Med Spa",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "b32e9483-6ad6-4ba7-8785-05e462186d32": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Mod Med Health",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "20933994-3f8d-4f30-8eaa-cace0f3559a7": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Sulca health services",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "a28b85d8-5bb8-405b-b665-b83a95581bd9": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Personalized Longevity Medical Center",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "1ef1a125-fdd3-4b8b-a956-e2d8782a1356": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Body Electric, PLLC  DBA Purefico Medspa and Therapy - Cornelius",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "276024e1-bd84-4a9c-a86d-9b3b6ed44fab": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Gameday Men\u2019s Health San Marcos",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "5e8df61f-434d-410a-b4ca-fdf3558f5f42": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "CMH Wellness",
+      "salesperson": "Zachary Salazar"
+    },
+    "58106f49-d1fd-401a-b3aa-f5862e018fe8": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Tactus Health Aesthetics & Weight Loss Clinic",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "b4a4c75f-fa9a-443c-a33e-6301ec347aa3": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Slim Care PLLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "d35d4a33-c33d-433a-8491-61cfb3ecad4d": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Rapha Concierge Med and Weight Loss",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "72e67f20-33c6-40af-8ea8-619b9063b02c": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "The Hideaway Wellness Spa",
+      "salesperson": "Mark Mousseau"
+    },
+    "49803bfa-1e4e-4b91-a065-9bfee3fd6029": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Ultra Wellness Medical",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "2673b5b6-b9a9-4376-968c-968723ff4eb7": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "ACE Endocrinology Associates PC",
+      "salesperson": "Zachary Salazar"
+    },
+    "476118ca-5fd5-4eee-b9cf-06045aeb325e": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "North Star Holistic Medicine",
+      "salesperson": "Zachary Salazar"
+    },
+    "a0255e86-e18a-4727-9810-e49f669940dd": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Charles C. Carter MD DPH PLLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "8e9a9467-cc01-4f91-805a-4254ee6f1c40": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Delray Skin",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "82b13323-8580-4428-a5c4-3b1bdb9e1ec9": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "InReach Wellness LLC",
+      "salesperson": "Dylan White"
+    },
+    "85b0931a-74d7-4198-b86b-422f16617ecc": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "GALITSKIY HEALTHCARE ADVISORS CORP",
+      "salesperson": "Zachary Salazar"
+    },
+    "6ebff092-15f1-4383-a396-5cf9f0f7204b": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Cosmo Health Resolution, LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "6b2085e1-9469-4648-9ffb-48ef5efbb3ee": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Allure Medical",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "5754656c-613c-4c91-b301-1bb3ab5d31c5": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "IntegrUtopia MD",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "fe28aea4-d94e-4638-9373-7324c9435304": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Noble Functional Medicine",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "16059a52-8976-4631-8dfe-bc9242dfe162": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Contoura MedSpa",
+      "salesperson": "Darryl Fleming"
+    },
+    "201cec09-1919-4868-979f-255f0c8650f1": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "New Viva MD Weight Loss",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "13e47add-8485-4d69-a84e-b33a84217144": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Rejuvenate Lake Wylie",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "492fa2a7-f7b6-45c9-b22f-50acd87814c4": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Glory Integrative Medicine LLC",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "d53dd4be-a34d-46d9-b6a7-546551e8219e": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Advanced Wellness",
+      "salesperson": "Jack L'Hommedieu"
+    },
+    "c5571ba9-a3b1-4ffb-909d-5801e92c5457": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Asymmetric Health",
+      "salesperson": "Mark Mousseau"
+    },
+    "dce2983f-d0d8-4fe3-bb66-573f0990afe7": {
+      "account_manager": "Nate Graham",
+      "clinic_name": "Called to Care, LLC",
+      "salesperson": "Dylan White"
+    },
+    "db8c7e7f-bd46-49fa-9576-89cd75df2f01": {
+      "account_manager": "Nate Graham",
+      "clinic_name": "MyCare Express Care",
+      "salesperson": "Zachary Salazar"
+    }
+  }
+}
