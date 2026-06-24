@@ -241,60 +241,154 @@ function normalizeStatus(raw) {
   return 'received';
 }
 
+// Composite dedup key — resolves to the most specific unique identifier available.
+// Priority: prescription_item_id > prescription_id > invoice+drug_id+clinic_id >
+//           invoice+drug_name+clinic_id > invoice+drug_name+date > invoice+drug_name >
+//           date+clinic+drug (no invoice) > invoice alone
+function getShipmentKey(s) {
+  const str = v => String(v || '').trim();
+  const lc  = v => str(v).toLowerCase();
+
+  const pitem   = str(s.prescription_item_id);
+  const rx      = str(s.prescription_id);
+  const inv     = str(s.invoice_number);
+  const drugId  = str(s.drug_id);
+  const clinicId= str(s.clinic_id);
+  const drugName= lc(s.drug_name);
+  const date    = str(s.order_date).split('T')[0].split(' ')[0]; // date portion only
+  const clinic  = lc(s.clinic_name);
+
+  // 1. prescription_item_id — unique per drug line per order (best)
+  if (pitem) return 'pitem:' + pitem;
+
+  // 2. prescription_id — unique per drug per patient per order
+  if (rx) return 'rx:' + rx;
+
+  // 3. invoice + drug_id + clinic_id — invoice with drug and clinic IDs
+  if (inv && drugId && clinicId) return 'idc:' + inv + '|' + drugId + '|' + clinicId;
+
+  // 4. invoice + drug_id (no clinic)
+  if (inv && drugId) return 'id:' + inv + '|' + drugId;
+
+  // 5. invoice + drug_name + clinic_id
+  if (inv && drugName && clinicId) return 'inc:' + inv + '|' + drugName + '|' + clinicId;
+
+  // 6. invoice + drug_name + order_date
+  if (inv && drugName && date) return 'ind:' + inv + '|' + drugName + '|' + date;
+
+  // 7. invoice + drug_name (covers multi-drug orders without dates/IDs)
+  if (inv && drugName) return 'in:' + inv + '|' + drugName;
+
+  // 8. date + clinic_id/name + drug_name (no invoice)
+  const clinicRef = clinicId || clinic;
+  if (date && clinicRef && drugName) return 'dcd:' + date + '|' + clinicRef + '|' + drugName;
+
+  // 9. Last resort: invoice number alone (may merge multi-drug rows — only hits if no drug_name)
+  if (inv) return 'i:' + inv;
+
+  return 'unknown:' + String(Math.random()).slice(2);
+}
+
 // assignments param is optional — if provided, stamps account_manager on each row
 function mapImportRow(row, assignments) {
-  let repName = String(row['sales_rep'] || row['rep_name'] || '').trim();
+  const str = k => String(row[k] || '').trim();
+
+  let repName = str('sales_rep') || str('rep_name');
   // Strip the JMS house-account prefix; keep the actual rep name after it
-  repName = repName.replace(/^JMS\s*-\s*Jack\s+L['']Hommedieu\s*\/\s*Mark\s+Mousseau\s*/i, '').trim();
-  // If nothing left, it IS the JMS/house account — preserve the original name
-  if (!repName) repName = String(row['sales_rep'] || row['rep_name'] || '').trim();
+  const stripped = repName.replace(/^JMS\s*-\s*Jack\s+L['']Hommedieu\s*\/\s*Mark\s+Mousseau\s*/i, '').trim();
+  // If stripping left something, use it; otherwise preserve original (it IS the JMS account)
+  if (stripped) repName = stripped;
 
-  const trackingNum = String(row['tracking_number'] || '').trim();
-  const { carrier, url } = detectCarrier(trackingNum);
-
-  // Clinic ID — try several possible column names
-  const clinicId = String(
-    row['clinic_id'] || row['Clinic ID'] || row['BoomRx Clinic ID'] ||
-    row['clinic id'] || row['boomrx_clinic_id'] || ''
-  ).trim();
-
-  const clinicName = String(row['clinic_name'] || row['Clinic Name'] || '').trim();
-
-  // Look up account manager from assignments
-  let accountManager = null;
-  if (assignments) {
-    const probe = { clinic_id: clinicId, clinic_name: clinicName };
-    accountManager = getAMForShipment(probe, assignments) || null;
+  const trackingNum = str('tracking_number');
+  const carrierRaw  = str('shipping_carrier');
+  // Use ProRx carrier name if present; otherwise auto-detect from number
+  let carrier, trackingUrl;
+  if (carrierRaw) {
+    const c = carrierRaw.toLowerCase();
+    carrier = c.includes('ups') ? 'ups' : c.includes('fedex') ? 'fedex' : 'unknown';
+    const detected = detectCarrier(trackingNum);
+    trackingUrl = carrier === 'ups'
+      ? 'https://www.ups.com/track?tracknum=' + trackingNum
+      : carrier === 'fedex'
+      ? 'https://www.fedex.com/fedextrack/?trknbr=' + trackingNum
+      : detected.url;
+  } else {
+    const detected = detectCarrier(trackingNum);
+    carrier = detected.carrier;
+    trackingUrl = detected.url;
   }
 
-  return {
-    invoice_number: String(row['invoice_number'] || '').trim(),
-    order_date: row['order_date'] || '',
-    rep_name: repName,
-    clinic_id: clinicId,
+  const clinicId   = str('clinic_id') || str('Clinic ID') || str('BoomRx Clinic ID');
+  const clinicName = str('clinic_name') || str('Clinic Name');
+
+  let accountManager = null;
+  if (assignments) {
+    accountManager = getAMForShipment({ clinic_id: clinicId, clinic_name: clinicName }, assignments) || null;
+  }
+
+  const mapped = {
+    // Core identifiers
+    prescription_item_id: str('prescription_item_id'),
+    prescription_id:      str('prescription_id'),
+    order_id:             str('order_id'),
+    invoice_number:       str('invoice_number'),
+    drug_id:              str('drug_id'),
+
+    // Order info
+    order_date:    row['order_date'] || '',
+    ship_date:     row['ship_date']  || '',
+    status:        normalizeStatus(row['status']),
+
+    // Clinic / rep
+    clinic_id:   clinicId,
     clinic_name: clinicName,
-    pharmacy_name: String(row['pharmacy_name'] || '').trim(),
-    drug_name: String(row['drug_name'] || '').trim(),
+    rep_name:    repName,
+
+    // Drug
+    drug_name:        str('drug_name'),
+    drug_strength:    str('drug_strength'),
+    drug_dosage_form: str('drug_dosage_form'),
+    quantity:         str('quantity'),
+
+    // Pharmacy & shipping
+    pharmacy_name: str('pharmacy_name'),
+    pharmacy_id:   str('pharmacy_id'),
     tracking_number: trackingNum,
     carrier,
-    tracking_url: url,
-    status: normalizeStatus(row['status']),
+    tracking_url: trackingUrl || '',
+
+    // Account manager (resolved from clinic assignment)
     account_manager: accountManager,
+
     import_date: new Date().toISOString()
   };
+
+  // Stamp the composite key so it travels with the row and can be re-used on merge
+  mapped._key = getShipmentKey(mapped);
+  return mapped;
 }
 
 function upsertShipments(existing, incoming) {
-  const map = new Map(existing.map(s => [s.invoice_number, s]));
-  incoming.forEach(s => {
-    if (!s.invoice_number) return;
-    const cur = map.get(s.invoice_number);
-    if (!cur) { map.set(s.invoice_number, s); return; }
-    // Keep whichever row has the newer import_date; incoming wins on tie
-    const curDate = cur.import_date ? new Date(cur.import_date).getTime() : 0;
-    const newDate = s.import_date ? new Date(s.import_date).getTime() : 0;
-    if (newDate >= curDate) map.set(s.invoice_number, s);
+  // Build map using composite key for all existing rows
+  const map = new Map();
+  existing.forEach(s => {
+    const key = s._key || getShipmentKey(s);
+    if (!s._key) s._key = key; // back-fill key on old records
+    map.set(key, s);
   });
+
+  incoming.forEach(s => {
+    const key = s._key || getShipmentKey(s);
+    if (!key || key.startsWith('unknown:')) return; // skip genuinely unidentifiable rows
+    s._key = key;
+    const cur = map.get(key);
+    if (!cur) { map.set(key, s); return; }
+    // Keep whichever row has the newer import_date; incoming wins on tie/equal
+    const curMs = cur.import_date  ? new Date(cur.import_date).getTime()  : 0;
+    const newMs = s.import_date    ? new Date(s.import_date).getTime()    : 0;
+    if (newMs >= curMs) map.set(key, s);
+  });
+
   return Array.from(map.values());
 }
 
