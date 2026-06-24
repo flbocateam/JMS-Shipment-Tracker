@@ -99,7 +99,6 @@ function renderTable(shipments, tableBodyId, showRepCol, globalLastUpdated, glob
       '<td>' + statusBadge(s.status) + '</td>' +
       repCol +
       '<td><div>' + lu + '</div>' + (ub ? '<div class="sub-text">Entered by ' + ub + '</div>' : '') + '</td>' +
-      '<td>' + (s.clinician_name || '—') + '</td>' +
       '<td>' + (s.pharmacy_name || '—') + '</td>' +
       '<td>' + (s.invoice_number || '—') + '</td>' +
       '<td>' + trackingLink(s) + '</td>' +

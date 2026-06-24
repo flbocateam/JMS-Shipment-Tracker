@@ -52,7 +52,7 @@
         <div class="table-card">
           <div class="table-wrapper">
             <table>
-              <thead><tr><th>Status</th><th>Rep</th><th>Last Updated</th><th>Clinician</th><th>Pharmacy</th><th>Order #</th><th>Tracking</th></tr></thead>
+              <thead><tr><th>Status</th><th>Rep</th><th>Last Updated</th><th>Pharmacy</th><th>Order #</th><th>Tracking</th></tr></thead>
               <tbody id="table-body"><tr><td colspan="10" style="text-align:center;padding:2rem">Loading…</td></tr></tbody>
             </table>
           </div>
@@ -103,10 +103,15 @@
         <div class="table-card" style="padding:1.5rem;max-width:520px">
           <h3 style="margin-bottom:1.25rem">Admin Account</h3>
           <div class="form-group">
-            <label>New Password</label>
-            <input type="password" id="new-password" placeholder="Leave blank to keep current">
+            <label>Current Password</label>
+            <input type="password" id="current-password" placeholder="Enter your current password">
           </div>
-          <button class="btn btn-primary" onclick="updateAdminPassword()">Update Password</button>
+          <div class="form-group">
+            <label>New Password</label>
+            <input type="password" id="new-password" placeholder="Enter new password">
+          </div>
+          <div id="pw-error" class="error-msg" style="display:none;margin-bottom:0.75rem"></div>
+          <button class="btn btn-primary" id="pw-update-btn" onclick="updateAdminPassword()">Update Password</button>
           <span id="pw-save-status" style="margin-left:1rem;font-size:0.875rem;color:var(--teal)"></span>
         </div>
       </div>
@@ -136,7 +141,7 @@
       <input type="hidden" id="modal-edit-email">
       <div class="modal-actions">
         <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
-        <button class="btn btn-primary" onclick="saveUser()">Save</button>
+        <button class="btn btn-primary" id="modal-save-btn" onclick="saveUser()">Save</button>
       </div>
       <div id="modal-error" class="error-msg" style="margin-top:0.75rem;display:none"></div>
     </div>
@@ -277,27 +282,32 @@
       const role = document.getElementById('modal-role').value;
       const editEmail = document.getElementById('modal-edit-email').value;
       const errEl = document.getElementById('modal-error');
+      const saveBtn = document.getElementById('modal-save-btn');
       errEl.style.display = 'none';
       if (!name || !email) { errEl.textContent = 'Name and email are required.'; errEl.style.display = 'block'; return; }
       if (!editEmail && !pin) { errEl.textContent = 'PIN/Password is required for new users.'; errEl.style.display = 'block'; return; }
-      const hashField = role === 'account_manager' ? 'password_hash' : 'pin_hash';
-      let newUser = { name, email, role, active: true };
-      if (pin) { newUser[hashField] = await bcrypt.hash(pin, 10); }
-      if (editEmail) {
-        const list = role === 'account_manager' ? configData.account_managers : configData.reps;
-        const idx = list.findIndex(u => u.email === editEmail);
-        if (idx !== -1) {
-          const existing = list[idx];
-          list[idx] = { ...existing, name, email, ...(pin ? { [hashField]: newUser[hashField] } : {}) };
-        }
-      } else {
-        if (role === 'account_manager') { (configData.account_managers = configData.account_managers || []).push(newUser); }
-        else { (configData.reps = configData.reps || []).push(newUser); }
-      }
+      saveBtn.disabled = true; saveBtn.textContent = 'Saving…';
       try {
+        const hashField = role === 'account_manager' ? 'password_hash' : 'pin_hash';
+        let newUser = { name, email, role, active: true };
+        if (pin) { newUser[hashField] = await bcrypt.hash(pin, 10); }
+        // Re-fetch latest config to avoid SHA conflicts from prior commits
+        const freshConfig = await loadConfig();
+        if (editEmail) {
+          const list = role === 'account_manager' ? freshConfig.account_managers : freshConfig.reps;
+          const idx = list.findIndex(u => u.email === editEmail);
+          if (idx !== -1) {
+            list[idx] = { ...list[idx], name, email, ...(pin ? { [hashField]: newUser[hashField] } : {}) };
+          }
+        } else {
+          if (role === 'account_manager') { (freshConfig.account_managers = freshConfig.account_managers || []).push(newUser); }
+          else { (freshConfig.reps = freshConfig.reps || []).push(newUser); }
+        }
+        configData = freshConfig;
         await commitToGitHub('data/config.json', configData, 'Update users');
         closeModal(); renderUsers(); populatePreviewSelect();
       } catch (err) { errEl.textContent = err.message; errEl.style.display = 'block'; }
+      saveBtn.disabled = false; saveBtn.textContent = 'Save';
     }
 
     async function resetPIN(email) {
@@ -343,16 +353,30 @@
     }
 
     async function updateAdminPassword() {
-      const pw = document.getElementById('new-password').value;
-      if (!pw) return;
-      const hash = await bcrypt.hash(pw, 10);
-      configData.admin.password_hash = hash;
+      const currentPw = document.getElementById('current-password').value;
+      const newPw = document.getElementById('new-password').value;
+      const errEl = document.getElementById('pw-error');
+      const btn = document.getElementById('pw-update-btn');
+      const statusEl = document.getElementById('pw-save-status');
+      errEl.style.display = 'none';
+      if (!currentPw || !newPw) { errEl.textContent = 'Both current and new password are required.'; errEl.style.display = 'block'; return; }
+      btn.disabled = true; btn.textContent = 'Verifying…';
       try {
+        // Re-fetch config to get latest SHA and verify current password against stored hash
+        const freshConfig = await loadConfig();
+        const valid = await bcrypt.compare(currentPw, freshConfig.admin.password_hash);
+        if (!valid) { errEl.textContent = 'Current password is incorrect.'; errEl.style.display = 'block'; btn.disabled = false; btn.textContent = 'Update Password'; return; }
+        btn.textContent = 'Saving…';
+        const newHash = await bcrypt.hash(newPw, 10);
+        freshConfig.admin.password_hash = newHash;
+        configData = freshConfig; // keep in-memory config in sync
         await commitToGitHub('data/config.json', configData, 'Update admin password');
-        document.getElementById('pw-save-status').textContent = '✓ Updated';
+        statusEl.textContent = '✓ Password updated';
+        document.getElementById('current-password').value = '';
         document.getElementById('new-password').value = '';
-        setTimeout(() => document.getElementById('pw-save-status').textContent = '', 3000);
-      } catch (err) { alert('Error: ' + err.message); }
+        setTimeout(() => statusEl.textContent = '', 4000);
+      } catch (err) { errEl.textContent = 'Error: ' + err.message; errEl.style.display = 'block'; }
+      btn.disabled = false; btn.textContent = 'Update Password';
     }
 
     // ── Preview As ─────────────────────────────────────────
