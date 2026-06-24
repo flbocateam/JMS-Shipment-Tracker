@@ -1,11 +1,46 @@
 {
-  "admin": { "name": "Jack", "email": "jack@boomrx.com", "password_hash": "$2b$10$tvFv9gZpAQAqN86vHqVS9esEk58MXLZQrGLUIuwOXqhe85TQS3X5K", "role": "admin" },
+  "admin": {
+    "name": "Jack",
+    "email": "jack@boomrx.com",
+    "password_hash": "$2a$10$9XcBgVJIpkUhPdRI6H7AcOdgjSi1yVRlxeUAiCADsVx9vehQ374OW",
+    "role": "admin"
+  },
   "account_managers": [],
   "reps": [
-    { "name": "Zachary Salazar", "email": "zachary@boomrx.com", "pin_hash": "$2b$10$CASZ9bk4jSc0CbG30fq6yebIdltErTpt.BMb26JbA9.Bw6/YCuTyy", "role": "rep", "active": true },
-    { "name": "Valentin Zakar", "email": "valentin@boomrx.com", "pin_hash": "$2b$10$CASZ9bk4jSc0CbG30fq6yebIdltErTpt.BMb26JbA9.Bw6/YCuTyy", "role": "rep", "active": true },
-    { "name": "Jonathan Izquierdo", "email": "jonathan@boomrx.com", "pin_hash": "$2b$10$CASZ9bk4jSc0CbG30fq6yebIdltErTpt.BMb26JbA9.Bw6/YCuTyy", "role": "rep", "active": true },
-    { "name": "Dylan White", "email": "dylan@boomrx.com", "pin_hash": "$2b$10$CASZ9bk4jSc0CbG30fq6yebIdltErTpt.BMb26JbA9.Bw6/YCuTyy", "role": "rep", "active": true },
-    { "name": "Darryl Fleming", "email": "darryl@boomrx.com", "pin_hash": "$2b$10$CASZ9bk4jSc0CbG30fq6yebIdltErTpt.BMb26JbA9.Bw6/YCuTyy", "role": "rep", "active": true }
+    {
+      "name": "Zachary Salazar",
+      "email": "zachary@boomrx.com",
+      "pin_hash": "$2b$10$CASZ9bk4jSc0CbG30fq6yebIdltErTpt.BMb26JbA9.Bw6/YCuTyy",
+      "role": "rep",
+      "active": true
+    },
+    {
+      "name": "Valentin Zakar",
+      "email": "valentin@boomrx.com",
+      "pin_hash": "$2b$10$CASZ9bk4jSc0CbG30fq6yebIdltErTpt.BMb26JbA9.Bw6/YCuTyy",
+      "role": "rep",
+      "active": true
+    },
+    {
+      "name": "Jonathan Izquierdo",
+      "email": "jonathan@boomrx.com",
+      "pin_hash": "$2b$10$CASZ9bk4jSc0CbG30fq6yebIdltErTpt.BMb26JbA9.Bw6/YCuTyy",
+      "role": "rep",
+      "active": true
+    },
+    {
+      "name": "Dylan White",
+      "email": "dylan@boomrx.com",
+      "pin_hash": "$2b$10$CASZ9bk4jSc0CbG30fq6yebIdltErTpt.BMb26JbA9.Bw6/YCuTyy",
+      "role": "rep",
+      "active": true
+    },
+    {
+      "name": "Darryl Fleming",
+      "email": "darryl@boomrx.com",
+      "pin_hash": "$2b$10$CASZ9bk4jSc0CbG30fq6yebIdltErTpt.BMb26JbA9.Bw6/YCuTyy",
+      "role": "rep",
+      "active": true
+    }
   ]
 }
