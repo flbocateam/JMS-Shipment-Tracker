@@ -41,6 +41,16 @@
         <div class="page-header"><h1>All Shipments</h1></div>
         <div id="upload-banner" style="margin-bottom:0.5rem"></div>
         <div class="kpi-strip" id="kpi-strip"></div>
+        <div class="filters-bar" style="margin-bottom:0.5rem">
+          <div class="filter-pills" id="date-pills">
+            <button class="pill" data-range="today">Today</button>
+            <button class="pill" data-range="yesterday">Yesterday</button>
+            <button class="pill" data-range="last7">Last 7 Days</button>
+            <button class="pill active" data-range="last30">Last 30 Days</button>
+            <button class="pill" data-range="last90">Last 90 Days</button>
+            <button class="pill" data-range="all">All Time</button>
+          </div>
+        </div>
         <div class="filters-bar">
           <div class="filter-pills" id="filter-pills">
             <button class="pill active" data-status="all">All</button>
@@ -48,7 +58,8 @@
             <button class="pill" data-status="shipped">Shipped</button>
             <button class="pill" data-status="cancelled">Cancelled</button>
           </div>
-          <input type="text" class="search-input" id="search-input" placeholder="Search shipments…">
+          <input type="text" class="search-input" id="search-input" placeholder="Search clinic, drug, invoice…">
+          <span id="search-hint" style="display:none;font-size:0.75rem;color:var(--text-muted);white-space:nowrap">Searching all dates</span>
           <select class="rep-filter" id="rep-filter"><option value="">All Reps</option></select>
           <select class="rep-filter" id="am-filter"><option value="">All Account Managers</option></select>
         </div>
@@ -170,7 +181,7 @@
     let configData = null;
     let assignments = {};
     let currentUser = null;
-    let currentFilter = { status: 'all', search: '', repFilter: '', amFilter: '' };
+    let currentFilter = { status: 'all', search: '', repFilter: '', amFilter: '', dateRange: 'last30' };
 
     async function init() {
       currentUser = checkAuth('admin');
@@ -217,12 +228,25 @@
       document.getElementById('filter-pills').addEventListener('click', e => {
         const pill = e.target.closest('.pill');
         if (!pill) return;
-        document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('#filter-pills .pill').forEach(p => p.classList.remove('active'));
         pill.classList.add('active');
         currentFilter.status = pill.dataset.status;
         applyFilters();
       });
-      document.getElementById('search-input').addEventListener('input', e => { currentFilter.search = e.target.value; applyFilters(); });
+      document.getElementById('date-pills').addEventListener('click', e => {
+        const pill = e.target.closest('.pill');
+        if (!pill) return;
+        document.querySelectorAll('#date-pills .pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        currentFilter.dateRange = pill.dataset.range;
+        applyFilters();
+      });
+      document.getElementById('search-input').addEventListener('input', e => {
+        currentFilter.search = e.target.value;
+        const hint = document.getElementById('search-hint');
+        if (hint) hint.style.display = e.target.value ? '' : 'none';
+        applyFilters();
+      });
 
       // File import
       document.getElementById('file-input').addEventListener('change', handleFileImport);

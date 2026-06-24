@@ -294,10 +294,10 @@ function mapImportRow(row, assignments) {
   const str = k => String(row[k] || '').trim();
 
   let repName = str('sales_rep') || str('rep_name');
-  // Strip the JMS house-account prefix; keep the actual rep name after it
-  const stripped = repName.replace(/^JMS\s*-\s*Jack\s+L['']Hommedieu\s*\/\s*Mark\s+Mousseau\s*/i, '').trim();
-  // If stripping left something, use it; otherwise preserve original (it IS the JMS account)
-  if (stripped) repName = stripped;
+  // Strip the "JMS - " prefix present on all ProRx rep names
+  repName = repName.replace(/^JMS\s*-\s*/i, '').trim() || repName;
+  // Permanent rule: omit any row belonging to Nick Clemens
+  if (/nick\s*clemens/i.test(repName)) return null;
 
   const trackingNum = str('tracking_number');
   const carrierRaw  = str('shipping_carrier');
@@ -392,8 +392,22 @@ function upsertShipments(existing, incoming) {
   return Array.from(map.values());
 }
 
+// ── Date range helpers ───────────────────────────────────────
+function getDateRangeCutoff(range) {
+  const now = new Date();
+  if (range === 'today') { const d = new Date(); d.setHours(0,0,0,0); return d; }
+  if (range === 'yesterday') { const d = new Date(); d.setDate(d.getDate()-1); d.setHours(0,0,0,0); return d; }
+  if (range === 'last7')  return new Date(now.getTime() - 7  * 86400000);
+  if (range === 'last30') return new Date(now.getTime() - 30 * 86400000);
+  if (range === 'last90') return new Date(now.getTime() - 90 * 86400000);
+  return null; // 'all'
+}
+
 // ── Filter/search ────────────────────────────────────────────
-function filterShipments(shipments, { status, search, repFilter, amFilter }, assignments) {
+function filterShipments(shipments, { status, search, repFilter, amFilter, dateRange }, assignments) {
+  // When a search term is active, bypass the date filter so clinic lookups show full history
+  const cutoff = search ? null : getDateRangeCutoff(dateRange || 'last30');
+
   return shipments.filter(s => {
     if (status && status !== 'all' && s.status !== status) return false;
     if (repFilter && s.rep_name !== repFilter) return false;
@@ -405,9 +419,13 @@ function filterShipments(shipments, { status, search, repFilter, amFilter }, ass
         if (am !== amFilter) return false;
       }
     }
+    if (cutoff) {
+      const od = s.order_date ? new Date(s.order_date) : null;
+      if (!od || od < cutoff) return false;
+    }
     if (search) {
       const q = search.toLowerCase();
-      const fields = [s.clinic_name, s.invoice_number, s.tracking_number, s.rep_name, s.pharmacy_name];
+      const fields = [s.clinic_name, s.invoice_number, s.tracking_number, s.rep_name, s.pharmacy_name, s.drug_name];
       if (!fields.some(f => f && String(f).toLowerCase().includes(q))) return false;
     }
     return true;
