@@ -27,6 +27,9 @@
         <p id="page-subtitle"></p>
       </div>
 
+      <!-- Upload Info -->
+      <div id="upload-banner" style="margin-bottom:0.5rem"></div>
+
       <!-- KPI Strip -->
       <div class="kpi-strip" id="kpi-strip"></div>
 
@@ -174,6 +177,7 @@
 
     function applyFilters() {
       const filtered = filterShipments(allShipments, currentFilter, assignments);
+      renderUploadBanner('upload-banner', shipmentData);
       renderKPI(filtered, 'kpi-strip');
       const elevated = isElevatedRole(currentUser.role);
       renderTable(filtered, 'table-body', elevated, shipmentData.last_updated, shipmentData.updated_by, assignments);
@@ -256,10 +260,10 @@
       btn.innerHTML = '<span class="spinner"></span> Saving…';
       status.textContent = '';
       try {
-        const existing = shipmentData.shipments || [];
-        const merged = upsertShipments(existing, newRows);
-        const newData = { ...shipmentData, shipments: merged, last_updated: new Date().toISOString(), updated_by: currentUser.email };
-        await commitToGitHub('data/shipments.json', newData, 'Import shipments');
+        const { data: newData } = await commitShipments(newRows, currentUser.email, 'Import shipments (' + newRows.length + ' rows)');
+        shipmentData = newData;
+        allShipments = newData.shipments || [];
+        status.style.color = 'var(--teal)';
         status.textContent = '✓ Saved! Reloading…';
         setTimeout(() => window.location.reload(), 1500);
       } catch (err) {

@@ -114,6 +114,15 @@ function renderKPI(shipments, containerId) {
     '<div class="kpi-card kpi-cancelled"><div class="kpi-num">' + c.cancelled + '</div><div class="kpi-label">Cancelled</div></div>';
 }
 
+// ── Last-upload banner ────────────────────────────────────────
+function renderUploadBanner(containerId, shipmentData) {
+  const el = document.getElementById(containerId);
+  if (!el || !shipmentData) return;
+  const when = shipmentData.last_updated ? formatDate(shipmentData.last_updated) : 'Never';
+  const who = shipmentData.updated_by || '—';
+  el.innerHTML = '<span style="font-size:0.8125rem;color:var(--text-muted)">Last upload: <strong style="color:var(--text)">' + when + '</strong> &nbsp;by <strong style="color:var(--text)">' + who + '</strong></span>';
+}
+
 // ── Table rendering ──────────────────────────────────────────
 // assignments: optional map of clinic_id → {account_manager, clinic_name}
 function renderTable(shipments, tableBodyId, showRepCol, globalLastUpdated, globalUpdatedBy, assignments) {
@@ -143,15 +152,15 @@ function renderTable(shipments, tableBodyId, showRepCol, globalLastUpdated, glob
 }
 
 // ── GitHub API ───────────────────────────────────────────────
-async function commitToGitHub(filename, data, commitMessage) {
+function _ghHeaders() {
   const pat = localStorage.getItem(PAT_KEY);
   if (!pat) throw new Error('GitHub token not set or expired. Go to Settings to update your token.');
+  return { 'Authorization': 'Bearer ' + pat, 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json' };
+}
+
+async function commitToGitHub(filename, data, commitMessage) {
+  const headers = _ghHeaders();
   const apiUrl = 'https://api.github.com/repos/' + REPO + '/contents/' + filename;
-  const headers = {
-    'Authorization': 'Bearer ' + pat,
-    'Accept': 'application/vnd.github+json',
-    'Content-Type': 'application/json'
-  };
   let sha = null;
   const getResp = await fetch(apiUrl, { headers });
   if (getResp.ok) { const j = await getResp.json(); sha = j.sha; }
@@ -165,6 +174,63 @@ async function commitToGitHub(filename, data, commitMessage) {
     throw new Error(msg);
   }
   return putResp.json();
+}
+
+// Concurrent-safe shipment commit: on SHA conflict (409/422), re-fetches live data,
+// merges our new rows into it, and retries — up to maxRetries times.
+async function commitShipments(newRows, uploaderEmail, commitMessage, maxRetries) {
+  maxRetries = maxRetries || 3;
+  const headers = _ghHeaders();
+  const apiUrl = 'https://api.github.com/repos/' + REPO + '/contents/data/shipments.json';
+  let attempt = 0;
+  while (attempt < maxRetries) {
+    attempt++;
+    // Always fetch fresh copy so SHA is current
+    const getResp = await fetch(apiUrl, { headers });
+    if (!getResp.ok) throw new Error('Could not read shipments.json from GitHub');
+    const fileJson = await getResp.json();
+    const sha = fileJson.sha;
+    let current;
+    try { current = JSON.parse(atob(fileJson.content.replace(/\n/g, ''))); }
+    catch (e) { current = { shipments: [] }; }
+    // Merge: upsert new rows into live data, newest import_date wins
+    const merged = upsertShipments(current.shipments || [], newRows);
+    const newData = { ...current, shipments: merged, last_updated: new Date().toISOString(), updated_by: uploaderEmail };
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(newData, null, 2))));
+    const putResp = await fetch(apiUrl, { method: 'PUT', headers, body: JSON.stringify({ message: commitMessage || 'Import shipments', content, sha }) });
+    if (putResp.ok) return { result: await putResp.json(), data: newData };
+    if (putResp.status === 409 || putResp.status === 422) {
+      if (attempt < maxRetries) continue; // SHA conflict — retry with fresh data
+    }
+    let msg = 'GitHub API error ' + putResp.status;
+    try { const e = await putResp.json(); msg = e.message || msg; } catch {}
+    throw new Error(msg);
+  }
+  throw new Error('Upload failed after ' + maxRetries + ' attempts due to concurrent edits. Please try again.');
+}
+
+// Fetch the commit history for shipments.json (for rewind UI)
+async function fetchShipmentHistory(perPage) {
+  const headers = _ghHeaders();
+  const url = 'https://api.github.com/repos/' + REPO + '/commits?path=data/shipments.json&per_page=' + (perPage || 20);
+  const r = await fetch(url, { headers });
+  if (!r.ok) throw new Error('Could not load history');
+  return r.json();
+}
+
+// Restore shipments.json to the version at a specific commit SHA
+async function restoreToCommit(commitSha, uploaderEmail) {
+  const headers = _ghHeaders();
+  // Fetch the file at that commit
+  const fileResp = await fetch('https://api.github.com/repos/' + REPO + '/contents/data/shipments.json?ref=' + commitSha, { headers });
+  if (!fileResp.ok) throw new Error('Could not fetch historical version');
+  const fileJson = await fileResp.json();
+  let historic;
+  try { historic = JSON.parse(atob(fileJson.content.replace(/\n/g, ''))); }
+  catch (e) { throw new Error('Could not parse historical file'); }
+  // Commit it as the new HEAD
+  await commitToGitHub('data/shipments.json', historic, 'Restore to ' + new Date(historic.last_updated || 0).toLocaleString() + ' (by ' + uploaderEmail + ')');
+  return historic;
 }
 
 // ── Import helpers ───────────────────────────────────────────
@@ -220,7 +286,15 @@ function mapImportRow(row, assignments) {
 
 function upsertShipments(existing, incoming) {
   const map = new Map(existing.map(s => [s.invoice_number, s]));
-  incoming.forEach(s => { if (s.invoice_number) map.set(s.invoice_number, s); });
+  incoming.forEach(s => {
+    if (!s.invoice_number) return;
+    const cur = map.get(s.invoice_number);
+    if (!cur) { map.set(s.invoice_number, s); return; }
+    // Keep whichever row has the newer import_date; incoming wins on tie
+    const curDate = cur.import_date ? new Date(cur.import_date).getTime() : 0;
+    const newDate = s.import_date ? new Date(s.import_date).getTime() : 0;
+    if (newDate >= curDate) map.set(s.invoice_number, s);
+  });
   return Array.from(map.values());
 }
 

@@ -19,6 +19,7 @@
         <button class="nav-item" data-tab="import">⬆ Import Data</button>
         <button class="nav-item" data-tab="users">👥 Users</button>
         <button class="nav-item" data-tab="settings">⚙ Settings</button>
+        <button class="nav-item" data-tab="history">⏪ History</button>
         <button class="nav-item" data-tab="preview">👁 Preview As</button>
       </nav>
       <div class="sidebar-footer">
@@ -38,6 +39,7 @@
       <!-- ── Shipments Tab ── -->
       <div class="tab-panel active" id="tab-shipments">
         <div class="page-header"><h1>All Shipments</h1></div>
+        <div id="upload-banner" style="margin-bottom:0.5rem"></div>
         <div class="kpi-strip" id="kpi-strip"></div>
         <div class="filters-bar">
           <div class="filter-pills" id="filter-pills">
@@ -114,6 +116,16 @@
           <div id="pw-error" class="error-msg" style="display:none;margin-bottom:0.75rem"></div>
           <button class="btn btn-primary" id="pw-update-btn" onclick="updateAdminPassword()">Update Password</button>
           <span id="pw-save-status" style="margin-left:1rem;font-size:0.875rem;color:var(--teal)"></span>
+        </div>
+      </div>
+
+      <!-- ── History Tab ── -->
+      <div class="tab-panel" id="tab-history">
+        <div class="page-header"><h1>Upload History</h1><p>View past imports and restore any prior version.</p></div>
+        <div class="table-card" style="padding:1.5rem">
+          <button class="btn btn-primary" id="load-history-btn" onclick="loadHistory()">Load History</button>
+          <span id="history-status" style="margin-left:1rem;font-size:0.875rem;color:var(--text-muted)"></span>
+          <div id="history-list" style="margin-top:1.25rem"></div>
         </div>
       </div>
 
@@ -225,6 +237,7 @@
 
     function applyFilters() {
       const filtered = filterShipments(allShipments, currentFilter, assignments);
+      renderUploadBanner('upload-banner', shipmentData);
       renderKPI(filtered, 'kpi-strip');
       renderTable(filtered, 'table-body', true, shipmentData.last_updated, shipmentData.updated_by, assignments);
     }
@@ -460,19 +473,78 @@
       btn.disabled = true;
       btn.innerHTML = '<span class="spinner"></span> Saving…';
       try {
-        const merged = upsertShipments(shipmentData.shipments || [], newRows);
-        const newData = { ...shipmentData, shipments: merged, last_updated: new Date().toISOString(), updated_by: currentUser.email };
-        await commitToGitHub('data/shipments.json', newData, 'Import ' + newRows.length + ' shipments');
+        const { data: newData } = await commitShipments(newRows, currentUser.email, 'Import ' + newRows.length + ' shipments');
         shipmentData = newData;
-        allShipments = merged;
+        allShipments = newData.shipments || [];
         applyFilters();
         status.style.color = 'var(--teal)';
-        status.textContent = '✓ ' + newRows.length + ' shipments saved!';
+        status.textContent = '✓ ' + newRows.length + ' rows saved!';
         btn.disabled = false; btn.textContent = 'Confirm & Save to GitHub';
       } catch (err) {
         btn.disabled = false; btn.textContent = 'Confirm & Save to GitHub';
         status.style.color = 'var(--red)';
         status.textContent = err.message;
+      }
+    }
+
+    // ── History / Rewind ───────────────────────────────────
+    async function loadHistory() {
+      const btn = document.getElementById('load-history-btn');
+      const statusEl = document.getElementById('history-status');
+      const list = document.getElementById('history-list');
+      btn.disabled = true; btn.textContent = 'Loading…';
+      statusEl.textContent = '';
+      try {
+        const commits = await fetchShipmentHistory(25);
+        if (!commits.length) { list.innerHTML = '<p style="color:var(--text-muted)">No upload history found.</p>'; btn.disabled = false; btn.textContent = 'Refresh'; return; }
+        list.innerHTML =
+          '<table style="width:100%;border-collapse:collapse">' +
+          '<thead><tr style="border-bottom:2px solid var(--border)">' +
+          '<th style="text-align:left;padding:0.5rem 0.75rem;font-size:0.8125rem">Date &amp; Time</th>' +
+          '<th style="text-align:left;padding:0.5rem 0.75rem;font-size:0.8125rem">Uploaded By</th>' +
+          '<th style="text-align:left;padding:0.5rem 0.75rem;font-size:0.8125rem">Note</th>' +
+          '<th style="text-align:right;padding:0.5rem 0.75rem;font-size:0.8125rem">Action</th>' +
+          '</tr></thead><tbody>' +
+          commits.map((c, i) => {
+            const date = new Date(c.commit.author.date).toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+            const author = c.commit.author.name || c.commit.author.email || '—';
+            const msg = c.commit.message || '—';
+            const isLatest = i === 0;
+            return '<tr style="border-bottom:1px solid var(--border)">' +
+              '<td style="padding:0.625rem 0.75rem;font-size:0.875rem">' + date + '</td>' +
+              '<td style="padding:0.625rem 0.75rem;font-size:0.875rem">' + author + '</td>' +
+              '<td style="padding:0.625rem 0.75rem;font-size:0.875rem;color:var(--text-muted)">' + msg + '</td>' +
+              '<td style="padding:0.625rem 0.75rem;text-align:right">' +
+              (isLatest
+                ? '<span style="font-size:0.75rem;color:var(--teal);font-weight:600">Current</span>'
+                : '<button class="btn btn-outline btn-sm" onclick="restoreVersion(\'' + c.sha + '\', \'' + date + '\')">Restore to this version</button>') +
+              '</td></tr>';
+          }).join('') +
+          '</tbody></table>';
+        btn.disabled = false; btn.textContent = 'Refresh';
+      } catch (err) {
+        statusEl.style.color = 'var(--red)';
+        statusEl.textContent = err.message;
+        btn.disabled = false; btn.textContent = 'Load History';
+      }
+    }
+
+    async function restoreVersion(sha, dateLabel) {
+      if (!confirm('Restore shipment data to the version from ' + dateLabel + '?\n\nThis will overwrite the current data. The current version will remain accessible in history.')) return;
+      const statusEl = document.getElementById('history-status');
+      statusEl.style.color = 'var(--text-muted)';
+      statusEl.textContent = 'Restoring…';
+      try {
+        const restored = await restoreToCommit(sha, currentUser.email);
+        shipmentData = restored;
+        allShipments = restored.shipments || [];
+        applyFilters();
+        statusEl.style.color = 'var(--teal)';
+        statusEl.textContent = '✓ Restored to ' + dateLabel + '. Reload to see updated data.';
+        loadHistory(); // refresh the list
+      } catch (err) {
+        statusEl.style.color = 'var(--red)';
+        statusEl.textContent = 'Restore failed: ' + err.message;
       }
     }
 
