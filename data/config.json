@@ -2,7 +2,7 @@
   "admin": {
     "name": "Jack",
     "email": "jack@boomrx.com",
-    "password_hash": "$2a$10$9XcBgVJIpkUhPdRI6H7AcOdgjSi1yVRlxeUAiCADsVx9vehQ374OW",
+    "password_hash": "$2a$10$ghpQL1cHQ6Z0sQBf5zv0U.6k740N4VFGwxIvJ2nkR1pY6mk3yYEpG",
     "role": "admin"
   },
   "account_managers": [],
