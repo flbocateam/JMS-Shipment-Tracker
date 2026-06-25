@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-24T00:00:00.000Z",
+  "last_updated": "2026-06-25T03:34:59.000Z",
   "assignments": {
     "249ff778-d9f9-43d3-8694-dac6ecbae794": {
       "account_manager": "Ashlyn Smith",
@@ -3477,6 +3477,11 @@
       "account_manager": "Nate Graham",
       "clinic_name": "MyCare Express Care",
       "salesperson": "Zachary Salazar"
+    },
+    "43e7a21f-caea-486e-889c-56a1a71805f0": {
+      "account_manager": "Maria Michelli",
+      "clinic_name": "Stillwater Infusion Company",
+      "salesperson": "Dylan White"
     }
   }
 }
