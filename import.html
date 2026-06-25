@@ -166,7 +166,9 @@
         const rows = await parseFile(file);
         const mapped = rows.map(r => mapImportRow(r, assignments)).filter(r => r && r.invoice_number);
         if (!mapped.length) {
-          preview.innerHTML = '<p style="color:var(--red);margin-top:1rem">No valid rows found. Check that this is a ProRx Drug Report export.</p>';
+          const sampleKeys = rows.length ? Object.keys(rows[0]) : [];
+          preview.innerHTML = '<p style="color:var(--red);margin-top:1rem">No valid rows found. Check that this is a ProRx Drug Report export.</p>' +
+            (sampleKeys.length ? '<p style="font-size:0.8125rem;color:var(--text-muted);margin-top:0.5rem">Column headers detected: <code style="font-size:0.8rem;background:var(--bg-alt);padding:0.2em 0.4em;border-radius:3px">' + sampleKeys.join(', ') + '</code></p>' : '');
           return;
         }
 
