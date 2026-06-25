@@ -339,9 +339,16 @@ function getShipmentKey(s) {
 
 // assignments param is optional — if provided, stamps account_manager on each row
 function mapImportRow(row, assignments) {
-  const str = k => String(row[k] || '').trim();
+  // Normalize keys: lowercase, spaces→underscores, strip non-alphanumeric
+  // So "Invoice Number" → "invoice_number", "Sales Rep" → "sales_rep", etc.
+  const norm = {};
+  for (const k of Object.keys(row)) {
+    const nk = k.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
+    norm[nk] = row[k];
+  }
+  const str = k => String(norm[k] !== undefined ? norm[k] : (row[k] !== undefined ? row[k] : '')).trim();
 
-  let repName = str('sales_rep') || str('rep_name');
+  let repName = str('sales_rep') || str('rep_name') || str('salesperson');
   // Strip the "JMS - " prefix present on all ProRx rep names
   repName = repName.replace(/^JMS\s*-\s*/i, '').trim() || repName;
   // Permanent rule: omit any row belonging to Nick Clemens
@@ -366,8 +373,9 @@ function mapImportRow(row, assignments) {
     trackingUrl = detected.url;
   }
 
-  const clinicId   = str('clinic_id') || str('Clinic ID') || str('BoomRx Clinic ID');
-  const clinicName = str('clinic_name') || str('Clinic Name');
+  // boomrx_clinic_id normalizes from "BoomRx Clinic ID"
+  const clinicId   = str('clinic_id') || str('boomrx_clinic_id');
+  const clinicName = str('clinic_name');
 
   let accountManager = null;
   if (assignments) {
@@ -383,9 +391,9 @@ function mapImportRow(row, assignments) {
     drug_id:              str('drug_id'),
 
     // Order info
-    order_date:    row['order_date'] || '',
-    ship_date:     row['ship_date']  || '',
-    status:        normalizeStatus(row['status']),
+    order_date:    norm['order_date'] || row['order_date'] || '',
+    ship_date:     norm['ship_date']  || row['ship_date']  || '',
+    status:        normalizeStatus(norm['status'] || row['status']),
 
     // Clinic / rep
     clinic_id:   clinicId,

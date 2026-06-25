@@ -355,23 +355,16 @@
         const freshConfig = await loadConfig();
         const isRepRole = role === 'rep';
         if (editEmail) {
-          // Find user in either list, preserve existing hash if no new PIN
+          // Find existing user in either list to preserve their hash and active status
           const allExisting = [...(freshConfig.account_managers || []), ...(freshConfig.reps || [])];
-          const existing = allExisting.find(u => u.email === editEmail);
-          const preservedHash = existing ? (existing.pin_hash || existing.password_hash) : null;
-          const updated = {
-            ...(existing || {}),
-            name, email, role,
-            ...(pinHash ? { pin_hash: pinHash, password_hash: undefined } : preservedHash && existing.pin_hash ? { pin_hash: preservedHash } : preservedHash ? { password_hash: preservedHash } : {})
-          };
-          delete updated.password_hash; // always normalize to pin_hash going forward unless it was the only hash
-          if (pinHash || (existing && existing.pin_hash)) {
-            updated.pin_hash = pinHash || existing.pin_hash;
-            delete updated.password_hash;
-          } else if (existing && existing.password_hash) {
-            updated.password_hash = existing.password_hash;
+          const existing = allExisting.find(u => u.email === editEmail) || {};
+          // Build updated record: keep existing fields, overwrite name/email/role, update hash only if new PIN given
+          const updated = { ...existing, name, email, role };
+          if (pinHash) {
+            updated.pin_hash = pinHash;
+            delete updated.password_hash; // normalize old bcrypt password_hash to pin_hash
           }
-          // Remove from both lists, then add to correct one
+          // Remove from both lists, re-insert under correct role
           freshConfig.account_managers = (freshConfig.account_managers || []).filter(u => u.email !== editEmail);
           freshConfig.reps = (freshConfig.reps || []).filter(u => u.email !== editEmail);
           if (isRepRole) { freshConfig.reps.push(updated); }
