@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fulfillment Analytics — JMS Shipment Tracker</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .analytics-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1rem; margin-bottom:1.5rem; }
+    .metric-card { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:1.25rem 1.5rem; }
+    .metric-val { font-size:2rem; font-weight:700; color:var(--teal); line-height:1; }
+    .metric-label { font-size:0.8125rem; color:var(--text-muted); margin-top:0.375rem; }
+    .metric-sub { font-size:0.75rem; color:var(--text-muted); margin-top:0.25rem; }
+    .section-title { font-size:1rem; font-weight:600; margin:1.5rem 0 0.75rem; color:var(--text); }
+    .analytics-table table { width:100%; border-collapse:collapse; font-size:0.875rem; }
+    .analytics-table th { text-align:left; padding:0.5rem 0.75rem; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-muted); border-bottom:2px solid var(--border); background:var(--bg-alt); }
+    .analytics-table td { padding:0.625rem 0.75rem; border-bottom:1px solid var(--border); }
+    .analytics-table tr:last-child td { border-bottom:none; }
+    .bar-wrap { display:flex; align-items:center; gap:0.5rem; }
+    .bar-track { flex:1; height:6px; background:var(--border); border-radius:3px; overflow:hidden; min-width:60px; }
+    .bar-fill { height:100%; background:var(--teal); border-radius:3px; transition:width 0.3s; }
+    .bar-fill.slow { background:var(--orange, #f59e0b); }
+    .speed-badge { display:inline-block; padding:0.2em 0.5em; border-radius:4px; font-size:0.7rem; font-weight:600; white-space:nowrap; }
+    .speed-fast { background:#d1fae5; color:#065f46; }
+    .speed-mid  { background:#fef3c7; color:#92400e; }
+    .speed-slow { background:#fee2e2; color:#991b1b; }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <h2>JMS Shipment Tracker</h2>
+        <p>BoomRx</p>
+      </div>
+      <div class="sidebar-user" id="sidebar-user"></div>
+      <nav class="sidebar-nav">
+        <button class="nav-item" id="back-btn">📦 Shipments</button>
+        <button class="nav-item active">📊 Analytics</button>
+        <button class="nav-item" id="import-nav-btn" style="display:none" onclick="window.location.href='import.html'">⬆ Import Data</button>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="btn btn-outline" style="width:100%;color:rgba(255,255,255,0.7);border-color:rgba(255,255,255,0.2)" onclick="logout()">Sign Out</button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <div class="page-header">
+        <h1>Fulfillment Analytics</h1>
+        <p id="page-subtitle">Average time from order received to order shipped</p>
+      </div>
+
+      <!-- Date Range Pills -->
+      <div class="filters-bar" style="margin-bottom:1rem">
+        <div class="filter-pills" id="date-pills">
+          <button class="pill" data-range="today">Today</button>
+          <button class="pill" data-range="yesterday">Yesterday</button>
+          <button class="pill" data-range="last7">Last 7 Days</button>
+          <button class="pill active" data-range="last30">Last 30 Days</button>
+          <button class="pill" data-range="last90">Last 90 Days</button>
+          <button class="pill" data-range="all">All Time</button>
+        </div>
+        <select class="rep-filter" id="rep-filter" style="display:none">
+          <option value="">All Reps</option>
+        </select>
+      </div>
+
+      <!-- Overall KPIs -->
+      <div class="analytics-grid" id="kpi-grid">
+        <div class="table-card" style="padding:1.5rem;text-align:center;color:var(--text-muted)">Loading…</div>
+      </div>
+
+      <!-- Pharmacy Breakdown -->
+      <div class="section-title">Fulfillment Speed by Pharmacy</div>
+      <div class="table-card analytics-table" id="pharmacy-table">
+        <div style="padding:1rem;color:var(--text-muted)">Loading…</div>
+      </div>
+
+      <!-- Rep Breakdown -->
+      <div class="section-title" id="rep-section-title">Fulfillment Speed by Rep</div>
+      <div class="table-card analytics-table" id="rep-table">
+        <div style="padding:1rem;color:var(--text-muted)">Loading…</div>
+      </div>
+    </main>
+  </div>
+
+  <script src="lib/bcryptjs.min.js"></script>
+  <script>window.bcrypt = window.bcrypt || (window.dcodeIO && window.dcodeIO.bcrypt);</script>
+  <script src="app.js"></script>
+  <script>
+    let allShipments = [];
+    let currentUser = null;
+    let currentRange = 'last30';
+    let currentRepFilter = '';
+
+    async function init() {
+      currentUser = checkAuth();
+      if (!currentUser) return;
+
+      const elevated = isElevatedRole(currentUser.role);
+
+      document.getElementById('sidebar-user').innerHTML =
+        '<strong>' + currentUser.name + '</strong>' +
+        '<span style="font-size:0.75rem;opacity:0.7;text-transform:capitalize">' + currentUser.role.replace('_', ' ') + '</span>' +
+        currentUser.email;
+
+      document.getElementById('back-btn').onclick = () =>
+        window.location.href = currentUser.role === 'admin' ? 'admin.html' : 'dashboard.html';
+
+      if (elevated) document.getElementById('import-nav-btn').style.display = '';
+
+      try {
+        const data = await loadShipments();
+        let shipments = data.shipments || [];
+
+        if (!elevated) {
+          shipments = shipments.filter(s => s.rep_name === currentUser.name);
+          document.getElementById('rep-section-title').style.display = 'none';
+          document.getElementById('rep-table').style.display = 'none';
+        } else {
+          // Rep filter for elevated
+          const repFilter = document.getElementById('rep-filter');
+          repFilter.style.display = '';
+          const reps = [...new Set(shipments.map(s => s.rep_name).filter(Boolean))].sort();
+          reps.forEach(r => { const o = document.createElement('option'); o.value = r; o.textContent = r; repFilter.appendChild(o); });
+          repFilter.addEventListener('change', () => { currentRepFilter = repFilter.value; render(); });
+        }
+
+        allShipments = shipments;
+        render();
+      } catch (err) {
+        document.getElementById('kpi-grid').innerHTML = '<div style="color:var(--red);padding:1rem">Error: ' + err.message + '</div>';
+      }
+    }
+
+    function render() {
+      const base = currentRepFilter
+        ? allShipments.filter(s => s.rep_name === currentRepFilter)
+        : allShipments;
+
+      const stats = computeFulfillmentStats(base, currentRange);
+      renderKPIs(stats);
+      renderPharmacyTable(stats);
+      renderRepTable(stats);
+    }
+
+    function fmtDays(d) {
+      if (d === undefined || d === null) return '—';
+      return d.toFixed(1) + 'd';
+    }
+
+    function speedBadge(avg) {
+      if (avg <= 1.5) return '<span class="speed-badge speed-fast">Fast</span>';
+      if (avg <= 3.5) return '<span class="speed-badge speed-mid">Moderate</span>';
+      return '<span class="speed-badge speed-slow">Slow</span>';
+    }
+
+    function renderKPIs(stats) {
+      const o = stats.overall;
+      const pEntries = Object.entries(stats.byPharmacy).filter(([,v]) => v.count >= 5);
+      const fastest = pEntries.length ? pEntries.reduce((a,b) => a[1].avg < b[1].avg ? a : b) : null;
+      const slowest = pEntries.length ? pEntries.reduce((a,b) => a[1].avg > b[1].avg ? a : b) : null;
+      const pct0 = o.count ? Math.round(100 * (Object.values(stats.byPharmacy).flatMap(x => []).length)) : 0;
+
+      // Count same-day (0 days)
+      const eligible = (currentRepFilter
+        ? allShipments.filter(s => s.rep_name === currentRepFilter)
+        : allShipments
+      ).filter(s => {
+        if (!s.order_date || !s.ship_date || s.status === 'cancelled') return false;
+        const cutoff = getDateRangeCutoff(currentRange || 'all');
+        if (cutoff && new Date(s.order_date) < cutoff) return false;
+        return true;
+      });
+      const sameDay = eligible.filter(s => {
+        const d = (new Date(s.ship_date) - new Date(s.order_date)) / 86400000;
+        return d >= 0 && d < 1;
+      }).length;
+      const pctSameDay = eligible.length ? Math.round(100 * sameDay / eligible.length) : 0;
+
+      document.getElementById('kpi-grid').innerHTML =
+        kpiCard(fmtDays(o.avg), 'Avg Days to Ship', o.count.toLocaleString() + ' orders analyzed') +
+        kpiCard(fmtDays(o.median), 'Median Days to Ship', 'Half of orders ship within this time') +
+        kpiCard(pctSameDay + '%', 'Same-Day Shipped', 'Order received and shipped same day') +
+        (fastest ? kpiCard(fastest[0], 'Fastest Pharmacy', 'Avg ' + fmtDays(fastest[1].avg)) : '') +
+        (slowest && slowest[0] !== fastest[0] ? kpiCard(slowest[0], 'Slowest Pharmacy', 'Avg ' + fmtDays(slowest[1].avg)) : '');
+    }
+
+    function kpiCard(val, label, sub) {
+      return '<div class="metric-card"><div class="metric-val">' + val + '</div>' +
+        '<div class="metric-label">' + label + '</div>' +
+        (sub ? '<div class="metric-sub">' + sub + '</div>' : '') + '</div>';
+    }
+
+    function renderPharmacyTable(stats) {
+      const entries = Object.entries(stats.byPharmacy)
+        .filter(([,v]) => v.count >= 3)
+        .sort((a,b) => a[1].avg - b[1].avg);
+
+      if (!entries.length) {
+        document.getElementById('pharmacy-table').innerHTML = '<div style="padding:1rem;color:var(--text-muted)">Not enough data for this period.</div>';
+        return;
+      }
+
+      const maxAvg = Math.max(...entries.map(([,v]) => v.avg));
+
+      document.getElementById('pharmacy-table').innerHTML =
+        '<table><thead><tr>' +
+        '<th>Pharmacy</th><th>Avg Days</th><th>Median</th><th>Fastest</th><th>Slowest</th><th>Orders</th><th>Speed</th>' +
+        '</tr></thead><tbody>' +
+        entries.map(([name, v]) => {
+          const pct = maxAvg > 0 ? Math.round(100 * v.avg / maxAvg) : 0;
+          const slow = v.avg > 3.5;
+          return '<tr>' +
+            '<td style="font-weight:500">' + name + '</td>' +
+            '<td><div class="bar-wrap">' +
+              '<span style="min-width:2.5rem">' + fmtDays(v.avg) + '</span>' +
+              '<div class="bar-track"><div class="bar-fill' + (slow ? ' slow' : '') + '" style="width:' + pct + '%"></div></div>' +
+            '</div></td>' +
+            '<td>' + fmtDays(v.median) + '</td>' +
+            '<td>' + fmtDays(v.min) + '</td>' +
+            '<td>' + fmtDays(v.max) + '</td>' +
+            '<td>' + v.count.toLocaleString() + '</td>' +
+            '<td>' + speedBadge(v.avg) + '</td>' +
+            '</tr>';
+        }).join('') +
+        '</tbody></table>';
+    }
+
+    function renderRepTable(stats) {
+      if (!isElevatedRole(currentUser.role)) return;
+      const entries = Object.entries(stats.byRep)
+        .filter(([,v]) => v.count >= 3)
+        .sort((a,b) => a[1].avg - b[1].avg);
+
+      if (!entries.length) {
+        document.getElementById('rep-table').innerHTML = '<div style="padding:1rem;color:var(--text-muted)">Not enough data for this period.</div>';
+        return;
+      }
+
+      const maxAvg = Math.max(...entries.map(([,v]) => v.avg));
+
+      document.getElementById('rep-table').innerHTML =
+        '<table><thead><tr>' +
+        '<th>Rep</th><th>Avg Days</th><th>Median</th><th>Orders</th><th>Speed</th>' +
+        '</tr></thead><tbody>' +
+        entries.map(([name, v]) => {
+          const pct = maxAvg > 0 ? Math.round(100 * v.avg / maxAvg) : 0;
+          const slow = v.avg > 3.5;
+          return '<tr>' +
+            '<td style="font-weight:500">' + name + '</td>' +
+            '<td><div class="bar-wrap">' +
+              '<span style="min-width:2.5rem">' + fmtDays(v.avg) + '</span>' +
+              '<div class="bar-track"><div class="bar-fill' + (slow ? ' slow' : '') + '" style="width:' + pct + '%"></div></div>' +
+            '</div></td>' +
+            '<td>' + fmtDays(v.median) + '</td>' +
+            '<td>' + v.count.toLocaleString() + '</td>' +
+            '<td>' + speedBadge(v.avg) + '</td>' +
+            '</tr>';
+        }).join('') +
+        '</tbody></table>';
+    }
+
+    document.getElementById('date-pills').addEventListener('click', e => {
+      const pill = e.target.closest('.pill');
+      if (!pill) return;
+      document.querySelectorAll('#date-pills .pill').forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      currentRange = pill.dataset.range;
+      render();
+    });
+
+    init();
+  </script>
+</body>
+</html>

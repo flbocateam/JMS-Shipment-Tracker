@@ -51,21 +51,31 @@ async function loadAssignments() {
 }
 
 // ── Account manager lookup ────────────────────────────────────
-function getAMForShipment(shipment, assignments) {
-  // 1. Already stamped on the shipment (new imports)
-  if (shipment.account_manager) return shipment.account_manager;
-  // 2. Look up by clinic_id
-  if (shipment.clinic_id && assignments[shipment.clinic_id]) {
-    return assignments[shipment.clinic_id].account_manager;
-  }
-  // 3. Fall back to clinic_name match (case-insensitive)
+// Returns the full assignment record for a shipment's clinic (or null)
+function getAssignmentRecord(shipment, assignments) {
+  if (shipment.clinic_id && assignments[shipment.clinic_id]) return assignments[shipment.clinic_id];
   if (shipment.clinic_name) {
     const cn = shipment.clinic_name.toLowerCase().trim();
     for (const v of Object.values(assignments)) {
-      if (v.clinic_name && v.clinic_name.toLowerCase().trim() === cn) return v.account_manager;
+      if (v.clinic_name && v.clinic_name.toLowerCase().trim() === cn) return v;
     }
   }
   return null;
+}
+
+function getAMForShipment(shipment, assignments) {
+  if (shipment.account_manager) {
+    // Still check the record for a secondary AM display
+    return shipment.account_manager;
+  }
+  const rec = getAssignmentRecord(shipment, assignments);
+  return rec ? rec.account_manager : null;
+}
+
+// Returns secondary AM name if the clinic has a dual-AM setup
+function getSecondaryAMForShipment(shipment, assignments) {
+  const rec = getAssignmentRecord(shipment, assignments);
+  return rec ? (rec.secondary_account_manager || null) : null;
 }
 
 // ── Carrier detection ────────────────────────────────────────
@@ -151,8 +161,10 @@ function renderTable(shipments, tableBodyId, showRepCol, globalLastUpdated, glob
   tbody.innerHTML = visible.map(s => {
     const cancelled = s.status === 'cancelled' ? ' row-cancelled' : '';
     const repCol = showRepCol ? '<td>' + (s.rep_name || '—') + '</td>' : '';
-    const am = getAMForShipment(s, assignMap);
-    const amText = am ? '<div class="sub-text">AM: ' + am + '</div>' : '';
+    const am  = getAMForShipment(s, assignMap);
+    const am2 = getSecondaryAMForShipment(s, assignMap);
+    const amLabel = am ? (am2 ? am + ' &amp; ' + am2 : am) : null;
+    const amText = amLabel ? '<div class="sub-text">AM: ' + amLabel + '</div>' : '';
     return '<tr class="' + cancelled + '">' +
       '<td>' + statusBadge(s.status) + '</td>' +
       repCol +
@@ -409,6 +421,58 @@ function upsertShipments(existing, incoming) {
   return Array.from(map.values());
 }
 
+// ── Fulfillment analytics ────────────────────────────────────
+function statsArr(arr) {
+  if (!arr.length) return { avg: 0, median: 0, min: 0, max: 0, count: 0 };
+  const s = [...arr].sort((a, b) => a - b);
+  const n = s.length;
+  const mid = Math.floor(n / 2);
+  return {
+    avg:    s.reduce((a, b) => a + b, 0) / n,
+    median: n % 2 ? s[mid] : (s[mid - 1] + s[mid]) / 2,
+    min:    s[0],
+    max:    s[n - 1],
+    count:  n
+  };
+}
+
+function computeFulfillmentStats(shipments, dateRange) {
+  const cutoff = getDateRangeCutoff(dateRange || 'all');
+  const base = cutoff
+    ? shipments.filter(s => s.order_date && new Date(s.order_date) >= cutoff)
+    : shipments;
+
+  const eligible = base.filter(s =>
+    s.order_date && s.ship_date && s.status !== 'cancelled'
+  );
+
+  const getDays = s => {
+    const ms = new Date(s.ship_date) - new Date(s.order_date);
+    return Math.max(0, ms / 86400000);
+  };
+
+  const byPharmacy = {}, byRep = {};
+  const allDays = [];
+
+  eligible.forEach(s => {
+    const d = getDays(s);
+    if (d > 60) return; // exclude outliers (likely data issues)
+    allDays.push(d);
+    const p = s.pharmacy_name || 'Unknown';
+    (byPharmacy[p] = byPharmacy[p] || []).push(d);
+    const r = s.rep_name || 'Unknown';
+    (byRep[r] = byRep[r] || []).push(d);
+  });
+
+  return {
+    overall:    statsArr(allDays),
+    byPharmacy: Object.fromEntries(Object.entries(byPharmacy).map(([k, v]) => [k, statsArr(v)])),
+    byRep:      Object.fromEntries(Object.entries(byRep).map(([k, v]) => [k, statsArr(v)])),
+    totalOrders: base.length,
+    ordersWithShipDate: eligible.length
+  };
+}
+
 // ── Date range helpers ───────────────────────────────────────
 function getDateRangeCutoff(range) {
   const now = new Date();
@@ -429,11 +493,13 @@ function filterShipments(shipments, { status, search, repFilter, amFilter, dateR
     if (status && status !== 'all' && s.status !== status) return false;
     if (repFilter && s.rep_name !== repFilter) return false;
     if (amFilter) {
-      const am = getAMForShipment(s, assignments || {});
+      const am  = getAMForShipment(s, assignments || {});
+      const am2 = getSecondaryAMForShipment(s, assignments || {});
       if (amFilter === '__unassigned__') {
-        if (am && am !== 'Unassigned') return false;
+        if ((am && am !== 'Unassigned') || am2) return false;
       } else {
-        if (am !== amFilter) return false;
+        // Match primary OR secondary so dual-AM clinics appear for both managers
+        if (am !== amFilter && am2 !== amFilter) return false;
       }
     }
     if (cutoff) {
