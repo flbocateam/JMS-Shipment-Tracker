@@ -142,7 +142,7 @@
         <div class="map-container">
           <div class="globe-card">
             <canvas id="globe-canvas"></canvas>
-            <div id="globe-hint">scroll to zoom · drag to pan · hover a state</div>
+            <div id="globe-hint">hover a state · click for details</div>
             <div id="globe-empty" style="display:none">No orders in this period</div>
             <div class="map-legend">
               <strong>Order Volume</strong>
@@ -237,28 +237,29 @@
       return null;
     }
 
-    // Fixed continental-US projection bounds
-    const MAP_BOUNDS = { latMin: 24, latMax: 50, lngMin: -125, lngMax: -66 };
+    // Continental-US projection bounds (AK & HI drawn as insets)
+    const MAP_BOUNDS = { latMin: 24, latMax: 49.5, lngMin: -125, lngMax: -66.5 };
     const MID_LAT_COS = Math.cos(37 * Math.PI / 180);
+    const NAME_TO_CODE = Object.fromEntries(Object.entries(US_STATES).map(([c, n]) => [n, c]));
+
+    let GEO = null; // bundled us-states.geojson
+    async function loadGeo() {
+      if (GEO) return GEO;
+      const r = await fetch('data/us-states.geojson');
+      GEO = await r.json();
+      return GEO;
+    }
 
     const globe = {
-      canvas: null, ctx: null, dpr: 1, w: 0, h: 0, pad: 44,
+      canvas: null, ctx: null, dpr: 1, w: 0, h: 0, pad: 40,
       sBase: 1, offX: 0, offY: 0,
-      zoom: 1, panX: 0, panY: 0,
-      dragging: false, lastX: 0, lastY: 0,
-      silhouette: [], states: [], arcs: [], statePts: [], hover: null,
+      states: [], centroids: {}, arcs: [], hover: null,
       raf: null, started: false, t0: 0
     };
 
-    function baseProject(lat, lng) {
-      const x = globe.offX + (lng - MAP_BOUNDS.lngMin) * MID_LAT_COS * globe.sBase;
-      const y = globe.offY + (MAP_BOUNDS.latMax - lat) * globe.sBase;
-      return [x, y];
-    }
-    // Apply zoom + pan to a base point
-    function view(p) {
-      return [(p[0] - globe.w / 2) * globe.zoom + globe.w / 2 + globe.panX,
-              (p[1] - globe.h / 2) * globe.zoom + globe.h / 2 + globe.panY];
+    function project(lat, lng) {
+      return [globe.offX + (lng - MAP_BOUNDS.lngMin) * MID_LAT_COS * globe.sBase,
+              globe.offY + (MAP_BOUNDS.latMax - lat) * globe.sBase];
     }
     function computeProjection() {
       const lonSpan = (MAP_BOUNDS.lngMax - MAP_BOUNDS.lngMin) * MID_LAT_COS;
@@ -268,43 +269,54 @@
       globe.offX = (globe.w - lonSpan * s) / 2;
       globe.offY = (globe.h - latSpan * s) / 2;
     }
-    // AK & HI go in lower-left insets like a standard US map
     function insetPos(code) {
-      if (code === 'AK') return [globe.pad + 30, globe.h - globe.pad - 48];
-      if (code === 'HI') return [globe.pad + 92, globe.h - globe.pad - 20];
+      if (code === 'AK') return [globe.pad + 34, globe.h - globe.pad - 40];
+      if (code === 'HI') return [globe.pad + 104, globe.h - globe.pad - 18];
       return null;
     }
-    function stateBase(code) {
-      const ins = insetPos(code);
-      if (ins) return ins;
-      const c = STATE_CENTROIDS[code];
-      return baseProject(c[0], c[1]);
-    }
 
-    // Dotted US silhouette: grid points kept if near a continental state centroid
-    function buildSilhouette() {
-      const pts = [];
-      const cont = Object.keys(STATE_CENTROIDS).filter(c => c !== 'AK' && c !== 'HI')
-        .map(c => baseProject(STATE_CENTROIDS[c][0], STATE_CENTROIDS[c][1]));
-      const spacing = 13, thresh = 48;
-      const x0 = globe.offX - 12, x1 = globe.offX + (MAP_BOUNDS.lngMax - MAP_BOUNDS.lngMin) * MID_LAT_COS * globe.sBase + 12;
-      const y0 = globe.offY - 12, y1 = globe.offY + (MAP_BOUNDS.latMax - MAP_BOUNDS.latMin) * globe.sBase + 12;
-      for (let y = y0; y < y1; y += spacing) {
-        for (let x = x0; x < x1; x += spacing) {
-          let md = 1e9;
-          for (const p of cont) { const d = Math.hypot(p[0] - x, p[1] - y); if (d < md) md = d; if (md < thresh) break; }
-          if (md < thresh) pts.push([x, y]);
-        }
+    // Sample dots evenly along a projected ring's edges
+    function sampleOutline(ring, out, spacing) {
+      for (let i = 0; i < ring.length - 1; i++) {
+        const a = ring[i], b = ring[i + 1];
+        const dx = b[0] - a[0], dy = b[1] - a[1];
+        const len = Math.hypot(dx, dy);
+        const n = Math.max(1, Math.round(len / spacing));
+        for (let j = 0; j < n; j++) { const t = j / n; out.push([a[0] + dx * t, a[1] + dy * t]); }
       }
-      globe.silhouette = pts;
     }
 
-    function rebuildStateBase() {
+    // Build per-state geometry from GeoJSON (projected outline dots + rings for hit-test)
+    function buildGeometry() {
+      if (!GEO) return;
       const max = Math.max(1, ...Object.keys(STATE_CENTROIDS).map(c => stateData[c]?.orders.length || 0));
-      globe.states = Object.keys(STATE_CENTROIDS).map(code => {
+      globe.states = [];
+      globe.centroids = {};
+      for (const f of GEO.features) {
+        const code = NAME_TO_CODE[f.properties.name];
+        if (!code) continue;
         const count = stateData[code]?.orders.length || 0;
-        return { code, count, ratio: count / max, base: stateBase(code) };
-      });
+        const ratio = count / max;
+
+        if (code === 'AK' || code === 'HI') {
+          const c = insetPos(code);
+          globe.centroids[code] = c;
+          globe.states.push({ code, count, ratio, centroid: c, rings: [], outline: [], inset: true });
+          continue;
+        }
+        const polys = f.geometry.type === 'Polygon' ? [f.geometry.coordinates] : f.geometry.coordinates;
+        const rings = [], outline = [];
+        for (const poly of polys) {
+          for (const ring of poly) {
+            const pr = ring.map(([lng, lat]) => project(lat, lng));
+            rings.push(pr);
+            sampleOutline(pr, outline, 7);
+          }
+        }
+        const c = STATE_CENTROIDS[code] ? project(STATE_CENTROIDS[code][0], STATE_CENTROIDS[code][1]) : rings[0][0];
+        globe.centroids[code] = c;
+        globe.states.push({ code, count, ratio, centroid: c, rings, outline });
+      }
     }
 
     function resizeGlobe() {
@@ -316,8 +328,7 @@
       c.height = Math.round(globe.h * globe.dpr);
       globe.ctx.setTransform(globe.dpr, 0, 0, globe.dpr, 0, 0);
       computeProjection();
-      buildSilhouette();
-      rebuildStateBase();
+      buildGeometry();
     }
 
     function setupGlobe() {
@@ -328,46 +339,34 @@
       window.addEventListener('resize', () => { if (currentView === 'map') resizeGlobe(); });
 
       const c = globe.canvas;
-      c.addEventListener('mousedown', e => { globe.dragging = true; globe.lastX = e.offsetX; globe.lastY = e.offsetY; });
-      window.addEventListener('mouseup', () => { globe.dragging = false; });
-      c.addEventListener('mousemove', e => {
-        if (globe.dragging) {
-          globe.panX += e.offsetX - globe.lastX;
-          globe.panY += e.offsetY - globe.lastY;
-          globe.lastX = e.offsetX; globe.lastY = e.offsetY;
-          hideStateTooltip();
-        } else {
-          hitTestState(e.offsetX, e.offsetY, e.clientX, e.clientY);
-        }
-      });
+      c.addEventListener('mousemove', e => hitTestState(e.offsetX, e.offsetY, e.clientX, e.clientY));
       c.addEventListener('mouseleave', () => { globe.hover = null; hideStateTooltip(); });
       c.addEventListener('click', e => {
         const hit = nearestState(e.offsetX, e.offsetY);
         if (hit) showStateDetail(hit.code);
       });
-      c.addEventListener('wheel', e => {
-        e.preventDefault();
-        const nz = Math.max(0.7, Math.min(5, globe.zoom * (e.deltaY < 0 ? 1.12 : 0.89)));
-        const cw = globe.w / 2, ch = globe.h / 2;
-        // zoom toward cursor
-        globe.panX = e.offsetX - cw - (e.offsetX - cw - globe.panX) * (nz / globe.zoom);
-        globe.panY = e.offsetY - ch - (e.offsetY - ch - globe.panY) * (nz / globe.zoom);
-        globe.zoom = nz;
-      }, { passive: false });
     }
 
-    function nearestState(mx, my) {
-      let best = null, bestD = 16;
-      for (const p of globe.statePts) {
-        const d = Math.hypot(p.sx - mx, p.sy - my);
-        if (d < bestD) { bestD = d; best = p; }
+    // Point-in-polygon (even-odd across all rings of the state)
+    function pointInState(st, mx, my) {
+      if (st.inset) return Math.hypot(st.centroid[0] - mx, st.centroid[1] - my) < 14;
+      let inside = false;
+      for (const ring of st.rings) {
+        for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+          const xi = ring[i][0], yi = ring[i][1], xj = ring[j][0], yj = ring[j][1];
+          if (((yi > my) !== (yj > my)) && (mx < (xj - xi) * (my - yi) / (yj - yi) + xi)) inside = !inside;
+        }
       }
-      return best;
+      return inside;
+    }
+    function nearestState(mx, my) {
+      for (const st of globe.states) if (pointInState(st, mx, my)) return st;
+      return null;
     }
     function hitTestState(mx, my, clientX, clientY) {
       const hit = nearestState(mx, my);
       globe.hover = hit ? hit.code : null;
-      globe.canvas.style.cursor = hit ? 'pointer' : 'grab';
+      globe.canvas.style.cursor = hit ? 'pointer' : 'default';
       if (hit) showStateTooltip(hit.code, clientX, clientY);
       else hideStateTooltip();
     }
@@ -402,29 +401,35 @@
         kpiCard(avgPerState.toLocaleString(), 'Avg Orders/State', 'per active state');
     }
 
-    function renderMap() {
+    async function renderMap() {
       const filtered = currentRepFilter ? allShipments.filter(s => s.rep_name === currentRepFilter) : allShipments;
       const cutoff = getDateRangeCutoff(currentRange || 'all');
       const dated = cutoff ? filtered.filter(s => s.order_date && new Date(s.order_date) >= cutoff) : filtered;
       stateData = aggregateByState(dated);
 
       renderMapKPIs(dated, stateData);
+
+      const emptyEl = document.getElementById('globe-empty');
+      if (!GEO) { emptyEl.style.display = 'flex'; emptyEl.textContent = 'Loading map…'; }
+      try { await loadGeo(); } catch (e) { emptyEl.textContent = 'Map failed to load'; return; }
+
       setupGlobe();
       resizeGlobe();
       buildArcs(dated);
 
-      document.getElementById('globe-empty').style.display = dated.length ? 'none' : 'flex';
+      emptyEl.style.display = dated.length ? 'none' : 'flex';
+      emptyEl.textContent = 'No orders in this period';
 
       if (!globe.started) { globe.started = true; globe.raf = requestAnimationFrame(drawMap); }
     }
 
     function stateColor(ratio, count) {
-      if (count === 0) return { fill: 'rgba(91,107,122,0.55)', glow: 0 };
+      if (count === 0) return 'rgba(110,140,150,0.45)';
       // gray → bright green by volume
-      const r = Math.round(91 + (34 - 91) * ratio);
-      const g = Math.round(107 + (224 - 107) * ratio);
-      const b = Math.round(122 + (107 - 122) * ratio);
-      return { fill: 'rgb(' + r + ',' + g + ',' + b + ')', glow: ratio };
+      const r = Math.round(110 + (34 - 110) * ratio);
+      const g = Math.round(140 + (230 - 140) * ratio);
+      const b = Math.round(150 + (107 - 150) * ratio);
+      return 'rgb(' + r + ',' + g + ',' + b + ')';
     }
 
     function drawMap(ts) {
@@ -434,24 +439,25 @@
       const ctx = globe.ctx;
       ctx.clearRect(0, 0, globe.w, globe.h);
 
-      // 1. Dotted US silhouette
-      for (const b of globe.silhouette) {
-        const [x, y] = view(b);
-        if (x < -10 || x > globe.w + 10 || y < -10 || y > globe.h + 10) continue;
-        ctx.fillStyle = 'rgba(120,170,170,0.18)';
-        ctx.beginPath(); ctx.arc(x, y, 1.1 * Math.min(2, globe.zoom), 0, 6.2832); ctx.fill();
+      // 1. State outlines as dots (color by volume; brighter/larger on hover)
+      for (const st of globe.states) {
+        if (st.inset) continue;
+        const isHover = globe.hover === st.code;
+        ctx.fillStyle = isHover ? '#ffffff' : stateColor(st.ratio, st.count);
+        const r = isHover ? 1.8 : 1.3;
+        for (const p of st.outline) { ctx.beginPath(); ctx.arc(p[0], p[1], r, 0, 6.2832); ctx.fill(); }
       }
 
       // 2. Animated green shipping arcs (pharmacy origin → customer state)
       ctx.lineCap = 'round';
       for (const arc of globe.arcs) {
-        const O = view(stateBase(arc.o)), D = view(stateBase(arc.d));
+        const O = globe.centroids[arc.o], D = globe.centroids[arc.d];
+        if (!O || !D) continue;
         const mx = (O[0] + D[0]) / 2, my = (O[1] + D[1]) / 2;
         const dx = D[0] - O[0], dy = D[1] - O[1], len = Math.hypot(dx, dy) || 1;
-        // perpendicular, lifted upward (toward top of canvas)
         let nx = -dy / len, ny = dx / len;
         if (ny > 0) { nx = -nx; ny = -ny; }
-        const lift = Math.min(140, len * 0.42);
+        const lift = Math.min(130, len * 0.4);
         const C = [mx + nx * lift, my + ny * lift];
         const bez = t => { const u = 1 - t; return [u*u*O[0] + 2*u*t*C[0] + t*t*D[0], u*u*O[1] + 2*u*t*C[1] + t*t*D[1]]; };
 
@@ -472,7 +478,6 @@
           }
           prev = pt;
         }
-        // bright head dot
         const hp = bez(Math.max(0, Math.min(1, head)));
         ctx.fillStyle = '#aaffcc';
         ctx.shadowColor = '#22e66b'; ctx.shadowBlur = 10;
@@ -480,25 +485,21 @@
         ctx.shadowBlur = 0;
       }
 
-      // 3. State dots (volume) + hit map
-      globe.statePts = [];
+      // 3. Inset markers (AK/HI) + state abbreviation labels
       for (const st of globe.states) {
-        const [sx, sy] = view(st.base);
-        globe.statePts.push({ code: st.code, sx, sy });
-        const { fill, glow } = stateColor(st.ratio, st.count);
-        const size = (st.count === 0 ? 1.8 : 3.5 + 5 * st.ratio) * Math.min(1.6, Math.max(0.85, globe.zoom * 0.9));
-        const isHover = globe.hover === st.code;
-        if (glow > 0) { ctx.shadowColor = 'rgba(34,230,107,' + (0.5 + 0.5 * glow) + ')'; ctx.shadowBlur = 6 + 12 * glow; }
-        ctx.fillStyle = isHover ? '#ffffff' : fill;
-        ctx.beginPath(); ctx.arc(sx, sy, isHover ? size + 1.5 : size, 0, 6.2832); ctx.fill();
-        ctx.shadowBlur = 0;
-        // label bigger states
-        if (st.count > 0 && (st.ratio > 0.18 || isHover)) {
-          ctx.fillStyle = 'rgba(255,255,255,' + (0.55 + 0.45 * st.ratio) + ')';
-          ctx.font = 'bold 10px system-ui, sans-serif';
-          ctx.textAlign = 'center';
-          ctx.fillText(st.code, sx, sy - size - 4);
+        const c = st.centroid;
+        if (st.inset) {
+          ctx.fillStyle = st.count > 0 ? stateColor(st.ratio, st.count) : 'rgba(110,140,150,0.5)';
+          if (st.ratio > 0) { ctx.shadowColor = 'rgba(34,230,107,0.7)'; ctx.shadowBlur = 8 * st.ratio; }
+          ctx.beginPath(); ctx.arc(c[0], c[1], 4, 0, 6.2832); ctx.fill();
+          ctx.shadowBlur = 0;
         }
+        const isHover = globe.hover === st.code;
+        ctx.fillStyle = isHover ? '#ffffff' : (st.count > 0 ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.5)');
+        ctx.font = 'bold 9px system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(st.code, c[0], c[1]);
       }
 
       globe.raf = requestAnimationFrame(drawMap);
