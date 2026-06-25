@@ -58,13 +58,6 @@
       "active": true
     },
     {
-      "name": "Jonathan Izquierdo",
-      "email": "jonathan@boomrx.com",
-      "pin_hash": "$2b$10$CASZ9bk4jSc0CbG30fq6yebIdltErTpt.BMb26JbA9.Bw6/YCuTyy",
-      "role": "rep",
-      "active": true
-    },
-    {
       "name": "Valentin Zakar",
       "email": "valentin.zakar@boomrx.com",
       "pin_hash": "$2b$10$CASZ9bk4jSc0CbG30fq6yebIdltErTpt.BMb26JbA9.Bw6/YCuTyy",
@@ -88,6 +81,13 @@
     {
       "name": "Dylan White",
       "email": "dylan.white@boomrx.com",
+      "pin_hash": "$2b$10$CASZ9bk4jSc0CbG30fq6yebIdltErTpt.BMb26JbA9.Bw6/YCuTyy",
+      "role": "rep",
+      "active": true
+    },
+    {
+      "name": "Jonathan Izquierdo",
+      "email": "jonathan.izquierdo@boomrx.com",
       "pin_hash": "$2b$10$CASZ9bk4jSc0CbG30fq6yebIdltErTpt.BMb26JbA9.Bw6/YCuTyy",
       "role": "rep",
       "active": true
