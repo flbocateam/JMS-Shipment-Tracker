@@ -140,8 +140,39 @@
       setTimeout(() => document.getElementById('pat-status').textContent = '', 3000);
     }
 
-    // Try multiple header-row offsets to handle ProRx files with title rows above data.
-    // Returns the best parse result (most non-empty rows) along with detected column names.
+    // ProRx positional column map (no header row in export).
+    // Confirmed from live file: row values are 0-indexed array positions.
+    const PRORX_COLS = {
+      invoice_number:       5,
+      order_date:           6,
+      ship_date:            7,   // empty when status=received
+      clinic_id:            8,
+      drug_name:            10,
+      drug_strength:        11,
+      drug_dosage_form:     12,
+      prescription_item_id: 13,
+      prescription_id:      14,
+      quantity:             15,
+      clinic_name:          16,
+      rep_name:             17,
+      pharmacy_name:        19,
+      pharmacy_id:          20,
+      status:               22,
+      tracking_number:      23,
+      carrier:              24,
+      region:               25,
+      order_id:             26,
+    };
+
+    function rowFromPositional(arr) {
+      const r = {};
+      for (const [key, idx] of Object.entries(PRORX_COLS)) {
+        const v = arr[idx];
+        r[key] = (v instanceof Date) ? v.toISOString().split('T')[0] : String(v !== undefined && v !== null ? v : '').trim();
+      }
+      return r;
+    }
+
     async function parseFile(file) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -150,19 +181,24 @@
             const wb = XLSX.read(new Uint8Array(ev.target.result), { type: 'array', cellDates: true });
             const sheet = wb.Sheets[wb.SheetNames[0]];
 
-            // Try rows 0-6 as the header row; pick whichever gives the most data rows
-            let best = [];
-            let bestKeys = [];
-            for (let skip = 0; skip <= 6; skip++) {
-              const attempt = XLSX.utils.sheet_to_json(sheet, { defval: '', range: skip });
-              // Filter out rows that are entirely blank
-              const nonEmpty = attempt.filter(r => Object.values(r).some(v => String(v).trim() !== ''));
-              if (nonEmpty.length > best.length) {
-                best = nonEmpty;
-                bestKeys = nonEmpty.length ? Object.keys(nonEmpty[0]) : [];
-              }
+            // First try: named-column parse (file has a header row)
+            const named = XLSX.utils.sheet_to_json(sheet, { defval: '', range: 0 });
+            const namedKeys = named.length ? Object.keys(named[0]) : [];
+            // Check if first row looks like real column names (not data values)
+            const looksLikeHeaders = namedKeys.some(k =>
+              /invoice|order|rep|clinic|drug|pharmacy|status|tracking|region|prescription/i.test(String(k))
+            );
+
+            if (looksLikeHeaders && named.length > 0) {
+              const nonEmpty = named.filter(r => Object.values(r).some(v => String(v).trim() !== ''));
+              return resolve({ rows: nonEmpty, detectedKeys: namedKeys, mode: 'named' });
             }
-            resolve({ rows: best, detectedKeys: bestKeys });
+
+            // Fallback: positional parse — ProRx exports with no header row
+            const raw = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '', cellDates: true });
+            const dataRows = raw.filter(r => r.some(v => String(v).trim() !== ''));
+            const mapped = dataRows.map(rowFromPositional);
+            resolve({ rows: mapped, detectedKeys: Object.keys(PRORX_COLS), mode: 'positional' });
           } catch (err) { reject(err); }
         };
         reader.onerror = reject;
