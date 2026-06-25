@@ -25,6 +25,45 @@
     .speed-fast { background:#d1fae5; color:#065f46; }
     .speed-mid  { background:#fef3c7; color:#92400e; }
     .speed-slow { background:#fee2e2; color:#991b1b; }
+
+    /* View Toggle */
+    .view-toggle { display:flex; gap:0.5rem; margin-bottom:1.5rem; }
+    .view-btn { padding:0.625rem 1rem; border:1.5px solid var(--border); border-radius:8px; background:transparent; color:var(--text); font-weight:500; font-size:0.875rem; cursor:pointer; transition:all 0.2s; }
+    .view-btn.active { background:var(--teal); border-color:var(--teal); color:var(--bg); }
+    .view-btn:hover { border-color:var(--teal); }
+
+    /* Map View */
+    .map-container { display:grid; grid-template-columns:1fr 380px; gap:1.5rem; margin-bottom:1.5rem; }
+    @media (max-width: 1200px) { .map-container { grid-template-columns:1fr; } }
+    #us-map-svg { background:var(--bg-alt); border-radius:10px; border:1px solid var(--border); width:100%; }
+    .us-state { fill:#1f2937; stroke:var(--border); stroke-width:0.5; transition:all 0.2s; cursor:pointer; }
+    .us-state:hover { fill:#374151; stroke:var(--text); stroke-width:1; }
+    .us-state.active { fill:var(--teal); stroke:var(--orange); stroke-width:1.5; }
+    .us-state.high { fill:var(--orange); opacity:0.8; }
+    .us-state.medium { fill:#f59e0b; opacity:0.5; }
+    .us-state.low { fill:#6b7280; opacity:0.3; }
+    .state-tooltip { position:absolute; background:var(--card); border:1px solid var(--border); border-radius:8px; padding:0.75rem 1rem; font-size:0.8125rem; pointer-events:none; z-index:100; box-shadow:0 4px 12px rgba(0,0,0,0.3); }
+    .state-tooltip strong { color:var(--teal); display:block; margin-bottom:0.25rem; }
+
+    /* Detail Panel */
+    .detail-panel { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:1.5rem; max-height:800px; overflow-y:auto; }
+    .detail-panel.hidden { display:none; }
+    .detail-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; padding-bottom:1rem; border-bottom:1px solid var(--border); }
+    .detail-header h2 { margin:0; font-size:1.25rem; }
+    .detail-close { background:none; border:none; font-size:1.5rem; cursor:pointer; color:var(--text-muted); }
+    .detail-stat { margin-bottom:1rem; }
+    .detail-stat-label { font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; }
+    .detail-stat-val { font-size:1.5rem; font-weight:700; color:var(--teal); margin-top:0.25rem; }
+    .detail-section { margin-top:1.5rem; }
+    .detail-section-title { font-size:0.9rem; font-weight:600; margin-bottom:0.75rem; color:var(--text); }
+    .detail-list { font-size:0.8125rem; }
+    .detail-list-item { padding:0.5rem 0; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; }
+    .detail-list-item:last-child { border-bottom:none; }
+
+    /* Map Legend */
+    .map-legend { font-size:0.75rem; color:var(--text-muted); margin-top:1rem; padding-top:1rem; border-top:1px solid var(--border); }
+    .legend-item { display:flex; align-items:center; gap:0.5rem; margin-bottom:0.5rem; }
+    .legend-swatch { width:16px; height:16px; border-radius:3px; }
   </style>
 </head>
 <body>
@@ -47,8 +86,14 @@
 
     <main class="main-content">
       <div class="page-header">
-        <h1>Fulfillment Analytics</h1>
-        <p id="page-subtitle">Average time from order received to order shipped</p>
+        <h1>Analytics</h1>
+        <p id="page-subtitle">View shipment data and regional performance</p>
+      </div>
+
+      <!-- View Toggle -->
+      <div class="view-toggle">
+        <button class="view-btn active" id="view-fulfillment" onclick="switchView('fulfillment')">Turnaround Time</button>
+        <button class="view-btn" id="view-map" onclick="switchView('map')">Map Shipping View</button>
       </div>
 
       <!-- Date Range Pills -->
@@ -66,21 +111,63 @@
         </select>
       </div>
 
-      <!-- Overall KPIs -->
-      <div class="analytics-grid" id="kpi-grid">
-        <div class="table-card" style="padding:1.5rem;text-align:center;color:var(--text-muted)">Loading…</div>
+      <!-- ═══ FULFILLMENT ANALYTICS VIEW ═══ -->
+      <div id="fulfillment-view">
+        <!-- Overall KPIs -->
+        <div class="analytics-grid" id="kpi-grid">
+          <div class="table-card" style="padding:1.5rem;text-align:center;color:var(--text-muted)">Loading…</div>
+        </div>
+
+        <!-- Pharmacy Breakdown -->
+        <div class="section-title">Fulfillment Speed by Pharmacy</div>
+        <div class="table-card analytics-table" id="pharmacy-table">
+          <div style="padding:1rem;color:var(--text-muted)">Loading…</div>
+        </div>
+
+        <!-- Rep Breakdown -->
+        <div class="section-title" id="rep-section-title">Fulfillment Speed by Rep</div>
+        <div class="table-card analytics-table" id="rep-table">
+          <div style="padding:1rem;color:var(--text-muted)">Loading…</div>
+        </div>
       </div>
 
-      <!-- Pharmacy Breakdown -->
-      <div class="section-title">Fulfillment Speed by Pharmacy</div>
-      <div class="table-card analytics-table" id="pharmacy-table">
-        <div style="padding:1rem;color:var(--text-muted)">Loading…</div>
-      </div>
+      <!-- ═══ SHIPPING MAP VIEW ═══ -->
+      <div id="map-view" style="display:none">
+        <!-- Map KPI Cards -->
+        <div class="analytics-grid" id="map-kpi-grid">
+          <div class="table-card" style="padding:1.5rem;text-align:center;color:var(--text-muted)">Loading…</div>
+        </div>
 
-      <!-- Rep Breakdown -->
-      <div class="section-title" id="rep-section-title">Fulfillment Speed by Rep</div>
-      <div class="table-card analytics-table" id="rep-table">
-        <div style="padding:1rem;color:var(--text-muted)">Loading…</div>
+        <!-- Map + Detail Panel -->
+        <div class="map-container">
+          <div class="table-card" style="padding:1rem">
+            <svg id="us-map-svg" viewBox="0 0 960 600" preserveAspectRatio="xMidYMid meet"></svg>
+            <div class="map-legend">
+              <strong>Order Volume</strong>
+              <div class="legend-item">
+                <div class="legend-swatch" style="background:#f59e0b"></div>
+                <span>High</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-swatch" style="background:#f59e0b; opacity:0.5"></div>
+                <span>Medium</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-swatch" style="background:#6b7280; opacity:0.3"></div>
+                <span>Low</span>
+              </div>
+            </div>
+          </div>
+          <div class="detail-panel hidden" id="detail-panel">
+            <div class="detail-header">
+              <h2 id="detail-state">Select a state</h2>
+              <button class="detail-close" onclick="closeDetailPanel()">×</button>
+            </div>
+            <div id="detail-content">
+              <p style="color:var(--text-muted)">Click a state to view details</p>
+            </div>
+          </div>
+        </div>
       </div>
     </main>
   </div>
@@ -93,6 +180,204 @@
     let currentUser = null;
     let currentRange = 'last30';
     let currentRepFilter = '';
+    let currentView = 'fulfillment';
+    let stateData = {};
+
+    // US State boundaries (simplified path data)
+    const US_STATES = {
+      AL: 'Alabama', AK: 'Alaska', AZ: 'Arizona', AR: 'Arkansas', CA: 'California', CO: 'Colorado', CT: 'Connecticut', DE: 'Delaware', FL: 'Florida', GA: 'Georgia', HI: 'Hawaii', ID: 'Idaho', IL: 'Illinois', IN: 'Indiana', IA: 'Iowa', KS: 'Kansas', KY: 'Kentucky', LA: 'Louisiana', ME: 'Maine', MD: 'Maryland', MA: 'Massachusetts', MI: 'Michigan', MN: 'Minnesota', MS: 'Mississippi', MO: 'Missouri', MT: 'Montana', NE: 'Nebraska', NV: 'Nevada', NH: 'New Hampshire', NJ: 'New Jersey', NM: 'New Mexico', NY: 'New York', NC: 'North Carolina', ND: 'North Dakota', OH: 'Ohio', OK: 'Oklahoma', OR: 'Oregon', PA: 'Pennsylvania', RI: 'Rhode Island', SC: 'South Carolina', SD: 'South Dakota', TN: 'Tennessee', TX: 'Texas', UT: 'Utah', VT: 'Vermont', VA: 'Virginia', WA: 'Washington', WV: 'West Virginia', WI: 'Wisconsin', WY: 'Wyoming'
+    };
+
+    function switchView(view) {
+      currentView = view;
+      document.getElementById('fulfillment-view').style.display = view === 'fulfillment' ? '' : 'none';
+      document.getElementById('map-view').style.display = view === 'map' ? '' : 'none';
+      document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('view-' + view).classList.add('active');
+      if (view === 'map') renderMap();
+      else render();
+    }
+
+    function aggregateByState(shipments) {
+      const states = {};
+      shipments.forEach(s => {
+        const state = String(s.region || '').trim().toUpperCase();
+        if (!state) return;
+        if (!states[state]) states[state] = { orders: [], reps: new Set(), ams: new Set() };
+        states[state].orders.push(s);
+        if (s.rep_name) states[state].reps.add(s.rep_name);
+        if (s.account_manager) states[state].ams.add(s.account_manager);
+      });
+      return states;
+    }
+
+    function getStateVolume(state) {
+      const count = stateData[state]?.orders.length || 0;
+      const total = allShipments.length || 1;
+      const pct = (count / total) * 100;
+      if (pct >= 5) return 'high';
+      if (pct >= 2) return 'medium';
+      return 'low';
+    }
+
+    function renderMapKPIs() {
+      const filtered = currentRepFilter ? allShipments.filter(s => s.rep_name === currentRepFilter) : allShipments;
+      const cutoff = getDateRangeCutoff(currentRange || 'all');
+      const dated = cutoff ? filtered.filter(s => s.order_date && new Date(s.order_date) >= cutoff) : filtered;
+      const agg = aggregateByState(dated);
+      const activeStates = Object.keys(agg).length;
+      const totalOrders = dated.length;
+      const avgPerState = activeStates > 0 ? Math.round(totalOrders / activeStates) : 0;
+      const topState = Object.entries(agg).reduce((a, b) => a[1].orders.length > b[1].orders.length ? a : b, ['—', { orders: [] }]);
+
+      document.getElementById('map-kpi-grid').innerHTML =
+        kpiCard(totalOrders.toLocaleString(), 'Total Orders', currentRange === 'all' ? 'all time' : currentRange) +
+        kpiCard(topState[0], 'Top State', topState[1].orders.length.toLocaleString() + ' orders') +
+        kpiCard(activeStates.toLocaleString(), 'Active States', 'states with orders') +
+        kpiCard(avgPerState.toLocaleString(), 'Avg Orders/State', 'per active state');
+    }
+
+    function renderMap() {
+      const filtered = currentRepFilter ? allShipments.filter(s => s.rep_name === currentRepFilter) : allShipments;
+      const cutoff = getDateRangeCutoff(currentRange || 'all');
+      const dated = cutoff ? filtered.filter(s => s.order_date && new Date(s.order_date) >= cutoff) : filtered;
+      stateData = aggregateByState(dated);
+
+      renderMapKPIs();
+
+      // Generate simplified SVG map with state rectangles
+      const svg = document.getElementById('us-map-svg');
+      svg.innerHTML = '';
+
+      // Add US outline background
+      const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      bg.setAttribute('width', '960');
+      bg.setAttribute('height', '600');
+      bg.setAttribute('fill', '#1f2937');
+      bg.setAttribute('opacity', '0.3');
+      svg.appendChild(bg);
+
+      // Approximate state positions (simplified grid-based layout for visualization)
+      const positions = {
+        WA: [50, 80], OR: [50, 130], CA: [50, 200], NV: [120, 140], ID: [120, 70], MT: [150, 40], WY: [180, 80], UT: [150, 160], AZ: [140, 250], CO: [200, 120], NM: [180, 280], ND: [250, 40], SD: [280, 80], NE: [280, 140], KS: [310, 150], OK: [320, 220], TX: [350, 300], MN: [310, 60], IA: [340, 100], MO: [350, 160], AR: [380, 200], LA: [390, 280], WI: [380, 80], IL: [420, 130], MI: [440, 90], IN: [450, 140], OH: [470, 140], KY: [460, 180], TN: [460, 220], MS: [430, 240], AL: [470, 260], GA: [500, 280], FL: [520, 340], SC: [500, 260], NC: [510, 220], VA: [530, 180], WV: [530, 160], PA: [540, 120], NY: [560, 100], VT: [590, 80], NH: [600, 80], MA: [600, 110], RI: [610, 120], CT: [610, 130], NJ: [620, 130], DE: [620, 150], MD: [630, 160], ME: [620, 60], AK: [100, 500], HI: [200, 500]
+      };
+
+      // Draw states
+      Object.entries(positions).forEach(([code, [x, y]]) => {
+        const size = 35;
+        const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        group.setAttribute('class', 'state-group');
+        group.setAttribute('data-state', code);
+
+        const count = stateData[code]?.orders.length || 0;
+        const volume = count > 0 ? getStateVolume(code) : 'none';
+        let fillColor = '#6b7280';
+        let opacity = '0.3';
+        if (volume === 'high') { fillColor = '#f59e0b'; opacity = '1'; }
+        else if (volume === 'medium') { fillColor = '#f59e0b'; opacity = '0.5'; }
+
+        const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        rect.setAttribute('x', x - size / 2);
+        rect.setAttribute('y', y - size / 2);
+        rect.setAttribute('width', size);
+        rect.setAttribute('height', size);
+        rect.setAttribute('fill', fillColor);
+        rect.setAttribute('opacity', opacity);
+        rect.setAttribute('stroke', '#4b5563');
+        rect.setAttribute('stroke-width', '0.5');
+        rect.setAttribute('rx', '4');
+        rect.setAttribute('class', 'us-state');
+
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('x', x);
+        text.setAttribute('y', y);
+        text.setAttribute('text-anchor', 'middle');
+        text.setAttribute('dominant-baseline', 'middle');
+        text.setAttribute('font-size', '11');
+        text.setAttribute('font-weight', 'bold');
+        text.setAttribute('fill', count > 0 ? '#fff' : '#999');
+        text.setAttribute('pointer-events', 'none');
+        text.textContent = code;
+
+        group.appendChild(rect);
+        group.appendChild(text);
+        svg.appendChild(group);
+
+        // Hover + click handlers
+        group.addEventListener('mouseenter', () => {
+          showStateTooltip(code, x, y);
+          rect.setAttribute('stroke-width', '2');
+        });
+        group.addEventListener('mouseleave', () => { hideStateTooltip(); rect.setAttribute('stroke-width', '0.5'); });
+        group.addEventListener('click', () => showStateDetail(code));
+      });
+    }
+
+    function showStateTooltip(code, x, y) {
+      const count = stateData[code]?.orders.length || 0;
+      const total = allShipments.length || 1;
+      const pct = Math.round((count / total) * 100);
+      const name = US_STATES[code] || code;
+      const html = '<strong>' + name + ' (' + code + ')</strong><div>' + count.toLocaleString() + ' orders (' + pct + '%)</div>';
+      const tooltip = document.createElement('div');
+      tooltip.className = 'state-tooltip';
+      tooltip.innerHTML = html;
+      tooltip.id = 'state-tooltip';
+      document.body.appendChild(tooltip);
+      const rect = document.getElementById('us-map-svg').getBoundingClientRect();
+      tooltip.style.left = (rect.left + x + 20) + 'px';
+      tooltip.style.top = (rect.top + y - 20) + 'px';
+    }
+
+    function hideStateTooltip() {
+      const t = document.getElementById('state-tooltip');
+      if (t) t.remove();
+    }
+
+    function showStateDetail(code) {
+      const state = stateData[code];
+      if (!state) return;
+      const name = US_STATES[code] || code;
+      const panel = document.getElementById('detail-panel');
+      const header = document.getElementById('detail-state');
+      const content = document.getElementById('detail-content');
+
+      header.textContent = name + ' (' + code + ')';
+
+      let repsHtml = '';
+      const reps = Array.from(state.reps).sort();
+      if (reps.length > 0) {
+        repsHtml = '<div class="detail-section"><div class="detail-section-title">Top Reps</div><div class="detail-list">' +
+          reps.slice(0, 5).map(r => '<div class="detail-list-item"><span>' + r + '</span></div>').join('') +
+          '</div></div>';
+      }
+
+      let amsHtml = '';
+      const ams = Array.from(state.ams).sort();
+      if (ams.length > 0) {
+        amsHtml = '<div class="detail-section"><div class="detail-section-title">Account Managers</div><div class="detail-list">' +
+          ams.slice(0, 5).map(a => '<div class="detail-list-item"><span>' + a + '</span></div>').join('') +
+          '</div></div>';
+      }
+
+      content.innerHTML =
+        '<div class="detail-stat"><div class="detail-stat-label">Total Orders</div><div class="detail-stat-val">' + state.orders.length.toLocaleString() + '</div></div>' +
+        '<div class="detail-stat"><div class="detail-stat-label">Unique Reps</div><div class="detail-stat-val">' + state.reps.size + '</div></div>' +
+        '<div class="detail-stat"><div class="detail-stat-label">Account Managers</div><div class="detail-stat-val">' + state.ams.size + '</div></div>' +
+        repsHtml + amsHtml;
+
+      panel.classList.remove('hidden');
+    }
+
+    function closeDetailPanel() {
+      document.getElementById('detail-panel').classList.add('hidden');
+    }
+
+    function kpiCard(val, label, sub) {
+      return '<div class="metric-card"><div class="metric-val">' + val + '</div>' +
+        '<div class="metric-label">' + label + '</div>' +
+        (sub ? '<div class="metric-sub">' + sub + '</div>' : '') + '</div>';
+    }
 
     async function init() {
       currentUser = checkAuth();
@@ -138,12 +423,11 @@
           document.getElementById('rep-section-title').style.display = 'none';
           document.getElementById('rep-table').style.display = 'none';
         } else {
-          // Rep filter for elevated
           const repFilter = document.getElementById('rep-filter');
           repFilter.style.display = '';
           const reps = [...new Set(shipments.map(s => s.rep_name).filter(Boolean))].sort();
           reps.forEach(r => { const o = document.createElement('option'); o.value = r; o.textContent = r; repFilter.appendChild(o); });
-          repFilter.addEventListener('change', () => { currentRepFilter = repFilter.value; render(); });
+          repFilter.addEventListener('change', () => { currentRepFilter = repFilter.value; render(); renderMap(); });
         }
 
         allShipments = shipments;
@@ -154,10 +438,7 @@
     }
 
     function render() {
-      const base = currentRepFilter
-        ? allShipments.filter(s => s.rep_name === currentRepFilter)
-        : allShipments;
-
+      const base = currentRepFilter ? allShipments.filter(s => s.rep_name === currentRepFilter) : allShipments;
       const stats = computeFulfillmentStats(base, currentRange);
       renderKPIs(stats);
       renderPharmacyTable(stats);
@@ -180,13 +461,8 @@
       const pEntries = Object.entries(stats.byPharmacy).filter(([,v]) => v.count >= 5);
       const fastest = pEntries.length ? pEntries.reduce((a,b) => a[1].avg < b[1].avg ? a : b) : null;
       const slowest = pEntries.length ? pEntries.reduce((a,b) => a[1].avg > b[1].avg ? a : b) : null;
-      const pct0 = o.count ? Math.round(100 * (Object.values(stats.byPharmacy).flatMap(x => []).length)) : 0;
 
-      // Count same-day (0 days)
-      const eligible = (currentRepFilter
-        ? allShipments.filter(s => s.rep_name === currentRepFilter)
-        : allShipments
-      ).filter(s => {
+      const eligible = (currentRepFilter ? allShipments.filter(s => s.rep_name === currentRepFilter) : allShipments).filter(s => {
         if (!s.order_date || !s.ship_date || s.status === 'cancelled') return false;
         const cutoff = getDateRangeCutoff(currentRange || 'all');
         if (cutoff && new Date(s.order_date) < cutoff) return false;
@@ -206,79 +482,37 @@
         (slowest && slowest[0] !== fastest[0] ? kpiCard(slowest[0], 'Slowest Pharmacy', 'Avg ' + fmtDays(slowest[1].avg)) : '');
     }
 
-    function kpiCard(val, label, sub) {
-      return '<div class="metric-card"><div class="metric-val">' + val + '</div>' +
-        '<div class="metric-label">' + label + '</div>' +
-        (sub ? '<div class="metric-sub">' + sub + '</div>' : '') + '</div>';
-    }
-
     function renderPharmacyTable(stats) {
-      const entries = Object.entries(stats.byPharmacy)
-        .filter(([,v]) => v.count >= 3)
-        .sort((a,b) => a[1].avg - b[1].avg);
-
+      const entries = Object.entries(stats.byPharmacy).filter(([,v]) => v.count >= 3).sort((a,b) => a[1].avg - b[1].avg);
       if (!entries.length) {
         document.getElementById('pharmacy-table').innerHTML = '<div style="padding:1rem;color:var(--text-muted)">Not enough data for this period.</div>';
         return;
       }
-
       const maxAvg = Math.max(...entries.map(([,v]) => v.avg));
-
       document.getElementById('pharmacy-table').innerHTML =
-        '<table><thead><tr>' +
-        '<th>Pharmacy</th><th>Avg Days</th><th>Median</th><th>Fastest</th><th>Slowest</th><th>Orders</th><th>Speed</th>' +
-        '</tr></thead><tbody>' +
+        '<table><thead><tr><th>Pharmacy</th><th>Avg Days</th><th>Median</th><th>Fastest</th><th>Slowest</th><th>Orders</th><th>Speed</th></tr></thead><tbody>' +
         entries.map(([name, v]) => {
           const pct = maxAvg > 0 ? Math.round(100 * v.avg / maxAvg) : 0;
           const slow = v.avg > 3.5;
-          return '<tr>' +
-            '<td style="font-weight:500">' + name + '</td>' +
-            '<td><div class="bar-wrap">' +
-              '<span style="min-width:2.5rem">' + fmtDays(v.avg) + '</span>' +
-              '<div class="bar-track"><div class="bar-fill' + (slow ? ' slow' : '') + '" style="width:' + pct + '%"></div></div>' +
-            '</div></td>' +
-            '<td>' + fmtDays(v.median) + '</td>' +
-            '<td>' + fmtDays(v.min) + '</td>' +
-            '<td>' + fmtDays(v.max) + '</td>' +
-            '<td>' + v.count.toLocaleString() + '</td>' +
-            '<td>' + speedBadge(v.avg) + '</td>' +
-            '</tr>';
-        }).join('') +
-        '</tbody></table>';
+          return '<tr><td style="font-weight:500">' + name + '</td><td><div class="bar-wrap"><span style="min-width:2.5rem">' + fmtDays(v.avg) + '</span><div class="bar-track"><div class="bar-fill' + (slow ? ' slow' : '') + '" style="width:' + pct + '%"></div></div></div></td><td>' + fmtDays(v.median) + '</td><td>' + fmtDays(v.min) + '</td><td>' + fmtDays(v.max) + '</td><td>' + v.count.toLocaleString() + '</td><td>' + speedBadge(v.avg) + '</td></tr>';
+        }).join('') + '</tbody></table>';
     }
 
     function renderRepTable(stats) {
       if (!isElevatedRole(currentUser.role)) return;
-      const entries = Object.entries(stats.byRep)
-        .filter(([,v]) => v.count >= 3)
-        .sort((a,b) => a[1].avg - b[1].avg);
-
+      const entries = Object.entries(stats.byRep).filter(([,v]) => v.count >= 3).sort((a,b) => a[1].avg - b[1].avg);
       if (!entries.length) {
         document.getElementById('rep-table').innerHTML = '<div style="padding:1rem;color:var(--text-muted)">Not enough data for this period.</div>';
         return;
       }
-
       const maxAvg = Math.max(...entries.map(([,v]) => v.avg));
-
       document.getElementById('rep-table').innerHTML =
-        '<table><thead><tr>' +
-        '<th>Rep</th><th>Avg Days</th><th>Median</th><th>Orders</th><th>Speed</th>' +
-        '</tr></thead><tbody>' +
+        '<table><thead><tr><th>Rep</th><th>Avg Days</th><th>Median</th><th>Orders</th><th>Speed</th></tr></thead><tbody>' +
         entries.map(([name, v]) => {
           const pct = maxAvg > 0 ? Math.round(100 * v.avg / maxAvg) : 0;
           const slow = v.avg > 3.5;
-          return '<tr>' +
-            '<td style="font-weight:500">' + name + '</td>' +
-            '<td><div class="bar-wrap">' +
-              '<span style="min-width:2.5rem">' + fmtDays(v.avg) + '</span>' +
-              '<div class="bar-track"><div class="bar-fill' + (slow ? ' slow' : '') + '" style="width:' + pct + '%"></div></div>' +
-            '</div></td>' +
-            '<td>' + fmtDays(v.median) + '</td>' +
-            '<td>' + v.count.toLocaleString() + '</td>' +
-            '<td>' + speedBadge(v.avg) + '</td>' +
-            '</tr>';
-        }).join('') +
-        '</tbody></table>';
+          return '<tr><td style="font-weight:500">' + name + '</td><td><div class="bar-wrap"><span style="min-width:2.5rem">' + fmtDays(v.avg) + '</span><div class="bar-track"><div class="bar-fill' + (slow ? ' slow' : '') + '" style="width:' + pct + '%"></div></div></div></td><td>' + fmtDays(v.median) + '</td><td>' + v.count.toLocaleString() + '</td><td>' + speedBadge(v.avg) + '</td></tr>';
+        }).join('') + '</tbody></table>';
     }
 
     document.getElementById('date-pills').addEventListener('click', e => {
@@ -287,7 +521,8 @@
       document.querySelectorAll('#date-pills .pill').forEach(p => p.classList.remove('active'));
       pill.classList.add('active');
       currentRange = pill.dataset.range;
-      render();
+      if (currentView === 'fulfillment') render();
+      else renderMap();
     });
 
     init();
