@@ -70,6 +70,24 @@ async function loadConfig() {
 }
 
 async function loadShipments() {
+  // When PAT is available, ask the GitHub Contents API for the current blob's
+  // download_url — that URL is content-addressed (changes every commit) so
+  // fetching it bypasses the Pages CDN and always returns the latest import.
+  const pat = localStorage.getItem(PAT_KEY);
+  if (pat) {
+    try {
+      const apiUrl = 'https://api.github.com/repos/' + REPO + '/contents/data/shipments.json';
+      const meta = await fetch(apiUrl, { headers: { Authorization: 'token ' + pat, Accept: 'application/vnd.github+json' } });
+      if (meta.ok) {
+        const j = await meta.json();
+        // Large files (>1MB) come back with no inline content but a download_url
+        // that embeds the blob SHA — unique per commit, no CDN staleness.
+        const url = j.download_url || 'data/shipments.json';
+        const r = await fetch(url);
+        if (r.ok) return r.json();
+      }
+    } catch (_) { /* fall through */ }
+  }
   const r = await fetch('data/shipments.json');
   if (!r.ok) throw new Error('Failed to load shipments');
   return r.json();
