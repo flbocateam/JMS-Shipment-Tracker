@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-24",
+  "last_updated": "2026-06-24T00:00:00.000Z",
   "assignments": {
     "249ff778-d9f9-43d3-8694-dac6ecbae794": {
       "account_manager": "Ashlyn Smith",
@@ -199,7 +199,8 @@
     "29e978ad-d963-4836-8b99-38e3c85c29d2": {
       "account_manager": "Ashlyn Smith",
       "clinic_name": "chatuge med spa and fitness",
-      "salesperson": "Jack L'Hommedieu"
+      "salesperson": "Jack L'Hommedieu",
+      "secondary_account_manager": "Nate Graham"
     },
     "f66a3200-1ed1-4df4-b0ef-7fc9dfe36a05": {
       "account_manager": "Ashlyn Smith",
@@ -224,7 +225,8 @@
     "0fa44215-71a5-4a62-895d-ab9ecda33233": {
       "account_manager": "Ashlyn Smith",
       "clinic_name": "Wilkes Rejuvenation MD",
-      "salesperson": "Jack L'Hommedieu"
+      "salesperson": "Jack L'Hommedieu",
+      "secondary_account_manager": "Nate Graham"
     },
     "0ed5929e-d3dd-4630-a401-bba66b930b92": {
       "account_manager": "Ashlyn Smith",
@@ -404,7 +406,8 @@
     "73942a25-8565-4f69-93a0-cafef1d211b6": {
       "account_manager": "Ashlyn Smith",
       "clinic_name": "West Asheville Aesthetics & Wellness",
-      "salesperson": "Jack L'Hommedieu"
+      "salesperson": "Jack L'Hommedieu",
+      "secondary_account_manager": "Nate Graham"
     },
     "5271a309-4695-491b-8f73-c64c762ead8c": {
       "account_manager": "Ashlyn Smith",
@@ -584,7 +587,8 @@
     "f494b456-58e1-4ac5-b922-6e32ec086db6": {
       "account_manager": "Ashlyn Smith",
       "clinic_name": "AscendMed",
-      "salesperson": "Jack L'Hommedieu"
+      "salesperson": "Jack L'Hommedieu",
+      "secondary_account_manager": "Nate Graham"
     },
     "d6ba0565-d4fc-453f-9e0f-6687673a8023": {
       "account_manager": "Ashlyn Smith",
@@ -619,7 +623,8 @@
     "22209190-863a-4dc8-92ad-2f8041ce3fff": {
       "account_manager": "Ashlyn Smith",
       "clinic_name": "Andromeda MedSpa",
-      "salesperson": "Jack L'Hommedieu"
+      "salesperson": "Jack L'Hommedieu",
+      "secondary_account_manager": "Nate Graham"
     },
     "f9c1982d-3fab-4d14-ac40-761a5e97e530": {
       "account_manager": "Ashlyn Smith",
@@ -734,7 +739,8 @@
     "8f521f5b-56d9-4334-ab24-d447734d4ef6": {
       "account_manager": "Ashlyn Smith",
       "clinic_name": "Sculpt Aesthetics",
-      "salesperson": "Jack L'Hommedieu"
+      "salesperson": "Jack L'Hommedieu",
+      "secondary_account_manager": "Nate Graham"
     },
     "80e64d25-dfd9-44c0-870e-2a97c7562edd": {
       "account_manager": "Ashlyn Smith",
@@ -779,7 +785,8 @@
     "a953eb37-ffc9-43c1-af96-98ea10dccdfc": {
       "account_manager": "Ashlyn Smith",
       "clinic_name": "Strunk Direct Care",
-      "salesperson": "Jack L'Hommedieu"
+      "salesperson": "Jack L'Hommedieu",
+      "secondary_account_manager": "Nate Graham"
     },
     "7316a886-cfeb-4ed5-bdfe-ccb9203c0823": {
       "account_manager": "Ashlyn Smith",
@@ -1019,7 +1026,8 @@
     "489683f4-aac1-4729-9ad8-b29d275e3972": {
       "account_manager": "Ashlyn Smith",
       "clinic_name": "Total Healthcare MD",
-      "salesperson": "Jack L'Hommedieu"
+      "salesperson": "Jack L'Hommedieu",
+      "secondary_account_manager": "Nate Graham"
     },
     "18fadfa9-8cde-4587-8cdc-736231161bc7": {
       "account_manager": "Ashlyn Smith",
@@ -1124,7 +1132,8 @@
     "fd2e788a-045c-41cc-8244-aae01420d19f": {
       "account_manager": "Ashlyn Smith",
       "clinic_name": "The Skin Clinic",
-      "salesperson": "Jack L'Hommedieu"
+      "salesperson": "Jack L'Hommedieu",
+      "secondary_account_manager": "Nate Graham"
     },
     "e95050ae-f9e5-40ba-805a-3440a3365f6e": {
       "account_manager": "Ashlyn Smith",
@@ -1194,7 +1203,8 @@
     "7491ba3d-8d17-4f1a-a477-1f4066761bbc": {
       "account_manager": "Ashlyn Smith",
       "clinic_name": "Med.ish Laser Spa and WeightLoss, PLLC",
-      "salesperson": "Jack L'Hommedieu"
+      "salesperson": "Jack L'Hommedieu",
+      "secondary_account_manager": "Nate Graham"
     },
     "d22598cb-28b4-4518-8e4b-7d65f8e55604": {
       "account_manager": "Ashlyn Smith",
@@ -2114,7 +2124,8 @@
     "f62702ee-5071-407a-ad99-4588841214d7": {
       "account_manager": "Maria Michelli",
       "clinic_name": "Luxe Wellness CA",
-      "salesperson": "Jack L'Hommedieu"
+      "salesperson": "Jack L'Hommedieu",
+      "secondary_account_manager": "Nate Graham"
     },
     "346ffcbb-2ed5-4784-a61f-4aa54d46d523": {
       "account_manager": "Maria Michelli",
@@ -2294,12 +2305,14 @@
     "a248b44d-d8b5-42c0-b8ae-4bf4bfdd655e": {
       "account_manager": "Maria Michelli",
       "clinic_name": "Family First Primary Care",
-      "salesperson": "Jack L'Hommedieu"
+      "salesperson": "Jack L'Hommedieu",
+      "secondary_account_manager": "Nate Graham"
     },
     "917bf9fd-b2ee-4266-9fd5-4298b1f6ad3a": {
       "account_manager": "Maria Michelli",
       "clinic_name": "PLEASANT VIEW HEALTH, PLLC",
-      "salesperson": "Jack L'Hommedieu"
+      "salesperson": "Jack L'Hommedieu",
+      "secondary_account_manager": "Nate Graham"
     },
     "444ea610-3009-4f04-b79c-689b5de7f26b": {
       "account_manager": "Maria Michelli",
@@ -2459,7 +2472,8 @@
     "cfd6b56f-21db-4587-b541-0a84af31f424": {
       "account_manager": "Maria Michelli",
       "clinic_name": "The Physique Boutique",
-      "salesperson": "Jack L'Hommedieu"
+      "salesperson": "Jack L'Hommedieu",
+      "secondary_account_manager": "Nate Graham"
     },
     "f0e5d0a5-c2a3-459f-a2ce-38039a2ca32e": {
       "account_manager": "Maria Michelli",
@@ -2519,7 +2533,8 @@
     "5091ddbc-e5ce-4cac-866d-bb6f39e1015a": {
       "account_manager": "Maria Michelli",
       "clinic_name": "MyFitMed Frisco",
-      "salesperson": "Jack L'Hommedieu"
+      "salesperson": "Jack L'Hommedieu",
+      "secondary_account_manager": "Nate Graham"
     },
     "9173bae3-ad8b-411a-9690-a94d7f0d875c": {
       "account_manager": "Maria Michelli",
@@ -2569,7 +2584,8 @@
     "e2c4ab48-e946-4cf4-af2d-16a5f1016c9e": {
       "account_manager": "Maria Michelli",
       "clinic_name": "Game Day Men's Health Burlington",
-      "salesperson": "Jack L'Hommedieu"
+      "salesperson": "Jack L'Hommedieu",
+      "secondary_account_manager": "Nate Graham"
     },
     "4f9a9b46-15dd-422f-9ed6-a27cd84379a5": {
       "account_manager": "Maria Michelli",
@@ -2594,7 +2610,8 @@
     "65f7acad-f8f8-47c5-93ef-8e9816f47899": {
       "account_manager": "Maria Michelli",
       "clinic_name": "M2 MEDICAL SPA AND WELLNESS PC",
-      "salesperson": "Jack L'Hommedieu"
+      "salesperson": "Jack L'Hommedieu",
+      "secondary_account_manager": "Nate Graham"
     },
     "a2364b5e-cc46-48a7-ab33-4a84f296d110": {
       "account_manager": "Maria Michelli",
@@ -2679,7 +2696,8 @@
     "9d91ef7b-5ef9-4fb8-b291-ce4d9791124f": {
       "account_manager": "Maria Michelli",
       "clinic_name": "The Rural Aesthetic Med Spa",
-      "salesperson": "Jack L'Hommedieu"
+      "salesperson": "Jack L'Hommedieu",
+      "secondary_account_manager": "Nate Graham"
     },
     "c3abc7df-2d3a-46b0-b239-8dd5df23de22": {
       "account_manager": "Maria Michelli",
@@ -2709,7 +2727,8 @@
     "bddc93cd-0314-4627-9760-5d162907b1ab": {
       "account_manager": "Maria Michelli",
       "clinic_name": "ALPINE APRES NURSE CONCIERGE, LLC",
-      "salesperson": "Jack L'Hommedieu"
+      "salesperson": "Jack L'Hommedieu",
+      "secondary_account_manager": "Nate Graham"
     },
     "dacac713-40e2-4e69-92e7-eb5f64283114": {
       "account_manager": "Maria Michelli",
@@ -2739,7 +2758,8 @@
     "4aaf93b1-efed-439a-bb61-fb91eb1bbcb1": {
       "account_manager": "Maria Michelli",
       "clinic_name": "Game day men's health Memphis",
-      "salesperson": "Jack L'Hommedieu"
+      "salesperson": "Jack L'Hommedieu",
+      "secondary_account_manager": "Nate Graham"
     },
     "d420373c-4ae2-4881-89cb-9bb73940487b": {
       "account_manager": "Maria Michelli",
@@ -2794,7 +2814,8 @@
     "75a2212f-c681-45e2-8e42-e89855066506": {
       "account_manager": "Maria Michelli",
       "clinic_name": "MissionMed Wellness",
-      "salesperson": "Jack L'Hommedieu"
+      "salesperson": "Jack L'Hommedieu",
+      "secondary_account_manager": "Nate Graham"
     },
     "5081d125-199d-447f-a45f-9484b6daa752": {
       "account_manager": "Maria Michelli",
@@ -2809,7 +2830,8 @@
     "0fa5afc5-b1ef-46b3-a957-e90dfc5e1c79": {
       "account_manager": "Maria Michelli",
       "clinic_name": "SIGNATURE WEIGHT LOSS WELLNESS",
-      "salesperson": "Jack L'Hommedieu"
+      "salesperson": "Jack L'Hommedieu",
+      "secondary_account_manager": "Nate Graham"
     },
     "3dd68bf8-36e9-4bd5-82e5-708ec9d35339": {
       "account_manager": "Maria Michelli",
@@ -2829,7 +2851,8 @@
     "627aaf76-6100-4e35-8c52-ad51fd331cba": {
       "account_manager": "Maria Michelli",
       "clinic_name": "Gameday Men's Health - Fort Worth",
-      "salesperson": "Jack L'Hommedieu"
+      "salesperson": "Jack L'Hommedieu",
+      "secondary_account_manager": "Nate Graham"
     },
     "6b318db7-2593-4c83-94b0-8191049943f0": {
       "account_manager": "Maria Michelli",
@@ -2889,7 +2912,8 @@
     "bd40a709-4fe2-4c3f-affa-05010c119a0d": {
       "account_manager": "Maria Michelli",
       "clinic_name": "LeanLife Wellness Center",
-      "salesperson": "Jack L'Hommedieu"
+      "salesperson": "Jack L'Hommedieu",
+      "secondary_account_manager": "Nate Graham"
     },
     "0915ac8d-1127-43c8-ac7e-d4ccf8faa3a2": {
       "account_manager": "Maria Michelli",
@@ -2979,7 +3003,8 @@
     "04ce70f2-83de-43e5-a5c1-186da07b426c": {
       "account_manager": "Maria Michelli",
       "clinic_name": "Five Star Medical Clinic",
-      "salesperson": "Jack L'Hommedieu"
+      "salesperson": "Jack L'Hommedieu",
+      "secondary_account_manager": "Nate Graham"
     },
     "0f396aab-9ffc-4f51-b249-5c48654d8032": {
       "account_manager": "Maria Michelli",
@@ -3039,7 +3064,8 @@
     "9a58ce61-0461-46f9-aa86-759351b7c800": {
       "account_manager": "Maria Michelli",
       "clinic_name": "Bear Creek Weight Loss",
-      "salesperson": "Jack L'Hommedieu"
+      "salesperson": "Jack L'Hommedieu",
+      "secondary_account_manager": "Nate Graham"
     },
     "74321926-1270-4dba-acc4-0c1e666a8a7e": {
       "account_manager": "Maria Michelli",
@@ -3129,7 +3155,8 @@
     "edd098d2-7059-4fcb-b86a-1dcfe5d949fb": {
       "account_manager": "Maria Michelli",
       "clinic_name": "Bougie and Beautified Luxury Med Spa and Primary Care Services PLLC",
-      "salesperson": "Jack L'Hommedieu"
+      "salesperson": "Jack L'Hommedieu",
+      "secondary_account_manager": "Nate Graham"
     },
     "a167544e-eaef-4c4d-aef9-8649c356928e": {
       "account_manager": "Maria Michelli",
@@ -3289,7 +3316,8 @@
     "d1eba9d8-24eb-47de-ada5-b9f77a2cd3a6": {
       "account_manager": "Maria Michelli",
       "clinic_name": "Evolving Vitality Clinic",
-      "salesperson": "Jack L'Hommedieu"
+      "salesperson": "Jack L'Hommedieu",
+      "secondary_account_manager": "Nate Graham"
     },
     "51b40901-93c2-45ba-bc61-d6afd6ce16ca": {
       "account_manager": "Maria Michelli",
@@ -3389,7 +3417,8 @@
     "6ebff092-15f1-4383-a396-5cf9f0f7204b": {
       "account_manager": "Maria Michelli",
       "clinic_name": "Cosmo Health Resolution, LLC",
-      "salesperson": "Jack L'Hommedieu"
+      "salesperson": "Jack L'Hommedieu",
+      "secondary_account_manager": "Nate Graham"
     },
     "6b2085e1-9469-4648-9ffb-48ef5efbb3ee": {
       "account_manager": "Maria Michelli",
@@ -3414,7 +3443,8 @@
     "201cec09-1919-4868-979f-255f0c8650f1": {
       "account_manager": "Maria Michelli",
       "clinic_name": "New Viva MD Weight Loss",
-      "salesperson": "Jack L'Hommedieu"
+      "salesperson": "Jack L'Hommedieu",
+      "secondary_account_manager": "Nate Graham"
     },
     "13e47add-8485-4d69-a84e-b33a84217144": {
       "account_manager": "Maria Michelli",
@@ -3424,12 +3454,14 @@
     "492fa2a7-f7b6-45c9-b22f-50acd87814c4": {
       "account_manager": "Maria Michelli",
       "clinic_name": "Glory Integrative Medicine LLC",
-      "salesperson": "Jack L'Hommedieu"
+      "salesperson": "Jack L'Hommedieu",
+      "secondary_account_manager": "Nate Graham"
     },
     "d53dd4be-a34d-46d9-b6a7-546551e8219e": {
       "account_manager": "Maria Michelli",
       "clinic_name": "Advanced Wellness",
-      "salesperson": "Jack L'Hommedieu"
+      "salesperson": "Jack L'Hommedieu",
+      "secondary_account_manager": "Nate Graham"
     },
     "c5571ba9-a3b1-4ffb-909d-5801e92c5457": {
       "account_manager": "Maria Michelli",
