@@ -319,8 +319,17 @@ async function restoreToCommit(commitSha, uploaderEmail) {
   if (!fileResp.ok) throw new Error('Could not fetch historical version');
   const fileJson = await fileResp.json();
   let historic;
-  try { historic = JSON.parse(atob(fileJson.content.replace(/\n/g, ''))); }
-  catch (e) { throw new Error('Could not parse historical file'); }
+  try {
+    if (fileJson.encoding === 'base64' && fileJson.content) {
+      historic = JSON.parse(atob(fileJson.content.replace(/\n/g, '')));
+    } else if (fileJson.download_url) {
+      const raw = await fetch(fileJson.download_url);
+      if (!raw.ok) throw new Error('download failed');
+      historic = await raw.json();
+    } else {
+      throw new Error('no content available');
+    }
+  } catch (e) { throw new Error('Could not parse historical file: ' + e.message); }
   // Commit it as the new HEAD
   await commitToGitHub('data/shipments.json', historic, 'Restore to ' + new Date(historic.last_updated || 0).toLocaleString() + ' (by ' + uploaderEmail + ')');
   return historic;
