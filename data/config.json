@@ -72,13 +72,6 @@
       "active": true
     },
     {
-      "name": "Darryl Fleming",
-      "email": "darryl@boomrx.com",
-      "pin_hash": "$2b$10$CASZ9bk4jSc0CbG30fq6yebIdltErTpt.BMb26JbA9.Bw6/YCuTyy",
-      "role": "rep",
-      "active": true
-    },
-    {
       "name": "Valentin Zakar",
       "email": "valentin.zakar@boomrx.com",
       "pin_hash": "$2b$10$CASZ9bk4jSc0CbG30fq6yebIdltErTpt.BMb26JbA9.Bw6/YCuTyy",
@@ -91,6 +84,13 @@
       "role": "rep",
       "active": true,
       "pin_hash": "$2a$10$UNJqoi8UxsgW2P5mCosFUempD4zJfB1Si4I23qlDIsG4GGMdsSpr6"
+    },
+    {
+      "name": "Darryl Fleming",
+      "email": "darryl.fleming@boomrx.com",
+      "pin_hash": "$2b$10$CASZ9bk4jSc0CbG30fq6yebIdltErTpt.BMb26JbA9.Bw6/YCuTyy",
+      "role": "rep",
+      "active": true
     }
   ]
 }
