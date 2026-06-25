@@ -271,8 +271,21 @@ async function commitShipments(newRows, uploaderEmail, commitMessage, maxRetries
     const fileJson = await getResp.json();
     const sha = fileJson.sha;
     let current;
-    try { current = JSON.parse(atob(fileJson.content.replace(/\n/g, ''))); }
-    catch (e) { current = { shipments: [] }; }
+    try {
+      if (fileJson.encoding === 'base64' && fileJson.content) {
+        // Small file: content is inline base64
+        current = JSON.parse(atob(fileJson.content.replace(/\n/g, '')));
+      } else if (fileJson.download_url) {
+        // Large file (>1MB): GitHub omits inline content, fetch from raw URL
+        const rawResp = await fetch(fileJson.download_url);
+        if (!rawResp.ok) throw new Error('Could not download existing shipments');
+        current = await rawResp.json();
+      } else {
+        current = { shipments: [] };
+      }
+    } catch (e) {
+      throw new Error('Could not read existing shipments before merging: ' + e.message);
+    }
     // Merge: upsert new rows into live data, newest import_date wins
     const merged = upsertShipments(current.shipments || [], newRows);
     const newData = { ...current, shipments: merged, last_updated: new Date().toISOString(), updated_by: uploaderEmail };
