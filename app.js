@@ -6,6 +6,21 @@ const AUTH_KEY = 'jms_user';
 const PAT_KEY = 'jms_github_pat';
 const REPO = 'flbocateam/JMS-Shipment-Tracker';
 
+// ── Nav Icons ────────────────────────────────────────────────
+const ICONS = {
+  shipments: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="12" height="9" rx="1"/><path d="M5 5V3.5A1.5 1.5 0 0 1 6.5 2h3A1.5 1.5 0 0 1 11 3.5V5"/><path d="M2 8h12"/></svg>',
+  analytics: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><rect x="2" y="9" width="3" height="5" rx="0.5" fill="currentColor" stroke="none"/><rect x="6.5" y="6" width="3" height="8" rx="0.5" fill="currentColor" stroke="none"/><rect x="11" y="3" width="3" height="11" rx="0.5" fill="currentColor" stroke="none"/></svg>',
+  import: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M5 5l3-3 3 3"/><path d="M3 11v2a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-2"/></svg>',
+  users: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="5" r="2.5"/><path d="M2.5 14c0-3.038 2.462-5.5 5.5-5.5s5.5 2.462 5.5 5.5"/></svg>',
+  settings: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="8" r="2.5"/><path d="M8 1v1.5M8 13.5V15M1 8h1.5M13.5 8H15M2.929 2.929l1.06 1.06M12.01 12.01l1.06 1.06M13.07 2.929l-1.06 1.06M3.99 12.01l-1.06 1.06"/></svg>',
+  history: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="M8 4.5V8l2.5 2"/></svg>',
+  preview: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z"/><circle cx="8" cy="8" r="2"/></svg>'
+};
+
+function navIcon(key) {
+  return ICONS[key] || '';
+}
+
 // Roles that can see all shipments, upload, and use AM filter
 function isElevatedRole(role) {
   return role === 'admin' || role === 'account_manager' || role === 'vice_president';
@@ -36,7 +51,7 @@ async function loadConfig() {
 }
 
 async function loadShipments() {
-  const r = await fetch('data/shipments.json?t=' + Date.now());
+  const r = await fetch('data/shipments.json');
   if (!r.ok) throw new Error('Failed to load shipments');
   return r.json();
 }
@@ -107,7 +122,7 @@ function trackingLink(shipment) {
   const carrier = shipment.carrier || detectCarrier(t).carrier;
   const url = shipment.tracking_url || detectCarrier(t).url;
   const label = carrier.charAt(0).toUpperCase() + carrier.slice(1);
-  if (url) return '<a href="' + url + '" target="_blank" rel="noopener">' + label + ': ' + t + ' 🔗</a>';
+  if (url) return '<a href="' + url + '" target="_blank" rel="noopener">' + label + ': ' + t + ' ↗</a>';
   return t;
 }
 

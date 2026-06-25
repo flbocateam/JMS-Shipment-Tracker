@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>JMS Shipment Tracker — Sign In</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
 </head>
 <body class="login-page">
   <div class="login-card">
@@ -44,7 +45,7 @@
       btn.disabled = true;
       btn.innerHTML = '<span class="spinner"></span> Signing in…';
       try {
-        const config = await fetch('data/config.json').then(r => r.json());
+        const config = await fetch('data/config.json?t=' + Date.now()).then(r => r.json());
         let user = null;
         if (config.admin && config.admin.email.toLowerCase() === email) user = config.admin;
         if (!user) user = (config.account_managers || []).find(u => u.email.toLowerCase() === email);

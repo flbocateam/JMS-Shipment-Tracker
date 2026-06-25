@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <circle cx="16" cy="16" r="16" fill="#F59E0B"/>
+  <text x="16" y="17" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="white" text-anchor="middle" dominant-baseline="middle" letter-spacing="0.5">JMS</text>
+  <text x="16" y="25.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="6.5" font-weight="600" fill="#0F1B2D" text-anchor="middle" dominant-baseline="middle" opacity="0.85">Rx</text>
+</svg>

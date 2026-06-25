@@ -149,6 +149,16 @@ td a:hover { text-decoration: underline; }
 .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
+/* Inactive user card */
+.user-card.inactive { opacity: 0.5; }
+.user-card.inactive .user-card-actions .btn:not(.btn-reactivate) { pointer-events: none; opacity: 0.4; }
+/* Nav divider */
+.nav-divider { height: 1px; background: rgba(255,255,255,0.1); margin: 0.5rem 1.25rem; }
+/* Nav icon alignment */
+.nav-item svg { flex-shrink: 0; }
+/* drag-over for import */
+.drag-over { border-color: var(--blue) !important; background: #EFF6FF; }
+
 /* Responsive */
 @media (max-width: 768px) {
   .sidebar { width: 100%; height: auto; position: relative; }

@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>JMS Admin — Shipment Tracker</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
 </head>
 <body>
   <div class="app-layout">
@@ -15,13 +16,13 @@
       </div>
       <div class="sidebar-user" id="sidebar-user"></div>
       <nav class="sidebar-nav">
-        <button class="nav-item active" data-tab="shipments">📦 Shipments</button>
-        <button class="nav-item" onclick="window.location.href='analytics.html'">📊 Analytics</button>
-        <button class="nav-item" onclick="window.location.href='import.html'">⬆ Import Data</button>
-        <button class="nav-item" data-tab="users">👥 Users</button>
-        <button class="nav-item" data-tab="settings">⚙ Settings</button>
-        <button class="nav-item" data-tab="history">⏪ History</button>
-        <button class="nav-item" data-tab="preview">👁 Preview As</button>
+        <button class="nav-item active" data-tab="shipments"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="12" height="9" rx="1"/><path d="M5 5V3.5A1.5 1.5 0 0 1 6.5 2h3A1.5 1.5 0 0 1 11 3.5V5"/><path d="M2 8h12"/></svg> Shipments</button>
+        <button class="nav-item" onclick="window.location.href='analytics.html'"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><rect x="2" y="9" width="3" height="5" rx="0.5" fill="currentColor" stroke="none"/><rect x="6.5" y="6" width="3" height="8" rx="0.5" fill="currentColor" stroke="none"/><rect x="11" y="3" width="3" height="11" rx="0.5" fill="currentColor" stroke="none"/></svg> Analytics</button>
+        <button class="nav-item" onclick="window.location.href='import.html'"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M5 5l3-3 3 3"/><path d="M3 11v2a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-2"/></svg> Import Data</button>
+        <button class="nav-item" data-tab="users"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="5" r="2.5"/><path d="M2.5 14c0-3.038 2.462-5.5 5.5-5.5s5.5 2.462 5.5 5.5"/></svg> Users</button>
+        <button class="nav-item" data-tab="settings"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="8" r="2.5"/><path d="M8 1v1.5M8 13.5V15M1 8h1.5M13.5 8H15M2.929 2.929l1.06 1.06M12.01 12.01l1.06 1.06M13.07 2.929l-1.06 1.06M3.99 12.01l-1.06 1.06"/></svg> Settings</button>
+        <button class="nav-item" data-tab="history"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="M8 4.5V8l2.5 2"/></svg> History</button>
+        <button class="nav-item" data-tab="preview"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z"/><circle cx="8" cy="8" r="2"/></svg> Preview As</button>
       </nav>
       <div class="sidebar-footer">
         <button class="btn btn-outline" style="width:100%;color:rgba(255,255,255,0.7);border-color:rgba(255,255,255,0.2)" onclick="logout()">Sign Out</button>
@@ -31,7 +32,7 @@
     <main class="main-content">
       <!-- PAT Banner -->
       <div class="banner" id="pat-banner" style="display:none">
-        <span class="banner-icon">⚠️</span>
+        <span class="banner-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="#B45309" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1L15 14H1L8 1z"/><line x1="8" y1="6" x2="8" y2="9"/><circle cx="8" cy="11.5" r="0.5" fill="#B45309"/></svg></span>
         <div>
           <strong>GitHub token not configured.</strong> To enable saving changes, enter your GitHub Personal Access Token in <a href="#" onclick="switchTab('settings');return false">Settings</a>. This token is stored only in your browser and never uploaded anywhere.
         </div>
@@ -186,6 +187,8 @@
       document.querySelectorAll('.nav-item[data-tab]').forEach(btn => {
         btn.addEventListener('click', () => switchTab(btn.dataset.tab));
       });
+      const urlTab = new URLSearchParams(window.location.search).get('tab');
+      if (urlTab) switchTab(urlTab);
 
       try {
         [configData, shipmentData, assignments] = await Promise.all([loadConfig(), loadShipments(), loadAssignments()]);
@@ -261,23 +264,29 @@
         ...(configData.account_managers || []),
         ...(configData.reps || []).map(u => ({ ...u, role: u.role || 'rep' }))
       ];
-      if (!allUsers.length) { container.innerHTML = '<p style="color:var(--text-muted)">No users yet.</p>'; return; }
+      const note = '<p style="font-size:0.8125rem;color:var(--text-muted);margin-bottom:1rem;padding:0.75rem 1rem;background:var(--bg);border-radius:6px;border:1px solid var(--border)">PINs are stored as secure one-way hashes and cannot be viewed. Use <strong>Reset PIN</strong> to set a new PIN for any user.</p>';
+      if (!allUsers.length) { container.innerHTML = note + '<p style="color:var(--text-muted)">No users yet.</p>'; return; }
       const roleLabel = r => ({ account_manager: 'Account Manager', vice_president: 'Vice President', rep: 'Rep' }[r] || r);
-      container.innerHTML = allUsers.map(u => `
+      container.innerHTML = note + allUsers.map(u => {
+        const inactive = u.active === false;
+        const toggleBtn = inactive
+          ? `<button class="btn btn-teal btn-sm btn-reactivate" onclick="toggleActive('${u.email}', false)">Reactivate</button>`
+          : `<button class="btn btn-outline btn-sm" onclick="toggleActive('${u.email}', true)">Deactivate</button>`;
+        return `
         <div class="users-section" style="margin-bottom:0.75rem">
-          <div class="user-card">
+          <div class="user-card${inactive ? ' inactive' : ''}">
             <div class="user-card-info">
               <strong>${u.name}</strong>
-              <p>${u.email} &nbsp;<span class="badge ${u.active !== false ? 'badge-active' : 'badge-inactive'}">${u.active !== false ? 'Active' : 'Inactive'}</span> &nbsp;<span class="badge badge-unknown">${roleLabel(u.role)}</span></p>
+              <p>${u.email} &nbsp;<span class="badge ${inactive ? 'badge-inactive' : 'badge-active'}">${inactive ? 'Inactive' : 'Active'}</span> &nbsp;<span class="badge badge-unknown">${roleLabel(u.role)}</span></p>
             </div>
             <div class="user-card-actions">
               <button class="btn btn-outline btn-sm" onclick="showEditUserModal('${u.email}')">Edit</button>
               <button class="btn btn-outline btn-sm" onclick="resetPIN('${u.email}')">Reset PIN</button>
-              <button class="btn btn-outline btn-sm" onclick="toggleActive('${u.email}', ${u.active !== false})">${u.active !== false ? 'Deactivate' : 'Activate'}</button>
-              <button class="btn btn-danger btn-sm" onclick="removeUser('${u.email}')">Remove</button>
+              ${toggleBtn}
             </div>
           </div>
-        </div>`).join('');
+        </div>`;
+      }).join('');
     }
 
     function showAddUserModal(role) {
@@ -346,11 +355,11 @@
     }
 
     async function resetPIN(email) {
-      const pin = prompt('Enter new PIN for ' + email + ':');
-      if (!pin) return;
       const allUsers = [...(configData.account_managers || []), ...(configData.reps || [])];
       const u = allUsers.find(x => x.email === email);
       if (!u) return;
+      const pin = prompt('Enter new PIN for ' + u.name + ' — they will use this to sign in:');
+      if (!pin) return;
       u.pin_hash = await bcrypt.hash(pin, 10);
       try { await commitToGitHub('data/config.json', configData, 'Reset PIN for ' + email); alert('PIN updated!'); }
       catch (err) { alert('Error: ' + err.message); }
@@ -363,14 +372,6 @@
         if (u) { u.active = !currentlyActive; break; }
       }
       try { await commitToGitHub('data/config.json', configData, (currentlyActive ? 'Deactivate' : 'Activate') + ' user ' + email); renderUsers(); }
-      catch (err) { alert('Error: ' + err.message); }
-    }
-
-    async function removeUser(email) {
-      if (!confirm('Remove user ' + email + '? This cannot be undone.')) return;
-      configData.account_managers = (configData.account_managers || []).filter(u => u.email !== email);
-      configData.reps = (configData.reps || []).filter(u => u.email !== email);
-      try { await commitToGitHub('data/config.json', configData, 'Remove user ' + email); renderUsers(); populatePreviewSelect(); }
       catch (err) { alert('Error: ' + err.message); }
     }
 
@@ -405,7 +406,7 @@
         freshConfig.admin.password_hash = newHash;
         configData = freshConfig; // keep in-memory config in sync
         await commitToGitHub('data/config.json', configData, 'Update admin password');
-        statusEl.textContent = '✓ Password updated';
+        statusEl.textContent = '✓ Password updated. Allow 1–2 minutes for changes to take effect before signing in.';
         document.getElementById('current-password').value = '';
         document.getElementById('new-password').value = '';
         setTimeout(() => statusEl.textContent = '', 4000);
