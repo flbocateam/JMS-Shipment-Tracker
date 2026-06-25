@@ -52,15 +52,15 @@
   "reps": [
     {
       "name": "Zachary Salazar",
-      "email": "zachary.salzar@boomrx.com",
-      "pin_hash": "$2b$10$CASZ9bk4jSc0CbG30fq6yebIdltErTpt.BMb26JbA9.Bw6/YCuTyy",
+      "email": "zachary.salazar@boomrx.com",
+      "pin_hash": "$2a$10$SyqF3q6Vy3OewQGGXHPbvuUu09bE3AClRiYX91dPkuL0FavdvVovS",
       "role": "rep",
       "active": true
     },
     {
       "name": "Valentin Zakar",
       "email": "valentin.zakar@boomrx.com",
-      "pin_hash": "$2b$10$CASZ9bk4jSc0CbG30fq6yebIdltErTpt.BMb26JbA9.Bw6/YCuTyy",
+      "pin_hash": "$2a$10$J4yyXnk1jgiQTpdCCrdiHuvyFDD3GpMgix3vnlrWbG/PIW3OnQlti",
       "role": "rep",
       "active": true
     },
@@ -74,21 +74,28 @@
     {
       "name": "Darryl Fleming",
       "email": "darryl.fleming@boomrx.com",
-      "pin_hash": "$2b$10$CASZ9bk4jSc0CbG30fq6yebIdltErTpt.BMb26JbA9.Bw6/YCuTyy",
+      "pin_hash": "$2a$10$a21LiGtGFnytfdiaXcm4Zeutfp4i5T5BLwnU8mDBdpTYKw.UfNrG.",
       "role": "rep",
       "active": true
     },
     {
       "name": "Dylan White",
       "email": "dylan.white@boomrx.com",
-      "pin_hash": "$2b$10$CASZ9bk4jSc0CbG30fq6yebIdltErTpt.BMb26JbA9.Bw6/YCuTyy",
+      "pin_hash": "$2a$10$2NRtiovI1HkBiVysjTR0JeFp0SmQpVDDXciIdwPN7o0z46335aqLi",
       "role": "rep",
       "active": true
     },
     {
       "name": "Jonathan Izquierdo",
       "email": "jonathan.izquierdo@boomrx.com",
-      "pin_hash": "$2a$10$KgH2HCaYwF9Cwf/XediLX.epYSOVtOLwn.t.M1YHEaEpKpBLvcZ9m",
+      "pin_hash": "$2a$10$cxVHKYEQA8J.lODB0jlXDeTLwpGbMPCCQVQ1N56r07GGH1eexITja",
+      "role": "rep",
+      "active": true
+    },
+    {
+      "name": "Skylar Menendez",
+      "email": "skylar.menendez@boomrx.com",
+      "pin_hash": "$2a$10$9XCEaKTS4hIWKR9V/jExPub9fjMJcnWaufbfGNqwzo00vzPi.PZAe",
       "role": "rep",
       "active": true
     }
