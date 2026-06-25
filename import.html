@@ -140,13 +140,29 @@
       setTimeout(() => document.getElementById('pat-status').textContent = '', 3000);
     }
 
+    // Try multiple header-row offsets to handle ProRx files with title rows above data.
+    // Returns the best parse result (most non-empty rows) along with detected column names.
     async function parseFile(file) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = ev => {
           try {
-            const wb = XLSX.read(new Uint8Array(ev.target.result), { type: 'array' });
-            resolve(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: '' }));
+            const wb = XLSX.read(new Uint8Array(ev.target.result), { type: 'array', cellDates: true });
+            const sheet = wb.Sheets[wb.SheetNames[0]];
+
+            // Try rows 0-6 as the header row; pick whichever gives the most data rows
+            let best = [];
+            let bestKeys = [];
+            for (let skip = 0; skip <= 6; skip++) {
+              const attempt = XLSX.utils.sheet_to_json(sheet, { defval: '', range: skip });
+              // Filter out rows that are entirely blank
+              const nonEmpty = attempt.filter(r => Object.values(r).some(v => String(v).trim() !== ''));
+              if (nonEmpty.length > best.length) {
+                best = nonEmpty;
+                bestKeys = nonEmpty.length ? Object.keys(nonEmpty[0]) : [];
+              }
+            }
+            resolve({ rows: best, detectedKeys: bestKeys });
           } catch (err) { reject(err); }
         };
         reader.onerror = reject;
@@ -163,39 +179,53 @@
       const preview = document.getElementById('import-preview');
       preview.innerHTML = '<p style="margin-top:1rem;color:var(--text-muted)">Parsing file…</p>';
       try {
-        const rows = await parseFile(file);
-        const mapped = rows.map(r => mapImportRow(r, assignments)).filter(r => r && r.invoice_number);
-        if (!mapped.length) {
-          const sampleKeys = rows.length ? Object.keys(rows[0]) : [];
-          preview.innerHTML = '<p style="color:var(--red);margin-top:1rem">No valid rows found. Check that this is a ProRx Drug Report export.</p>' +
-            (sampleKeys.length ? '<p style="font-size:0.8125rem;color:var(--text-muted);margin-top:0.5rem">Column headers detected: <code style="font-size:0.8rem;background:var(--bg-alt);padding:0.2em 0.4em;border-radius:3px">' + sampleKeys.join(', ') + '</code></p>' : '');
+        const { rows, detectedKeys } = await parseFile(file);
+
+        if (!rows.length) {
+          preview.innerHTML = '<p style="color:var(--red);margin-top:1rem">Could not read any rows from this file. Make sure it is a valid .xlsx or .csv export.</p>';
           return;
         }
 
-        let newCount = 0, updatedCount = 0, unmatched = 0, skipped = rows.length - mapped.length;
-        // We don't have existing data here — show counts based on what we mapped
-        // (actual dedup happens at commit time)
-        mapped.forEach(r => { if (!r.account_manager) unmatched++; });
-        newCount = mapped.length;
+        // Map all rows; keep anything with at least one meaningful field
+        const allMapped = rows.map(r => mapImportRow(r, assignments));
+        const hasData = r => r && (r.invoice_number || r.order_id || r.prescription_item_id || r.clinic_name || r.rep_name);
+        const mapped   = allMapped.filter(hasData);
+        const skipped  = rows.length - mapped.length; // Nick Clemens rows + fully blank rows
+        const unmatched = mapped.filter(r => !r.account_manager).length;
+
+        if (!mapped.length) {
+          // Nothing usable — show all detected columns so we can fix the mapping
+          preview.innerHTML =
+            '<p style="color:var(--red);margin-top:1rem">No usable rows found after parsing ' + rows.length.toLocaleString() + ' row(s).</p>' +
+            '<p style="font-size:0.8125rem;color:var(--text-muted);margin-top:0.5rem">Detected column headers:<br>' +
+            '<code style="font-size:0.75rem;background:var(--bg-alt);padding:0.4em 0.6em;border-radius:4px;display:inline-block;margin-top:0.25rem;line-height:1.8">' +
+            detectedKeys.join(' &nbsp;|&nbsp; ') + '</code></p>' +
+            '<p style="font-size:0.8125rem;color:var(--text-muted);margin-top:0.5rem">Send a screenshot of this to your developer to update the column mapping.</p>';
+          return;
+        }
 
         preview.innerHTML =
           '<div style="margin:1.25rem 0 0.75rem;padding:0.75rem 1rem;background:var(--bg-alt);border-radius:6px;display:flex;gap:1.5rem;flex-wrap:wrap">' +
-          '<span><strong>' + mapped.length.toLocaleString() + '</strong> rows parsed</span>' +
-          (skipped ? '<span style="color:var(--orange)"><strong>' + skipped + '</strong> rows skipped (invalid/filtered)</span>' : '') +
+          '<span><strong>' + mapped.length.toLocaleString() + '</strong> rows ready to import</span>' +
+          (skipped ? '<span style="color:var(--orange)"><strong>' + skipped + '</strong> skipped (blank / filtered)</span>' : '') +
           (unmatched ? '<span style="color:var(--orange)"><strong>' + unmatched + '</strong> without AM assignment</span>' : '') +
           '</div>' +
-          '<div style="overflow-x:auto"><table><thead><tr><th>Order ID</th><th>Rep</th><th>Clinic</th><th>Region</th><th>Account Mgr</th><th>Status</th><th>Order Date</th><th>Tracking</th></tr></thead><tbody>' +
-          mapped.slice(0, 8).map(r =>
-            '<tr><td>' + (r.order_id || r.invoice_number || '—') + '</td>' +
+          '<div style="overflow-x:auto"><table><thead><tr>' +
+          '<th>Order ID</th><th>Rep</th><th>Clinic</th><th>Region</th><th>Account Mgr</th><th>Status</th><th>Order Date</th><th>Tracking</th>' +
+          '</tr></thead><tbody>' +
+          mapped.slice(0, 10).map(r =>
+            '<tr>' +
+            '<td>' + (r.order_id || r.invoice_number || '—') + '</td>' +
             '<td>' + (r.rep_name || '—') + '</td>' +
             '<td>' + (r.clinic_name || '—') + '</td>' +
             '<td>' + (r.region || '—') + '</td>' +
             '<td>' + (r.account_manager || '<span style="color:var(--text-muted)">Unassigned</span>') + '</td>' +
             '<td>' + statusBadge(r.status) + '</td>' +
-            '<td>' + (r.order_date ? new Date(r.order_date).toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'}) : '—') + '</td>' +
-            '<td>' + (r.tracking_number || '—') + '</td></tr>'
+            '<td>' + (r.order_date ? (() => { try { return new Date(r.order_date).toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'}); } catch(e){ return r.order_date; } })() : '—') + '</td>' +
+            '<td>' + (r.tracking_number || '—') + '</td>' +
+            '</tr>'
           ).join('') +
-          (mapped.length > 8 ? '<tr><td colspan="8" style="color:var(--text-muted);padding:0.5rem 0.75rem">…and ' + (mapped.length - 8).toLocaleString() + ' more rows</td></tr>' : '') +
+          (mapped.length > 10 ? '<tr><td colspan="8" style="color:var(--text-muted);padding:0.5rem 0.75rem">…and ' + (mapped.length - 10).toLocaleString() + ' more rows</td></tr>' : '') +
           '</tbody></table></div>' +
           '<div class="import-actions" style="margin-top:1rem">' +
           '<button class="btn btn-teal" id="confirm-import-btn">Commit to GitHub</button>' +
