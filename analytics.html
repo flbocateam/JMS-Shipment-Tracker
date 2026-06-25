@@ -440,7 +440,7 @@
       const avgPerState = activeStates > 0 ? Math.round(totalOrders / activeStates) : 0;
       const topState = Object.entries(agg).reduce((a, b) => a[1].orders.length > b[1].orders.length ? a : b, ['—', { orders: [] }]);
       const rangeLabel = { today:'today', yesterday:'yesterday', last7:'last 7 days', last30:'last 30 days', last90:'last 90 days', all:'all time' }[currentRange] || currentRange;
-      const sub = totalInView > totalOrders ? (rangeLabel + ' · ' + totalOrders.toLocaleString() + ' of ' + totalInView.toLocaleString() + ' have a region') : rangeLabel;
+      const sub = totalInView > totalOrders ? (rangeLabel + ' · ' + totalOrders.toLocaleString() + ' of ' + totalInView.toLocaleString() + ' from mapped pharmacies') : rangeLabel;
 
       document.getElementById('map-kpi-grid').innerHTML =
         kpiCard(totalOrders.toLocaleString(), 'Mapped Orders', sub) +
