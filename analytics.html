@@ -56,6 +56,16 @@
     .detail-list { font-size:0.8125rem; }
     .detail-list-item { padding:0.5rem 0; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; }
     .detail-list-item:last-child { border-bottom:none; }
+    /* Top pharmacies ranking */
+    .ph-rank { padding:0.55rem 0; border-bottom:1px solid var(--border); }
+    .ph-rank:last-child { border-bottom:none; }
+    .ph-rank-head { display:flex; align-items:center; gap:0.5rem; font-size:0.85rem; }
+    .ph-rank-num { color:#22e06b; font-weight:700; min-width:1.6rem; }
+    .ph-rank-name { flex:1; font-weight:600; }
+    .ph-rank-pct { font-weight:700; color:#22e06b; }
+    .ph-bar { height:5px; background:rgba(255,255,255,0.12); border-radius:3px; margin:0.3rem 0 0.2rem; overflow:hidden; }
+    .ph-bar-fill { height:100%; background:linear-gradient(90deg,#22e06b,#1aa37a); border-radius:3px; }
+    .ph-rank-sub { font-size:0.7rem; color:var(--text-muted); }
 
     /* Map Legend (overlaid on globe) */
     .map-legend { position:absolute; left:1rem; top:1rem; font-size:0.7rem; color:rgba(255,255,255,0.6); background:rgba(10,22,34,0.6); padding:0.6rem 0.8rem; border-radius:8px; backdrop-filter:blur(4px); }
@@ -594,11 +604,34 @@
           '</div></div>';
       }
 
+      // Top pharmacies for this state — ranked with % of the state's orders
+      const total = state.orders.length;
+      const phCounts = {};
+      state.orders.forEach(o => { const n = (o.pharmacy_name || '').trim() || 'Unknown'; phCounts[n] = (phCounts[n] || 0) + 1; });
+      const ranked = Object.entries(phCounts).sort((a, b) => b[1] - a[1]);
+      const maxPh = ranked.length ? ranked[0][1] : 1;
+      let phHtml = '';
+      if (ranked.length) {
+        phHtml = '<div class="detail-section"><div class="detail-section-title">Top Pharmacies</div><div class="detail-list">' +
+          ranked.map(([n, cnt], i) => {
+            const pct = Math.round(100 * cnt / total);
+            const barPct = Math.round(100 * cnt / maxPh);
+            return '<div class="ph-rank">' +
+              '<div class="ph-rank-head"><span class="ph-rank-num">#' + (i + 1) + '</span>' +
+              '<span class="ph-rank-name">' + n + '</span>' +
+              '<span class="ph-rank-pct">' + pct + '%</span></div>' +
+              '<div class="ph-bar"><div class="ph-bar-fill" style="width:' + barPct + '%"></div></div>' +
+              '<div class="ph-rank-sub">' + cnt.toLocaleString() + ' orders</div>' +
+              '</div>';
+          }).join('') +
+          '</div></div>';
+      }
+
       content.innerHTML =
-        '<div class="detail-stat"><div class="detail-stat-label">Total Orders</div><div class="detail-stat-val">' + state.orders.length.toLocaleString() + '</div></div>' +
+        '<div class="detail-stat"><div class="detail-stat-label">Total Orders</div><div class="detail-stat-val">' + total.toLocaleString() + '</div></div>' +
         '<div class="detail-stat"><div class="detail-stat-label">Unique Reps</div><div class="detail-stat-val">' + state.reps.size + '</div></div>' +
         '<div class="detail-stat"><div class="detail-stat-label">Account Managers</div><div class="detail-stat-val">' + state.ams.size + '</div></div>' +
-        repsHtml + amsHtml;
+        phHtml + repsHtml + amsHtml;
 
       panel.classList.remove('hidden');
     }

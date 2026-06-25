@@ -192,3 +192,34 @@ td a:hover { text-decoration: underline; }
   .app-layout { flex-direction: column; }
   .kpi-strip { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* ── Collapsible sidebar ────────────────────────────────────── */
+.sidebar { transition: width 0.18s ease; }
+.main-content { transition: margin-left 0.18s ease; }
+.nav-collapse-btn {
+  display: flex; align-items: center; justify-content: center;
+  margin: 0.5rem 0.6rem 0 auto; width: 32px; height: 32px;
+  border: none; border-radius: 6px; cursor: pointer;
+  background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.8);
+}
+.nav-collapse-btn:hover { background: rgba(255,255,255,0.18); color: #fff; }
+.nav-collapse-btn svg { transition: transform 0.18s ease; }
+
+.app-layout.nav-collapsed .sidebar { width: 64px; }
+.app-layout.nav-collapsed .main-content { margin-left: 64px; }
+.app-layout.nav-collapsed .nav-collapse-btn { margin: 0.5rem auto 0; }
+.app-layout.nav-collapsed .nav-collapse-btn svg { transform: rotate(180deg); }
+.app-layout.nav-collapsed .sidebar-brand { padding: 0.85rem 0; text-align: center; }
+.app-layout.nav-collapsed .sidebar-brand h2 { font-size: 0; }
+.app-layout.nav-collapsed .sidebar-brand h2::after { content: 'JMS'; font-size: 0.85rem; }
+.app-layout.nav-collapsed .sidebar-brand p,
+.app-layout.nav-collapsed .sidebar-user { display: none; }
+.app-layout.nav-collapsed .nav-item { justify-content: center; gap: 0; padding-left: 0; padding-right: 0; font-size: 0; }
+.app-layout.nav-collapsed .nav-divider { margin: 0.5rem 0.75rem; }
+.app-layout.nav-collapsed .sidebar-footer { padding: 1rem 0.5rem; }
+.app-layout.nav-collapsed .sidebar-footer .btn { font-size: 0; padding-left: 0; padding-right: 0; }
+.app-layout.nav-collapsed .sidebar-footer .btn::after { content: '⎋'; font-size: 1.15rem; }
+@media (max-width: 768px) {
+  .app-layout.nav-collapsed .sidebar { width: 100%; }
+  .app-layout.nav-collapsed .main-content { margin-left: 0; }
+}

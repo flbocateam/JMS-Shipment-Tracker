@@ -758,3 +758,27 @@ function filterShipments(shipments, { status, search, repFilter, amFilter, dateR
     return true;
   });
 }
+
+// ── Collapsible sidebar (shared across all pages) ─────────────
+function initSidebar() {
+  const layout = document.querySelector('.app-layout');
+  if (!layout) return;
+  const sidebar = layout.querySelector('.sidebar');
+  if (!sidebar || sidebar.querySelector('.nav-collapse-btn')) return;
+  if (localStorage.getItem('jms_nav_collapsed') === '1') layout.classList.add('nav-collapsed');
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'nav-collapse-btn';
+  btn.title = 'Collapse / expand menu';
+  btn.setAttribute('aria-label', 'Toggle menu');
+  btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3 5 8l5 5"/></svg>';
+  btn.onclick = () => {
+    const collapsed = layout.classList.toggle('nav-collapsed');
+    localStorage.setItem('jms_nav_collapsed', collapsed ? '1' : '0');
+  };
+  sidebar.insertBefore(btn, sidebar.firstChild);
+  // tooltips so icons are identifiable when collapsed
+  sidebar.querySelectorAll('.nav-item').forEach(b => { const t = b.textContent.trim(); if (t && !b.title) b.title = t; });
+}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initSidebar);
+else initSidebar();
