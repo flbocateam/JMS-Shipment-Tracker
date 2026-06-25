@@ -321,13 +321,15 @@ async function restoreToCommit(commitSha, uploaderEmail) {
   let historic;
   try {
     if (fileJson.encoding === 'base64' && fileJson.content) {
+      // Small file: inline base64 content
       historic = JSON.parse(atob(fileJson.content.replace(/\n/g, '')));
-    } else if (fileJson.download_url) {
-      const raw = await fetch(fileJson.download_url);
-      if (!raw.ok) throw new Error('download failed');
-      historic = await raw.json();
     } else {
-      throw new Error('no content available');
+      // Large file: download_url always points to HEAD, NOT the historical commit.
+      // Use the Git Blobs API with the blob SHA — returns exact content at that commit.
+      const blobResp = await fetch('https://api.github.com/repos/' + REPO + '/git/blobs/' + fileJson.sha, { headers });
+      if (!blobResp.ok) throw new Error('blob fetch failed ' + blobResp.status);
+      const blob = await blobResp.json();
+      historic = JSON.parse(atob(blob.content.replace(/\n/g, '')));
     }
   } catch (e) { throw new Error('Could not parse historical file: ' + e.message); }
   // Commit it as the new HEAD
