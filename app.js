@@ -311,29 +311,52 @@ async function fetchShipmentHistory(perPage) {
   return r.json();
 }
 
-// Restore shipments.json to the version at a specific commit SHA
+// Restore shipments.json to the version at a specific commit SHA.
+// Passes the raw base64 blob content straight through to the PUT — avoids
+// decoding + re-encoding 25MB which times out in the browser.
 async function restoreToCommit(commitSha, uploaderEmail) {
   const headers = _ghHeaders();
-  // Fetch the file at that commit
-  const fileResp = await fetch('https://api.github.com/repos/' + REPO + '/contents/data/shipments.json?ref=' + commitSha, { headers });
-  if (!fileResp.ok) throw new Error('Could not fetch historical version');
-  const fileJson = await fileResp.json();
+  const apiUrl = 'https://api.github.com/repos/' + REPO + '/contents/data/shipments.json';
+
+  // 1. Get the blob SHA at the historical commit (no content needed here)
+  const histResp = await fetch(apiUrl + '?ref=' + commitSha, { headers });
+  if (!histResp.ok) throw new Error('Could not fetch historical version (' + histResp.status + ')');
+  const histMeta = await histResp.json();
+  const blobSha = histMeta.sha; // git object SHA of the historical file
+
+  // 2. Fetch the blob's raw base64 content via the Git Blobs API
+  const blobResp = await fetch('https://api.github.com/repos/' + REPO + '/git/blobs/' + blobSha, {
+    headers: { ...headers, Accept: 'application/vnd.github+json' }
+  });
+  if (!blobResp.ok) throw new Error('Could not fetch historical blob (' + blobResp.status + ')');
+  const blob = await blobResp.json();
+  // blob.content is already base64-encoded — use it directly, no decode/re-encode
+  const rawBase64 = blob.content.replace(/\n/g, '');
+
+  // 3. Get the current HEAD SHA (needed for the PUT)
+  const headResp = await fetch(apiUrl, { headers });
+  if (!headResp.ok) throw new Error('Could not read current shipments.json (' + headResp.status + ')');
+  const headMeta = await headResp.json();
+  const headSha = headMeta.sha;
+
+  // 4. PUT the historical content as the new HEAD — no JSON parse/stringify at all
+  const putResp = await fetch(apiUrl, {
+    method: 'PUT', headers,
+    body: JSON.stringify({
+      message: 'Restore shipments to ' + commitSha.slice(0, 7) + ' (by ' + uploaderEmail + ')',
+      content: rawBase64,
+      sha: headSha
+    })
+  });
+  if (!putResp.ok) {
+    let msg = 'GitHub API error ' + putResp.status;
+    try { const e = await putResp.json(); msg = e.message || msg; } catch {}
+    throw new Error(msg);
+  }
+
+  // 5. Decode just enough to return the shipments array to the UI
   let historic;
-  try {
-    if (fileJson.encoding === 'base64' && fileJson.content) {
-      // Small file: inline base64 content
-      historic = JSON.parse(atob(fileJson.content.replace(/\n/g, '')));
-    } else {
-      // Large file: download_url always points to HEAD, NOT the historical commit.
-      // Use the Git Blobs API with the blob SHA — returns exact content at that commit.
-      const blobResp = await fetch('https://api.github.com/repos/' + REPO + '/git/blobs/' + fileJson.sha, { headers });
-      if (!blobResp.ok) throw new Error('blob fetch failed ' + blobResp.status);
-      const blob = await blobResp.json();
-      historic = JSON.parse(atob(blob.content.replace(/\n/g, '')));
-    }
-  } catch (e) { throw new Error('Could not parse historical file: ' + e.message); }
-  // Commit it as the new HEAD
-  await commitToGitHub('data/shipments.json', historic, 'Restore to ' + new Date(historic.last_updated || 0).toLocaleString() + ' (by ' + uploaderEmail + ')');
+  try { historic = JSON.parse(atob(rawBase64)); } catch (e) { historic = { shipments: [] }; }
   return historic;
 }
 
