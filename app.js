@@ -220,17 +220,25 @@ function _medDetailHtml(items) {
     return '<div class="med-detail"><div class="med-line">' + _medMain(s) + '</div><div class="med-sub">' + sub + '</div></div>';
   }).join('');
 }
-// A styled dropdown (chip-style summary + panel body). Used by both Contents and Tracking.
-function _dropdown(label, bodyHtml) {
-  return '<details class="dropdown"><summary class="dd-btn">' + label + '</summary>' +
-    '<div class="dd-body">' + bodyHtml + '</div></details>';
+// A chip button that toggles a shared, full-width detail row (one view for the order).
+function _chip(uid, label) {
+  return '<button type="button" class="dd-btn" data-od="' + uid + '" onclick="toggleOrderDetail(\'' + uid + '\')">' + label + '</button>';
 }
 
-// Contents cell: single med inline; multiple meds → dropdown with full detail.
-function _contentsCell(items) {
+// Toggle the shared detail row for an order; both chips (Contents + Tracking) drive it.
+function toggleOrderDetail(uid) {
+  const row = document.getElementById(uid);
+  if (!row) return;
+  const show = row.style.display === 'none';
+  row.style.display = show ? '' : 'none';
+  document.querySelectorAll('.dd-btn[data-od="' + uid + '"]').forEach(b => b.classList.toggle('open', show));
+}
+
+// Contents cell: single med inline; multiple meds → chip toggling the shared detail row.
+function _contentsCell(items, uid) {
   if (!items.length) return '<span style="color:var(--text-muted)">—</span>';
   if (items.length === 1) return '<div class="med-line">' + _medMain(items[0]) + '</div>';
-  return _dropdown(items.length + ' medications', _medDetailHtml(items));
+  return _chip(uid, items.length + ' medications');
 }
 
 // Group line-item rows into orders (same order_id → one order; blank order_id → its own row)
@@ -252,16 +260,15 @@ function _pharmacyCell(items) {
   return set.length === 1 ? set[0] : 'Multiple';
 }
 // Order-level tracking cell: one link when all meds share a tracking number,
-// "Multiple (N)" when they differ (each link is shown in the Contents expander)
-function _trackingCell(items) {
+// or a chip that opens the SAME shared detail row when they differ.
+function _trackingCell(items, uid) {
   const set = [...new Set(items.map(x => String(x.tracking_number || '').trim()).filter(Boolean))];
   if (!set.length) return '—';
   if (set.length === 1) {
     const item = items.find(x => String(x.tracking_number || '').trim() === set[0]);
     return trackingLink(item);
   }
-  // Multiple tracking numbers → same dropdown/detail as the medications column
-  return _dropdown(set.length + ' tracking #s', _medDetailHtml(items));
+  return _chip(uid, set.length + ' tracking #s');
 }
 
 function renderTable(shipments, tableBodyId, showRepCol, globalLastUpdated, globalUpdatedBy, assignments) {
@@ -281,14 +288,15 @@ function renderTable(shipments, tableBodyId, showRepCol, globalLastUpdated, glob
   const capRow = capped
     ? '<tr><td colspan="' + cols + '" style="text-align:center;padding:0.75rem;background:var(--bg-alt);color:var(--text-muted);font-size:0.8125rem">Showing first ' + TABLE_ROW_CAP + ' of ' + orders.length.toLocaleString() + ' orders — narrow your filters to see more</td></tr>'
     : '';
-  tbody.innerHTML = visible.map(({ rep: s, items }) => {
+  tbody.innerHTML = visible.map(({ rep: s, items }, idx) => {
+    const uid = 'od-' + tableBodyId + '-' + idx;
     const cancelled = s.status === 'cancelled' ? ' row-cancelled' : '';
     const repCol = showRepCol ? '<td>' + (s.rep_name || '—') + '</td>' : '';
     const am  = getAMForShipment(s, assignMap);
     const am2 = getSecondaryAMForShipment(s, assignMap);
     const amLabel = am ? (am2 ? am + ' &amp; ' + am2 : am) : null;
     const amText = amLabel ? '<div class="sub-text">AM: ' + amLabel + '</div>' : '';
-    return '<tr class="' + cancelled + '">' +
+    const mainRow = '<tr class="' + cancelled + '">' +
       '<td>' + statusBadge(s.status) + '</td>' +
       repCol +
       '<td><div>' + (s.clinic_name || '—') + '</div>' + amText + '</td>' +
@@ -297,9 +305,14 @@ function renderTable(shipments, tableBodyId, showRepCol, globalLastUpdated, glob
       '<td>' + formatShortDate(s.ship_date) + '</td>' +
       '<td>' + _pharmacyCell(items) + '</td>' +
       '<td>' + (s.order_id || '—') + '</td>' +
-      '<td class="contents-cell">' + _contentsCell(items) + '</td>' +
-      '<td>' + _trackingCell(items) + '</td>' +
+      '<td class="contents-cell">' + _contentsCell(items, uid) + '</td>' +
+      '<td>' + _trackingCell(items, uid) + '</td>' +
       '</tr>';
+    // Single shared, full-width detail row (only when the order has multiple line items)
+    const detailRow = items.length > 1
+      ? '<tr class="order-detail-row" id="' + uid + '" style="display:none"><td colspan="' + cols + '"><div class="dd-panel">' + _medDetailHtml(items) + '</div></td></tr>'
+      : '';
+    return mainRow + detailRow;
   }).join('') + capRow;
 }
 

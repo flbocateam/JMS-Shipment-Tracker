@@ -61,28 +61,24 @@ body.login-page { display: flex; align-items: center; justify-content: center; b
 .med-line { font-size: 0.8125rem; line-height: 1.35; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 320px; }
 .med-line .med-str { color: var(--text-muted); font-size: 0.75rem; }
 .med-line .med-qty { color: var(--teal); font-weight: 600; font-size: 0.75rem; }
-/* Dropdown (shared by Contents medications + multi-tracking) */
-.dropdown { display: inline-block; }
+/* Chip button (Contents medications + multi-tracking) — toggles one shared detail row */
 .dd-btn {
-  cursor: pointer; list-style: none; display: inline-flex; align-items: center; gap: 0.4rem;
-  padding: 0.35rem 0.7rem; border: 1.5px solid var(--teal); border-radius: 999px;
+  cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.4rem 0.85rem; border: 1.5px solid var(--teal); border-radius: 999px;
   background: rgba(20,160,140,0.10); color: var(--teal); font-size: 0.8125rem; font-weight: 600;
-  white-space: nowrap; transition: background 0.15s, box-shadow 0.15s;
+  white-space: nowrap; transition: background 0.15s, box-shadow 0.15s, color 0.15s;
 }
-.dd-btn::-webkit-details-marker { display: none; }
 .dd-btn::after { content: '▾'; font-size: 0.7rem; transition: transform 0.15s; }
-.dropdown[open] .dd-btn { background: var(--teal); color: #fff; box-shadow: 0 2px 8px rgba(20,160,140,0.35); }
-.dropdown[open] .dd-btn::after { transform: rotate(180deg); }
 .dd-btn:hover { background: rgba(20,160,140,0.22); }
-.dd-body {
-  margin-top: 0.5rem; padding: 0.5rem 0.75rem; min-width: 300px;
-  background: var(--bg-alt); border: 1px solid var(--border); border-radius: 8px;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.10);
-}
-.med-detail { padding: 0.45rem 0; border-bottom: 1px solid var(--border); }
-.med-detail:last-child { border-bottom: none; }
-.dd-body .med-line { white-space: normal; max-width: none; font-weight: 600; }
-.med-sub { font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem; }
+.dd-btn.open { background: var(--teal); color: #fff; box-shadow: 0 2px 8px rgba(20,160,140,0.35); }
+.dd-btn.open::after { transform: rotate(180deg); }
+
+/* One shared, full-width detail row for the order */
+.order-detail-row > td { background: var(--bg-alt); padding: 0.5rem 1rem 0.85rem; }
+.dd-panel { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 0.5rem 1.5rem; }
+.med-detail { padding: 0.5rem 0.75rem; background: var(--card); border: 1px solid var(--border); border-radius: 8px; }
+.dd-panel .med-line { white-space: normal; max-width: none; font-weight: 600; }
+.med-sub { font-size: 0.72rem; color: var(--text-muted); margin-top: 0.25rem; }
 .med-sub .med-rx { font-family: ui-monospace, monospace; }
 .sidebar-nav { padding: 0.75rem 0; flex: 1; }
 .nav-item { display: flex; align-items: center; gap: 0.625rem; padding: 0.625rem 1.25rem; font-size: 0.875rem; color: rgba(255,255,255,0.7); cursor: pointer; transition: all 0.15s; border: none; background: none; width: 100%; text-align: left; }
