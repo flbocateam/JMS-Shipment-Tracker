@@ -35,15 +35,13 @@
     /* Map View */
     .map-container { display:grid; grid-template-columns:1fr 380px; gap:1.5rem; margin-bottom:1.5rem; }
     @media (max-width: 1200px) { .map-container { grid-template-columns:1fr; } }
-    #us-map-svg { background:var(--bg-alt); border-radius:10px; border:1px solid var(--border); width:100%; }
-    .us-state { fill:#1f2937; stroke:var(--border); stroke-width:0.5; transition:all 0.2s; cursor:pointer; }
-    .us-state:hover { fill:#374151; stroke:var(--text); stroke-width:1; }
-    .us-state.active { fill:var(--teal); stroke:var(--orange); stroke-width:1.5; }
-    .us-state.high { fill:var(--orange); opacity:0.8; }
-    .us-state.medium { fill:#f59e0b; opacity:0.5; }
-    .us-state.low { fill:#6b7280; opacity:0.3; }
-    .state-tooltip { position:absolute; background:var(--card); border:1px solid var(--border); border-radius:8px; padding:0.75rem 1rem; font-size:0.8125rem; pointer-events:none; z-index:100; box-shadow:0 4px 12px rgba(0,0,0,0.3); }
-    .state-tooltip strong { color:var(--teal); display:block; margin-bottom:0.25rem; }
+    .globe-card { padding:0; position:relative; overflow:hidden; background:radial-gradient(circle at 50% 40%, #0f2a3f 0%, #0a1622 55%, #060d16 100%); border:1px solid var(--border); border-radius:10px; }
+    #globe-canvas { display:block; width:100%; height:560px; cursor:grab; }
+    #globe-canvas:active { cursor:grabbing; }
+    #globe-empty { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,0.5); font-size:0.9rem; pointer-events:none; }
+    #globe-hint { position:absolute; top:0.75rem; right:1rem; font-size:0.7rem; color:rgba(255,255,255,0.35); pointer-events:none; }
+    .state-tooltip { position:fixed; background:rgba(10,22,34,0.95); border:1px solid rgba(34,224,107,0.4); border-radius:8px; padding:0.6rem 0.9rem; font-size:0.8125rem; color:#fff; pointer-events:none; z-index:1000; box-shadow:0 4px 16px rgba(0,0,0,0.5); white-space:nowrap; }
+    .state-tooltip strong { color:#22e06b; display:block; margin-bottom:0.2rem; }
 
     /* Detail Panel */
     .detail-panel { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:1.5rem; max-height:800px; overflow-y:auto; }
@@ -60,10 +58,12 @@
     .detail-list-item { padding:0.5rem 0; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; }
     .detail-list-item:last-child { border-bottom:none; }
 
-    /* Map Legend */
-    .map-legend { font-size:0.75rem; color:var(--text-muted); margin-top:1rem; padding-top:1rem; border-top:1px solid var(--border); }
-    .legend-item { display:flex; align-items:center; gap:0.5rem; margin-bottom:0.5rem; }
-    .legend-swatch { width:16px; height:16px; border-radius:3px; }
+    /* Map Legend (overlaid on globe) */
+    .map-legend { position:absolute; left:1rem; bottom:1rem; font-size:0.7rem; color:rgba(255,255,255,0.6); background:rgba(10,22,34,0.6); padding:0.6rem 0.8rem; border-radius:8px; backdrop-filter:blur(4px); }
+    .map-legend strong { color:rgba(255,255,255,0.85); display:block; margin-bottom:0.4rem; font-size:0.7rem; }
+    .legend-item { display:flex; align-items:center; gap:0.5rem; margin-bottom:0.3rem; }
+    .legend-item:last-child { margin-bottom:0; }
+    .legend-swatch { width:12px; height:12px; border-radius:50%; }
   </style>
 </head>
 <body>
@@ -138,24 +138,17 @@
           <div class="table-card" style="padding:1.5rem;text-align:center;color:var(--text-muted)">Loading…</div>
         </div>
 
-        <!-- Map + Detail Panel -->
+        <!-- Globe + Detail Panel -->
         <div class="map-container">
-          <div class="table-card" style="padding:1rem">
-            <svg id="us-map-svg" viewBox="0 0 960 600" preserveAspectRatio="xMidYMid meet"></svg>
+          <div class="globe-card">
+            <canvas id="globe-canvas"></canvas>
+            <div id="globe-hint">drag to rotate · hover a state</div>
+            <div id="globe-empty" style="display:none">No orders in this period</div>
             <div class="map-legend">
               <strong>Order Volume</strong>
-              <div class="legend-item">
-                <div class="legend-swatch" style="background:#f59e0b"></div>
-                <span>High</span>
-              </div>
-              <div class="legend-item">
-                <div class="legend-swatch" style="background:#f59e0b; opacity:0.5"></div>
-                <span>Medium</span>
-              </div>
-              <div class="legend-item">
-                <div class="legend-swatch" style="background:#6b7280; opacity:0.3"></div>
-                <span>Low</span>
-              </div>
+              <div class="legend-item"><div class="legend-swatch" style="background:#22e06b;box-shadow:0 0 6px #22e06b"></div><span>High</span></div>
+              <div class="legend-item"><div class="legend-swatch" style="background:#6fae8a"></div><span>Medium</span></div>
+              <div class="legend-item"><div class="legend-swatch" style="background:#5b6b7a"></div><span>Low</span></div>
             </div>
           </div>
           <div class="detail-panel hidden" id="detail-panel">
@@ -211,6 +204,148 @@
       return states;
     }
 
+    // ═══════════════════════════════════════════════════════════
+    //  SPINNING DOTTED GLOBE ENGINE (pure canvas, no dependencies)
+    // ═══════════════════════════════════════════════════════════
+
+    // State centroids [lat, lng] for plotting on the sphere
+    const STATE_CENTROIDS = {
+      AL:[32.8,-86.8], AK:[63.6,-152.5], AZ:[34.3,-111.7], AR:[34.9,-92.4], CA:[37.2,-119.3],
+      CO:[39.0,-105.5], CT:[41.6,-72.7], DE:[39.0,-75.5], FL:[28.6,-82.4], GA:[32.6,-83.4],
+      HI:[20.3,-156.4], ID:[44.4,-114.6], IL:[40.0,-89.2], IN:[39.9,-86.3], IA:[42.0,-93.5],
+      KS:[38.5,-98.4], KY:[37.5,-85.3], LA:[31.0,-92.0], ME:[45.4,-69.2], MD:[39.0,-76.8],
+      MA:[42.3,-71.8], MI:[44.3,-85.4], MN:[46.3,-94.3], MS:[32.7,-89.7], MO:[38.4,-92.5],
+      MT:[47.0,-109.6], NE:[41.5,-99.8], NV:[39.3,-116.6], NH:[43.7,-71.6], NJ:[40.2,-74.7],
+      NM:[34.4,-106.1], NY:[42.9,-75.5], NC:[35.6,-79.4], ND:[47.5,-100.5], OH:[40.3,-82.8],
+      OK:[35.6,-97.5], OR:[43.9,-120.6], PA:[40.9,-77.8], RI:[41.7,-71.5], SC:[33.9,-80.9],
+      SD:[44.4,-100.2], TN:[35.9,-86.4], TX:[31.5,-99.3], UT:[39.3,-111.7], VT:[44.1,-72.7],
+      VA:[37.5,-78.9], WA:[47.4,-120.5], WV:[38.6,-80.6], WI:[44.6,-89.9], WY:[43.0,-107.6]
+    };
+
+    // Pharmacy ship-from origins → state (for animated shipping arcs)
+    const PHARM_ORIGINS = [
+      { match: 'boudreaux', state: 'LA' },
+      { match: 'vios',      state: 'MI' },
+      { match: 'emerald',   state: 'FL' },
+      { match: 'right away', state: 'TX' },
+      { match: 'ritw',      state: 'TX' },
+      { match: 'abc',       state: 'AL' }
+    ];
+    function pharmToState(name) {
+      const n = String(name || '').toLowerCase();
+      for (const p of PHARM_ORIGINS) if (n.includes(p.match)) return p.state;
+      return null;
+    }
+
+    const globe = {
+      canvas: null, ctx: null, dpr: 1, w: 0, h: 0, R: 0, cx: 0, cy: 0,
+      ang: -1.4, tilt: -0.42, autoVel: 0.0022,
+      dragging: false, lastX: 0, lastY: 0, idleUntil: 0,
+      states: [], arcs: [], statePts: [], hover: null,
+      raf: null, started: false, t0: 0
+    };
+
+    function latlng3d(lat, lng) {
+      const la = lat * Math.PI / 180, lo = lng * Math.PI / 180;
+      return [Math.cos(la) * Math.cos(lo), Math.sin(la), Math.cos(la) * Math.sin(lo)];
+    }
+    function rotate3d(p) {
+      const a = globe.ang, t = globe.tilt;
+      // rotate around Y
+      let x = p[0] * Math.cos(a) + p[2] * Math.sin(a);
+      let z = -p[0] * Math.sin(a) + p[2] * Math.cos(a);
+      let y = p[1];
+      // tilt around X
+      const y2 = y * Math.cos(t) - z * Math.sin(t);
+      const z2 = y * Math.sin(t) + z * Math.cos(t);
+      return [x, y2, z2];
+    }
+    function project(p) { return [globe.cx + p[0] * globe.R, globe.cy - p[1] * globe.R]; }
+    function slerp(A, B, k) {
+      let d = A[0]*B[0] + A[1]*B[1] + A[2]*B[2];
+      d = Math.max(-1, Math.min(1, d));
+      const om = Math.acos(d);
+      if (om < 1e-4) return A;
+      const s = Math.sin(om), a = Math.sin((1 - k) * om) / s, b = Math.sin(k * om) / s;
+      return [a*A[0]+b*B[0], a*A[1]+b*B[1], a*A[2]+b*B[2]];
+    }
+
+    function resizeGlobe() {
+      const c = globe.canvas;
+      const rect = c.getBoundingClientRect();
+      globe.dpr = window.devicePixelRatio || 1;
+      globe.w = rect.width; globe.h = rect.height;
+      c.width = Math.round(globe.w * globe.dpr);
+      c.height = Math.round(globe.h * globe.dpr);
+      globe.ctx.setTransform(globe.dpr, 0, 0, globe.dpr, 0, 0);
+      globe.R = Math.min(globe.w, globe.h) * 0.42;
+      globe.cx = globe.w / 2; globe.cy = globe.h / 2;
+    }
+
+    function setupGlobe() {
+      if (globe.canvas) return;
+      globe.canvas = document.getElementById('globe-canvas');
+      globe.ctx = globe.canvas.getContext('2d');
+      resizeGlobe();
+      window.addEventListener('resize', () => { if (currentView === 'map') resizeGlobe(); });
+
+      const c = globe.canvas;
+      c.addEventListener('mousedown', e => { globe.dragging = true; globe.lastX = e.offsetX; globe.lastY = e.offsetY; });
+      window.addEventListener('mouseup', () => { globe.dragging = false; globe.idleUntil = performance.now() + 2500; });
+      c.addEventListener('mousemove', e => {
+        if (globe.dragging) {
+          globe.ang += (e.offsetX - globe.lastX) * 0.006;
+          globe.tilt = Math.max(-1.2, Math.min(1.2, globe.tilt + (e.offsetY - globe.lastY) * 0.006));
+          globe.lastX = e.offsetX; globe.lastY = e.offsetY;
+          hideStateTooltip();
+        } else {
+          hitTestState(e.offsetX, e.offsetY, e.clientX, e.clientY);
+        }
+      });
+      c.addEventListener('mouseleave', () => { globe.hover = null; hideStateTooltip(); });
+      c.addEventListener('click', e => {
+        const hit = nearestState(e.offsetX, e.offsetY);
+        if (hit) showStateDetail(hit.code);
+      });
+    }
+
+    function nearestState(mx, my) {
+      let best = null, bestD = 16;
+      for (const p of globe.statePts) {
+        if (!p.front) continue;
+        const d = Math.hypot(p.sx - mx, p.sy - my);
+        if (d < bestD) { bestD = d; best = p; }
+      }
+      return best;
+    }
+    function hitTestState(mx, my, clientX, clientY) {
+      const hit = nearestState(mx, my);
+      globe.hover = hit ? hit.code : null;
+      globe.canvas.style.cursor = hit ? 'pointer' : 'grab';
+      if (hit) showStateTooltip(hit.code, clientX, clientY);
+      else hideStateTooltip();
+    }
+
+    function buildArcs(dated) {
+      // Aggregate shipping flows: pharmacy origin state → customer (region) state
+      const flows = {};
+      dated.forEach(s => {
+        const dst = String(s.region || '').trim().toUpperCase();
+        const org = pharmToState(s.pharmacy_name);
+        if (!dst || !org || !STATE_CENTROIDS[dst] || !STATE_CENTROIDS[org] || org === dst) return;
+        const k = org + '>' + dst;
+        flows[k] = (flows[k] || 0) + 1;
+      });
+      const arr = Object.entries(flows).map(([k, v]) => { const [o, d] = k.split('>'); return { o, d, v }; })
+        .sort((a, b) => b.v - a.v).slice(0, 40);
+      const max = arr.length ? arr[0].v : 1;
+      globe.arcs = arr.map((f, i) => ({
+        A: latlng3d(STATE_CENTROIDS[f.o][0], STATE_CENTROIDS[f.o][1]),
+        B: latlng3d(STATE_CENTROIDS[f.d][0], STATE_CENTROIDS[f.d][1]),
+        v: f.v, phase: (i * 0.137) % 1, speed: 0.45 + 0.55 * (f.v / max)
+      }));
+    }
+
     function getStateVolume(state) {
       const count = stateData[state]?.orders.length || 0;
       const total = allShipments.length || 1;
@@ -220,18 +355,15 @@
       return 'low';
     }
 
-    function renderMapKPIs() {
-      const filtered = currentRepFilter ? allShipments.filter(s => s.rep_name === currentRepFilter) : allShipments;
-      const cutoff = getDateRangeCutoff(currentRange || 'all');
-      const dated = cutoff ? filtered.filter(s => s.order_date && new Date(s.order_date) >= cutoff) : filtered;
-      const agg = aggregateByState(dated);
+    function renderMapKPIs(dated, agg) {
       const activeStates = Object.keys(agg).length;
       const totalOrders = dated.length;
       const avgPerState = activeStates > 0 ? Math.round(totalOrders / activeStates) : 0;
       const topState = Object.entries(agg).reduce((a, b) => a[1].orders.length > b[1].orders.length ? a : b, ['—', { orders: [] }]);
+      const rangeLabel = { today:'today', yesterday:'yesterday', last7:'last 7 days', last30:'last 30 days', last90:'last 90 days', all:'all time' }[currentRange] || currentRange;
 
       document.getElementById('map-kpi-grid').innerHTML =
-        kpiCard(totalOrders.toLocaleString(), 'Total Orders', currentRange === 'all' ? 'all time' : currentRange) +
+        kpiCard(totalOrders.toLocaleString(), 'Total Orders', rangeLabel) +
         kpiCard(topState[0], 'Top State', topState[1].orders.length.toLocaleString() + ' orders') +
         kpiCard(activeStates.toLocaleString(), 'Active States', 'states with orders') +
         kpiCard(avgPerState.toLocaleString(), 'Avg Orders/State', 'per active state');
@@ -243,92 +375,140 @@
       const dated = cutoff ? filtered.filter(s => s.order_date && new Date(s.order_date) >= cutoff) : filtered;
       stateData = aggregateByState(dated);
 
-      renderMapKPIs();
+      renderMapKPIs(dated, stateData);
+      setupGlobe();
+      resizeGlobe();
+      buildArcs(dated);
 
-      // Generate simplified SVG map with state rectangles
-      const svg = document.getElementById('us-map-svg');
-      svg.innerHTML = '';
-
-      // Add US outline background
-      const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-      bg.setAttribute('width', '960');
-      bg.setAttribute('height', '600');
-      bg.setAttribute('fill', '#1f2937');
-      bg.setAttribute('opacity', '0.3');
-      svg.appendChild(bg);
-
-      // Approximate state positions (simplified grid-based layout for visualization)
-      const positions = {
-        WA: [50, 80], OR: [50, 130], CA: [50, 200], NV: [120, 140], ID: [120, 70], MT: [150, 40], WY: [180, 80], UT: [150, 160], AZ: [140, 250], CO: [200, 120], NM: [180, 280], ND: [250, 40], SD: [280, 80], NE: [280, 140], KS: [310, 150], OK: [320, 220], TX: [350, 300], MN: [310, 60], IA: [340, 100], MO: [350, 160], AR: [380, 200], LA: [390, 280], WI: [380, 80], IL: [420, 130], MI: [440, 90], IN: [450, 140], OH: [470, 140], KY: [460, 180], TN: [460, 220], MS: [430, 240], AL: [470, 260], GA: [500, 280], FL: [520, 340], SC: [500, 260], NC: [510, 220], VA: [530, 180], WV: [530, 160], PA: [540, 120], NY: [560, 100], VT: [590, 80], NH: [600, 80], MA: [600, 110], RI: [610, 120], CT: [610, 130], NJ: [620, 130], DE: [620, 150], MD: [630, 160], ME: [620, 60], AK: [100, 500], HI: [200, 500]
-      };
-
-      // Draw states
-      Object.entries(positions).forEach(([code, [x, y]]) => {
-        const size = 35;
-        const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-        group.setAttribute('class', 'state-group');
-        group.setAttribute('data-state', code);
-
+      // Precompute state render list (volume color + size)
+      const counts = Object.entries(stateData).map(([c, v]) => v.orders.length);
+      const maxCount = counts.length ? Math.max(...counts) : 1;
+      globe.states = Object.keys(STATE_CENTROIDS).map(code => {
         const count = stateData[code]?.orders.length || 0;
-        const volume = count > 0 ? getStateVolume(code) : 'none';
-        let fillColor = '#6b7280';
-        let opacity = '0.3';
-        if (volume === 'high') { fillColor = '#f59e0b'; opacity = '1'; }
-        else if (volume === 'medium') { fillColor = '#f59e0b'; opacity = '0.5'; }
-
-        const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-        rect.setAttribute('x', x - size / 2);
-        rect.setAttribute('y', y - size / 2);
-        rect.setAttribute('width', size);
-        rect.setAttribute('height', size);
-        rect.setAttribute('fill', fillColor);
-        rect.setAttribute('opacity', opacity);
-        rect.setAttribute('stroke', '#4b5563');
-        rect.setAttribute('stroke-width', '0.5');
-        rect.setAttribute('rx', '4');
-        rect.setAttribute('class', 'us-state');
-
-        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        text.setAttribute('x', x);
-        text.setAttribute('y', y);
-        text.setAttribute('text-anchor', 'middle');
-        text.setAttribute('dominant-baseline', 'middle');
-        text.setAttribute('font-size', '11');
-        text.setAttribute('font-weight', 'bold');
-        text.setAttribute('fill', count > 0 ? '#fff' : '#999');
-        text.setAttribute('pointer-events', 'none');
-        text.textContent = code;
-
-        group.appendChild(rect);
-        group.appendChild(text);
-        svg.appendChild(group);
-
-        // Hover + click handlers
-        group.addEventListener('mouseenter', () => {
-          showStateTooltip(code, x, y);
-          rect.setAttribute('stroke-width', '2');
-        });
-        group.addEventListener('mouseleave', () => { hideStateTooltip(); rect.setAttribute('stroke-width', '0.5'); });
-        group.addEventListener('click', () => showStateDetail(code));
+        const ratio = maxCount > 0 ? count / maxCount : 0;
+        return { code, count, ratio, pos: latlng3d(STATE_CENTROIDS[code][0], STATE_CENTROIDS[code][1]) };
       });
+
+      document.getElementById('globe-empty').style.display = dated.length ? 'none' : 'flex';
+
+      if (!globe.started) { globe.started = true; globe.raf = requestAnimationFrame(drawGlobe); }
     }
 
-    function showStateTooltip(code, x, y) {
+    function stateColor(ratio, count) {
+      if (count === 0) return { fill: 'rgba(91,107,122,0.55)', glow: 0 };
+      // gray → bright green by volume
+      const r = Math.round(91 + (34 - 91) * ratio);
+      const g = Math.round(107 + (224 - 107) * ratio);
+      const b = Math.round(122 + (107 - 122) * ratio);
+      return { fill: 'rgb(' + r + ',' + g + ',' + b + ')', glow: ratio };
+    }
+
+    function drawGlobe(ts) {
+      if (currentView !== 'map') { globe.started = false; return; }
+      if (!globe.t0) globe.t0 = ts;
+      const time = (ts - globe.t0) / 1000;
+      const ctx = globe.ctx;
+      ctx.clearRect(0, 0, globe.w, globe.h);
+
+      // auto-rotate unless dragging or recently interacted
+      if (!globe.dragging && ts > globe.idleUntil) globe.ang += globe.autoVel;
+
+      // 1. Dotted sphere grid
+      for (let lat = -84; lat <= 84; lat += 4) {
+        for (let lng = 0; lng < 360; lng += 4) {
+          const p = rotate3d(latlng3d(lat, lng));
+          const [sx, sy] = project(p);
+          const front = p[2] > 0;
+          const b = (p[2] + 1) / 2;
+          if (front) {
+            ctx.fillStyle = 'rgba(120,170,170,' + (0.12 + 0.42 * b) + ')';
+            const r = 0.5 + 1.1 * b;
+            ctx.beginPath(); ctx.arc(sx, sy, r, 0, 6.2832); ctx.fill();
+          } else {
+            ctx.fillStyle = 'rgba(80,110,120,' + (0.04 + 0.07 * b) + ')';
+            ctx.beginPath(); ctx.arc(sx, sy, 0.5, 0, 6.2832); ctx.fill();
+          }
+        }
+      }
+
+      // 2. Animated green shipping arcs
+      ctx.lineCap = 'round';
+      for (const arc of globe.arcs) {
+        const speed = arc.speed * 0.32;
+        let head = (time * speed + arc.phase) % 1;
+        const tail = 0.42, steps = 22;
+        let prev = null;
+        for (let i = 0; i <= steps; i++) {
+          const k = head - tail * (i / steps);
+          if (k < 0 || k > 1) { prev = null; continue; }
+          const P = slerp(arc.A, arc.B, k);
+          const lift = 1 + 0.34 * Math.sin(Math.PI * k);
+          const pt = rotate3d([P[0]*lift, P[1]*lift, P[2]*lift]);
+          const [sx, sy] = project(pt);
+          const frontish = pt[2] > -0.15;
+          const a = 1 - i / steps;
+          if (prev && frontish) {
+            ctx.strokeStyle = 'rgba(34,230,107,' + (a * 0.85) + ')';
+            ctx.lineWidth = 0.5 + 1.8 * a;
+            ctx.shadowColor = 'rgba(34,230,107,0.9)';
+            ctx.shadowBlur = 7 * a;
+            ctx.beginPath(); ctx.moveTo(prev[0], prev[1]); ctx.lineTo(sx, sy); ctx.stroke();
+          }
+          prev = [sx, sy];
+        }
+        // bright head dot
+        if (head >= 0 && head <= 1) {
+          const P = slerp(arc.A, arc.B, head);
+          const lift = 1 + 0.34 * Math.sin(Math.PI * head);
+          const pt = rotate3d([P[0]*lift, P[1]*lift, P[2]*lift]);
+          if (pt[2] > -0.15) {
+            const [sx, sy] = project(pt);
+            ctx.fillStyle = '#aaffcc';
+            ctx.shadowColor = '#22e66b'; ctx.shadowBlur = 10;
+            ctx.beginPath(); ctx.arc(sx, sy, 2.2, 0, 6.2832); ctx.fill();
+          }
+        }
+      }
+      ctx.shadowBlur = 0;
+
+      // 3. State dots (volume) + hit map
+      globe.statePts = [];
+      for (const st of globe.states) {
+        const p = rotate3d(st.pos);
+        const front = p[2] > 0;
+        const [sx, sy] = project(p);
+        globe.statePts.push({ code: st.code, sx, sy, front });
+        if (!front) continue;
+        const { fill, glow } = stateColor(st.ratio, st.count);
+        const size = st.count === 0 ? 1.6 : 3 + 5 * st.ratio;
+        const isHover = globe.hover === st.code;
+        if (glow > 0) { ctx.shadowColor = 'rgba(34,230,107,' + (0.5 + 0.5 * glow) + ')'; ctx.shadowBlur = 6 + 12 * glow; }
+        ctx.fillStyle = isHover ? '#ffffff' : fill;
+        ctx.beginPath(); ctx.arc(sx, sy, isHover ? size + 1.5 : size, 0, 6.2832); ctx.fill();
+        ctx.shadowBlur = 0;
+        // label bigger states
+        if (st.count > 0 && (st.ratio > 0.25 || isHover)) {
+          ctx.fillStyle = 'rgba(255,255,255,' + (0.55 + 0.45 * st.ratio) + ')';
+          ctx.font = 'bold 10px system-ui, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(st.code, sx, sy - size - 4);
+        }
+      }
+
+      globe.raf = requestAnimationFrame(drawGlobe);
+    }
+
+    function showStateTooltip(code, clientX, clientY) {
       const count = stateData[code]?.orders.length || 0;
-      const total = allShipments.length || 1;
+      const total = (currentRepFilter ? allShipments.filter(s => s.rep_name === currentRepFilter) : allShipments).length || 1;
       const pct = Math.round((count / total) * 100);
       const name = US_STATES[code] || code;
-      const html = '<strong>' + name + ' (' + code + ')</strong><div>' + count.toLocaleString() + ' orders (' + pct + '%)</div>';
-      const tooltip = document.createElement('div');
-      tooltip.className = 'state-tooltip';
-      tooltip.innerHTML = html;
-      tooltip.id = 'state-tooltip';
-      document.body.appendChild(tooltip);
-      const rect = document.getElementById('us-map-svg').getBoundingClientRect();
-      tooltip.style.left = (rect.left + x + 20) + 'px';
-      tooltip.style.top = (rect.top + y - 20) + 'px';
+      let t = document.getElementById('state-tooltip');
+      if (!t) { t = document.createElement('div'); t.className = 'state-tooltip'; t.id = 'state-tooltip'; document.body.appendChild(t); }
+      t.innerHTML = '<strong>' + name + ' (' + code + ')</strong>' + count.toLocaleString() + ' orders · ' + pct + '%';
+      t.style.left = (clientX + 16) + 'px';
+      t.style.top = (clientY - 10) + 'px';
     }
-
     function hideStateTooltip() {
       const t = document.getElementById('state-tooltip');
       if (t) t.remove();
@@ -427,7 +607,7 @@
           repFilter.style.display = '';
           const reps = [...new Set(shipments.map(s => s.rep_name).filter(Boolean))].sort();
           reps.forEach(r => { const o = document.createElement('option'); o.value = r; o.textContent = r; repFilter.appendChild(o); });
-          repFilter.addEventListener('change', () => { currentRepFilter = repFilter.value; render(); renderMap(); });
+          repFilter.addEventListener('change', () => { currentRepFilter = repFilter.value; if (currentView === 'map') renderMap(); else render(); });
         }
 
         allShipments = shipments;
