@@ -7,6 +7,13 @@
   },
   "account_managers": [
     {
+      "name": "Owner",
+      "email": "owner@boomrx.com",
+      "role": "owner",
+      "active": true,
+      "pin_hash": "$2b$10$up4w7DxsFbvi096favbvXuxiJvwZ.OjoLxI4I3ISJ8A3.r95eeCXq"
+    },
+    {
       "name": "Ashlyn Smith",
       "email": "ashlyn.smith@boomrx.com",
       "role": "account_manager",

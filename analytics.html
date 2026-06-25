@@ -108,7 +108,7 @@
       document.getElementById('back-btn').onclick = () =>
         window.location.href = currentUser.role === 'admin' ? 'admin.html' : 'dashboard.html';
 
-      if (elevated) document.getElementById('import-nav-btn').style.display = '';
+      if (canWrite(currentUser.role)) document.getElementById('import-nav-btn').style.display = '';
 
       if (currentUser.role === 'admin') {
         const nav = document.getElementById('sidebar-nav');

@@ -73,7 +73,7 @@
     async function init() {
       currentUser = checkAuth();
       if (!currentUser) return;
-      if (!isElevatedRole(currentUser.role)) { window.location.href = 'dashboard.html'; return; }
+      if (!canWrite(currentUser.role)) { window.location.href = 'dashboard.html'; return; }
 
       document.getElementById('sidebar-user').innerHTML =
         '<strong>' + currentUser.name + '</strong>' +

@@ -21,8 +21,13 @@ function navIcon(key) {
   return ICONS[key] || '';
 }
 
-// Roles that can see all shipments, upload, and use AM filter
+// Roles that can see all shipments and use AM/rep filters
 function isElevatedRole(role) {
+  return role === 'admin' || role === 'account_manager' || role === 'vice_president' || role === 'owner';
+}
+
+// Roles that can write data (import shipments, manage users)
+function canWrite(role) {
   return role === 'admin' || role === 'account_manager' || role === 'vice_president';
 }
 

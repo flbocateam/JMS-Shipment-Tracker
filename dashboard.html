@@ -105,7 +105,7 @@
 
       document.getElementById('page-subtitle').textContent = elevated ? 'All rep shipments' : 'Your assigned shipments';
 
-      if (elevated) document.getElementById('import-nav-btn').style.display = '';
+      if (canWrite(currentUser.role)) document.getElementById('import-nav-btn').style.display = '';
 
       // Table header
       document.getElementById('table-head').innerHTML = '<tr>' +
