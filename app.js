@@ -50,6 +50,20 @@ function logout() {
 
 // ── Data fetching ────────────────────────────────────────────
 async function loadConfig() {
+  // If a PAT is available, fetch directly from GitHub API — bypasses CDN so
+  // changes committed seconds ago are immediately visible on refresh.
+  const pat = localStorage.getItem(PAT_KEY);
+  if (pat) {
+    try {
+      const apiUrl = 'https://api.github.com/repos/' + REPO + '/contents/data/config.json';
+      const r = await fetch(apiUrl, { headers: { Authorization: 'token ' + pat, Accept: 'application/vnd.github+json' } });
+      if (r.ok) {
+        const j = await r.json();
+        return JSON.parse(atob(j.content.replace(/\n/g, '')));
+      }
+    } catch (_) { /* fall through to CDN */ }
+  }
+  // Fallback for login page / users without PAT
   const r = await fetch('data/config.json?t=' + Date.now());
   if (!r.ok) throw new Error('Failed to load config');
   return r.json();
