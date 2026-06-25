@@ -68,7 +68,7 @@
         <div class="table-card">
           <div class="table-wrapper">
             <table>
-              <thead><tr><th>Status</th><th>Rep</th><th>Clinic</th><th>Region</th><th>Order Date</th><th>Ship Date</th><th>Pharmacy</th><th>Order ID</th><th>Tracking</th></tr></thead>
+              <thead><tr><th>Status</th><th>Rep</th><th>Clinic</th><th>Region</th><th>Order Date</th><th>Ship Date</th><th>Pharmacy</th><th>Order ID</th><th>Contents</th><th>Tracking</th></tr></thead>
               <tbody id="table-body"><tr><td colspan="10" style="text-align:center;padding:2rem">Loading…</td></tr></tbody>
             </table>
           </div>
@@ -151,6 +151,7 @@
           <option value="rep">Rep — sees only their own orders</option>
           <option value="account_manager">Account Manager — sees all orders, can import</option>
           <option value="vice_president">Vice President — same as Account Manager</option>
+          <option value="admin">Admin — full access incl. user management</option>
           <option value="owner">Owner — full visibility, read-only (no import)</option>
         </select>
         <p id="modal-role-desc" style="font-size:0.75rem;color:var(--text-muted);margin-top:0.375rem"></p>
@@ -273,7 +274,7 @@
       ];
       const note = '<p style="font-size:0.8125rem;color:var(--text-muted);margin-bottom:1rem;padding:0.75rem 1rem;background:var(--bg);border-radius:6px;border:1px solid var(--border)">PINs are stored as secure one-way hashes and cannot be viewed. Use <strong>Reset PIN</strong> to set a new PIN for any user.</p>';
       if (!allUsers.length) { container.innerHTML = note + '<p style="color:var(--text-muted)">No users yet.</p>'; return; }
-      const roleLabel = r => ({ account_manager: 'Account Manager', vice_president: 'Vice President', owner: 'Owner', rep: 'Rep' }[r] || r);
+      const roleLabel = r => ({ admin: 'Admin', account_manager: 'Account Manager', vice_president: 'Vice President', owner: 'Owner', rep: 'Rep' }[r] || r);
       container.innerHTML = note + allUsers.map(u => {
         const inactive = u.active === false;
         const toggleBtn = inactive
@@ -300,6 +301,7 @@
       rep: 'Sees only their own orders. Cannot import or manage users.',
       account_manager: 'Sees all orders and reps. Can import shipments and manage users.',
       vice_president: 'Same visibility as Account Manager. Can import and manage users.',
+      admin: 'Full access: all orders, import, user management, settings, and history.',
       owner: 'Full read-only visibility across all reps and AMs. Cannot import or edit data.'
     };
     function updateRoleDesc() {
@@ -451,7 +453,7 @@
         ...(configData.account_managers || []),
         ...(configData.reps || []).map(u => ({ ...u, role: u.role || 'rep' }))
       ];
-      const roleLabel = r => ({ account_manager: 'Account Manager', vice_president: 'Vice President', owner: 'Owner', rep: 'Rep' }[r] || r);
+      const roleLabel = r => ({ admin: 'Admin', account_manager: 'Account Manager', vice_president: 'Vice President', owner: 'Owner', rep: 'Rep' }[r] || r);
       allUsers.forEach(u => {
         const o = document.createElement('option');
         o.value = JSON.stringify({ role: u.role, name: u.name, email: u.email });

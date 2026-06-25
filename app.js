@@ -193,24 +193,57 @@ function formatShortDate(isoStr) {
 }
 
 // ── Table rendering ──────────────────────────────────────────
-// Columns: Status | (Rep) | Clinic | Region | Order Date | Ship Date | Pharmacy | Order ID | Tracking
+// Columns: Status | (Rep) | Clinic | Region | Order Date | Ship Date | Pharmacy | Order ID | Contents | Tracking
+// Line items sharing the same order_id are collapsed into a single order row,
+// with all medications listed in the Contents column.
 // assignments: optional map of clinic_id → {account_manager, clinic_name}
 const TABLE_ROW_CAP = 300;
+
+function _esc(s) {
+  return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+function _medLine(it) {
+  const name = _esc(it.name || '—');
+  const str = it.str ? ' <span class="med-str" title="' + _esc(it.str) + '">' + _esc(it.str) + '</span>' : '';
+  const qty = it.qty ? ' <span class="med-qty">×' + _esc(it.qty) + '</span>' : '';
+  return '<div class="med-line">' + name + str + qty + '</div>';
+}
+function _contentsCell(items) {
+  if (!items.length) return '<span style="color:var(--text-muted)">—</span>';
+  if (items.length <= 3) return items.map(_medLine).join('');
+  return items.slice(0, 2).map(_medLine).join('') +
+    '<details class="med-more"><summary>+' + (items.length - 2) + ' more</summary>' +
+    items.slice(2).map(_medLine).join('') + '</details>';
+}
+
+// Group line-item rows into orders (same order_id → one order; blank order_id → its own row)
+function groupByOrder(shipments) {
+  const map = new Map();
+  for (const s of shipments) {
+    const oid = String(s.order_id || '').trim();
+    const key = oid || ('pi:' + (s.prescription_item_id || Math.random()));
+    if (!map.has(key)) map.set(key, { rep: s, items: [] });
+    map.get(key).items.push({ name: s.drug_name, str: s.drug_strength, qty: s.quantity });
+  }
+  return [...map.values()];
+}
+
 function renderTable(shipments, tableBodyId, showRepCol, globalLastUpdated, globalUpdatedBy, assignments) {
   const tbody = document.getElementById(tableBodyId);
   if (!tbody) return;
+  const cols = 9 + (showRepCol ? 1 : 0);
   if (!shipments.length) {
-    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--gray)">No shipments found.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="' + cols + '" style="text-align:center;padding:2rem;color:var(--gray)">No shipments found.</td></tr>';
     return;
   }
   const assignMap = assignments || {};
-  const capped = shipments.length > TABLE_ROW_CAP;
-  const visible = capped ? shipments.slice(0, TABLE_ROW_CAP) : shipments;
-  const cols = 8 + (showRepCol ? 1 : 0);
+  const orders = groupByOrder(shipments);
+  const capped = orders.length > TABLE_ROW_CAP;
+  const visible = capped ? orders.slice(0, TABLE_ROW_CAP) : orders;
   const capRow = capped
-    ? '<tr><td colspan="' + cols + '" style="text-align:center;padding:0.75rem;background:var(--bg-alt);color:var(--text-muted);font-size:0.8125rem">Showing first ' + TABLE_ROW_CAP + ' of ' + shipments.length.toLocaleString() + ' results — narrow your filters to see more</td></tr>'
+    ? '<tr><td colspan="' + cols + '" style="text-align:center;padding:0.75rem;background:var(--bg-alt);color:var(--text-muted);font-size:0.8125rem">Showing first ' + TABLE_ROW_CAP + ' of ' + orders.length.toLocaleString() + ' orders — narrow your filters to see more</td></tr>'
     : '';
-  tbody.innerHTML = visible.map(s => {
+  tbody.innerHTML = visible.map(({ rep: s, items }) => {
     const cancelled = s.status === 'cancelled' ? ' row-cancelled' : '';
     const repCol = showRepCol ? '<td>' + (s.rep_name || '—') + '</td>' : '';
     const am  = getAMForShipment(s, assignMap);
@@ -226,6 +259,7 @@ function renderTable(shipments, tableBodyId, showRepCol, globalLastUpdated, glob
       '<td>' + formatShortDate(s.ship_date) + '</td>' +
       '<td>' + (s.pharmacy_name || '—') + '</td>' +
       '<td>' + (s.order_id || '—') + '</td>' +
+      '<td class="contents-cell">' + _contentsCell(items) + '</td>' +
       '<td>' + trackingLink(s) + '</td>' +
       '</tr>';
   }).join('') + capRow;

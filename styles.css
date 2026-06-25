@@ -53,7 +53,18 @@ body.login-page { display: flex; align-items: center; justify-content: center; b
 .sidebar-brand h2 { font-size: 1rem; font-weight: 700; line-height: 1.3; }
 .sidebar-brand p { font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-top: 0.25rem; }
 .sidebar-user { padding: 0.875rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.8125rem; color: rgba(255,255,255,0.7); }
-.sidebar-user strong { display: block; color: var(--white); font-size: 0.875rem; }
+.sidebar-user strong { display: block; color: var(--white); font-size: 0.875rem; margin-bottom: 0.25rem; }
+.sidebar-user span { display: block; margin-bottom: 0.15rem; line-height: 1.4; }
+
+/* Shipment contents (medications) cell */
+.contents-cell { max-width: 280px; }
+.med-line { font-size: 0.8125rem; line-height: 1.35; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 280px; }
+.med-line .med-str { color: var(--text-muted); font-size: 0.75rem; }
+.med-line .med-qty { color: var(--teal); font-weight: 600; font-size: 0.75rem; }
+.med-more { margin-top: 0.15rem; }
+.med-more summary { cursor: pointer; color: var(--teal); font-size: 0.75rem; font-weight: 600; list-style: none; }
+.med-more summary::-webkit-details-marker { display: none; }
+.med-more summary:hover { text-decoration: underline; }
 .sidebar-nav { padding: 0.75rem 0; flex: 1; }
 .nav-item { display: flex; align-items: center; gap: 0.625rem; padding: 0.625rem 1.25rem; font-size: 0.875rem; color: rgba(255,255,255,0.7); cursor: pointer; transition: all 0.15s; border: none; background: none; width: 100%; text-align: left; }
 .nav-item:hover, .nav-item.active { color: var(--white); background: rgba(255,255,255,0.1); }

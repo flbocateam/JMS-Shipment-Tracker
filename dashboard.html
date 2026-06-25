@@ -39,11 +39,10 @@
       <!-- Date Range Pills -->
       <div class="filters-bar" style="margin-bottom:0.5rem">
         <div class="filter-pills" id="date-pills">
-          <button class="pill" data-range="today">Today</button>
           <button class="pill" data-range="yesterday">Yesterday</button>
-          <button class="pill" data-range="last7">Last 7 Days</button>
-          <button class="pill active" data-range="last30">Last 30 Days</button>
-          <button class="pill" data-range="last90">Last 90 Days</button>
+          <button class="pill" data-range="last7">7 Days</button>
+          <button class="pill active" data-range="last30">30 Days</button>
+          <button class="pill" data-range="last90">90 Days</button>
           <button class="pill" data-range="all">All Time</button>
         </div>
       </div>
@@ -111,7 +110,7 @@
       document.getElementById('table-head').innerHTML = '<tr>' +
         '<th>Status</th>' +
         (elevated ? '<th>Rep</th>' : '') +
-        '<th>Clinic</th><th>Region</th><th>Order Date</th><th>Ship Date</th><th>Pharmacy</th><th>Order ID</th><th>Tracking</th>' +
+        '<th>Clinic</th><th>Region</th><th>Order Date</th><th>Ship Date</th><th>Pharmacy</th><th>Order ID</th><th>Contents</th><th>Tracking</th>' +
         '</tr>';
 
       try {
