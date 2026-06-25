@@ -265,6 +265,8 @@ function renderTable(shipments, tableBodyId, showRepCol, globalLastUpdated, glob
   }
   const assignMap = assignments || {};
   const orders = groupByOrder(shipments);
+  // Newest orders first, so the most recent data is always visible within the row cap
+  orders.sort((a, b) => (new Date(b.rep.order_date || 0)) - (new Date(a.rep.order_date || 0)));
   const capped = orders.length > TABLE_ROW_CAP;
   const visible = capped ? orders.slice(0, TABLE_ROW_CAP) : orders;
   const capRow = capped
