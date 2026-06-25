@@ -69,6 +69,7 @@
   <script>
     let currentUser = null;
     let assignments = {};
+    let lastFile = null; // raw file to archive after a successful import
 
     async function init() {
       currentUser = checkAuth();
@@ -212,6 +213,7 @@
     }
 
     async function handleFileImportDirect(file) {
+      lastFile = file; // remember raw file so we can archive it after commit
       const preview = document.getElementById('import-preview');
       preview.innerHTML = '<p style="margin-top:1rem;color:var(--text-muted)">Parsing file…</p>';
       try {
@@ -291,6 +293,9 @@
         const { data: newData } = await commitShipments(newRows, currentUser.email, 'Import ' + newRows.length.toLocaleString() + ' shipments via ' + currentUser.name);
         statusEl.style.color = 'var(--teal)';
         statusEl.textContent = '✓ ' + newRows.length.toLocaleString() + ' rows saved successfully!';
+        // Archive the raw file to GitHub (keeps the 2 most recent for everyone)
+        try { await archiveUpload(lastFile, currentUser.email); statusEl.textContent += ' — file backed up.'; }
+        catch (e) { /* non-fatal */ }
         btn.disabled = false;
         btn.textContent = 'Commit to GitHub';
         // Clear the file input so user can import another file

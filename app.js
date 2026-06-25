@@ -265,6 +265,48 @@ function renderTable(shipments, tableBodyId, showRepCol, globalLastUpdated, glob
   }).join('') + capRow;
 }
 
+// ── Raw upload archive ───────────────────────────────────────
+// Keeps the 2 most recent raw ProRx files in the repo (data/uploads/) so they
+// persist for EVERYONE regardless of who imports or from which computer
+// (GitHub is the shared store; the local Obsidian clone syncs them on git pull).
+function _fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => { const s = String(r.result); resolve(s.slice(s.indexOf(',') + 1)); };
+    r.onerror = reject;
+    r.readAsDataURL(file);
+  });
+}
+async function archiveUpload(file, byEmail) {
+  if (!file) return;
+  const pat = localStorage.getItem(PAT_KEY);
+  if (!pat) return; // no token → skip silently (import already handles token prompt)
+  const headers = { Authorization: 'Bearer ' + pat, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' };
+  const listUrl = 'https://api.github.com/repos/' + REPO + '/contents/data/uploads';
+  try {
+    const b64 = await _fileToBase64(file);
+    const stamp = new Date().toISOString().replace(/[:.]/g, '-'); // sorts chronologically
+    const safe = file.name.replace(/[^a-zA-Z0-9._-]/g, '_').slice(-80);
+    const path = 'data/uploads/' + stamp + '__' + safe;
+    await fetch('https://api.github.com/repos/' + REPO + '/contents/' + path, {
+      method: 'PUT', headers,
+      body: JSON.stringify({ message: 'Archive ProRx upload by ' + (byEmail || 'unknown'), content: b64 })
+    });
+    // Prune: keep only the 2 newest files
+    const listResp = await fetch(listUrl, { headers });
+    if (listResp.ok) {
+      const files = (await listResp.json()).filter(f => f.type === 'file')
+        .sort((a, b) => (a.name < b.name ? 1 : -1)); // newest (highest stamp) first
+      for (let i = 2; i < files.length; i++) {
+        await fetch('https://api.github.com/repos/' + REPO + '/contents/' + files[i].path, {
+          method: 'DELETE', headers,
+          body: JSON.stringify({ message: 'Prune old ProRx upload', sha: files[i].sha })
+        });
+      }
+    }
+  } catch (e) { console.warn('archiveUpload failed (non-fatal):', e); }
+}
+
 // ── GitHub API ───────────────────────────────────────────────
 function _ghHeaders() {
   const pat = localStorage.getItem(PAT_KEY);
