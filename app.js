@@ -209,12 +209,9 @@ function _medMain(s) {
   const qty = s.quantity ? ' <span class="med-qty">×' + _esc(s.quantity) + '</span>' : '';
   return name + str + qty;
 }
-// Contents cell: single med inline; multiple meds collapse into an expander
-// where each line shows its prescription ID, pharmacy, and tracking link.
-function _contentsCell(items) {
-  if (!items.length) return '<span style="color:var(--text-muted)">—</span>';
-  if (items.length === 1) return '<div class="med-line">' + _medMain(items[0]) + '</div>';
-  const detail = items.map(s => {
+// Shared detail panel: one block per medication with its Rx ID, pharmacy, tracking
+function _medDetailHtml(items) {
+  return items.map(s => {
     const rxFull = String(s.prescription_id || '');
     const rx = rxFull ? '<span class="med-rx" title="Prescription ID: ' + _esc(rxFull) + '">Rx ' + _esc(rxFull.slice(0, 8)) + '</span>' : '';
     const ph = s.pharmacy_name ? '<span>' + _esc(s.pharmacy_name) + '</span>' : '';
@@ -222,7 +219,18 @@ function _contentsCell(items) {
     const sub = [rx, ph, trk].filter(Boolean).join(' &middot; ');
     return '<div class="med-detail"><div class="med-line">' + _medMain(s) + '</div><div class="med-sub">' + sub + '</div></div>';
   }).join('');
-  return '<details class="order-meds"><summary>' + items.length + ' medications</summary>' + detail + '</details>';
+}
+// A styled dropdown (chip-style summary + panel body). Used by both Contents and Tracking.
+function _dropdown(label, bodyHtml) {
+  return '<details class="dropdown"><summary class="dd-btn">' + label + '</summary>' +
+    '<div class="dd-body">' + bodyHtml + '</div></details>';
+}
+
+// Contents cell: single med inline; multiple meds → dropdown with full detail.
+function _contentsCell(items) {
+  if (!items.length) return '<span style="color:var(--text-muted)">—</span>';
+  if (items.length === 1) return '<div class="med-line">' + _medMain(items[0]) + '</div>';
+  return _dropdown(items.length + ' medications', _medDetailHtml(items));
 }
 
 // Group line-item rows into orders (same order_id → one order; blank order_id → its own row)
@@ -252,7 +260,8 @@ function _trackingCell(items) {
     const item = items.find(x => String(x.tracking_number || '').trim() === set[0]);
     return trackingLink(item);
   }
-  return '<span class="multi-track" title="Different tracking numbers — expand Contents to see each medication’s tracking">Multiple (' + set.length + ')</span>';
+  // Multiple tracking numbers → same dropdown/detail as the medications column
+  return _dropdown(set.length + ' tracking #s', _medDetailHtml(items));
 }
 
 function renderTable(shipments, tableBodyId, showRepCol, globalLastUpdated, globalUpdatedBy, assignments) {
