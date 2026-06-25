@@ -319,6 +319,35 @@
       }
     }
 
+    // Render the static map (outlines + labels) ONCE to an offscreen canvas.
+    // The animation loop then just blits this — no per-frame dot drawing.
+    function buildLayer() {
+      if (!globe.states.length) { globe.layer = null; return; }
+      const off = document.createElement('canvas');
+      off.width = Math.round(globe.w * globe.dpr);
+      off.height = Math.round(globe.h * globe.dpr);
+      const o = off.getContext('2d');
+      o.setTransform(globe.dpr, 0, 0, globe.dpr, 0, 0);
+      // outline dots colored by volume
+      for (const st of globe.states) {
+        if (st.inset) continue;
+        o.fillStyle = stateColor(st.ratio, st.count);
+        for (const p of st.outline) { o.beginPath(); o.arc(p[0], p[1], 1.3, 0, 6.2832); o.fill(); }
+      }
+      // inset markers + abbreviation labels
+      o.textAlign = 'center'; o.textBaseline = 'middle'; o.font = 'bold 9px system-ui, sans-serif';
+      for (const st of globe.states) {
+        const c = st.centroid;
+        if (st.inset) {
+          o.fillStyle = st.count > 0 ? stateColor(st.ratio, st.count) : 'rgba(110,140,150,0.5)';
+          o.beginPath(); o.arc(c[0], c[1], 4, 0, 6.2832); o.fill();
+        }
+        o.fillStyle = st.count > 0 ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.5)';
+        o.fillText(st.code, c[0], c[1]);
+      }
+      globe.layer = off;
+    }
+
     function resizeGlobe() {
       const c = globe.canvas;
       const rect = c.getBoundingClientRect();
@@ -329,6 +358,7 @@
       globe.ctx.setTransform(globe.dpr, 0, 0, globe.dpr, 0, 0);
       computeProjection();
       buildGeometry();
+      buildLayer();
     }
 
     function setupGlobe() {
@@ -439,16 +469,22 @@
       const ctx = globe.ctx;
       ctx.clearRect(0, 0, globe.w, globe.h);
 
-      // 1. State outlines as dots (color by volume; brighter/larger on hover)
-      for (const st of globe.states) {
-        if (st.inset) continue;
-        const isHover = globe.hover === st.code;
-        ctx.fillStyle = isHover ? '#ffffff' : stateColor(st.ratio, st.count);
-        const r = isHover ? 1.8 : 1.3;
-        for (const p of st.outline) { ctx.beginPath(); ctx.arc(p[0], p[1], r, 0, 6.2832); ctx.fill(); }
+      // 1. Blit cached static map (outlines + labels) — one drawImage, not thousands of dots
+      if (globe.layer) ctx.drawImage(globe.layer, 0, 0, globe.w, globe.h);
+
+      // 2. Hover highlight (just the hovered state, cheap)
+      if (globe.hover) {
+        const st = globe.states.find(s => s.code === globe.hover);
+        if (st) {
+          ctx.fillStyle = '#ffffff';
+          if (st.inset) { ctx.beginPath(); ctx.arc(st.centroid[0], st.centroid[1], 5, 0, 6.2832); ctx.fill(); }
+          else { for (const p of st.outline) { ctx.beginPath(); ctx.arc(p[0], p[1], 1.8, 0, 6.2832); ctx.fill(); } }
+          ctx.font = 'bold 9px system-ui, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+          ctx.fillText(st.code, st.centroid[0], st.centroid[1]);
+        }
       }
 
-      // 2. Animated green shipping arcs (pharmacy origin → customer state)
+      // 3. Animated green shipping arcs (no shadowBlur — layered strokes for glow)
       ctx.lineCap = 'round';
       for (const arc of globe.arcs) {
         const O = globe.centroids[arc.o], D = globe.centroids[arc.d];
@@ -461,45 +497,35 @@
         const C = [mx + nx * lift, my + ny * lift];
         const bez = t => { const u = 1 - t; return [u*u*O[0] + 2*u*t*C[0] + t*t*D[0], u*u*O[1] + 2*u*t*C[1] + t*t*D[1]]; };
 
-        let head = (time * arc.speed * 0.32 + arc.phase) % 1;
-        const tail = 0.4, steps = 20;
-        let prev = null;
+        const head = (time * arc.speed * 0.32 + arc.phase) % 1;
+        const tail = 0.4, steps = 16;
+        const pts = [];
         for (let i = 0; i <= steps; i++) {
           const k = head - tail * (i / steps);
-          if (k < 0 || k > 1) { prev = null; continue; }
-          const pt = bez(k);
-          const a = 1 - i / steps;
-          if (prev) {
-            ctx.strokeStyle = 'rgba(34,230,107,' + (a * 0.85) + ')';
-            ctx.lineWidth = 0.6 + 2 * a;
-            ctx.shadowColor = 'rgba(34,230,107,0.9)';
-            ctx.shadowBlur = 6 * a;
-            ctx.beginPath(); ctx.moveTo(prev[0], prev[1]); ctx.lineTo(pt[0], pt[1]); ctx.stroke();
+          pts.push((k < 0 || k > 1) ? null : bez(k));
+        }
+        // soft glow underlayer
+        for (let i = 1; i <= steps; i++) {
+          if (pts[i - 1] && pts[i]) {
+            const a = 1 - i / steps;
+            ctx.strokeStyle = 'rgba(34,230,107,' + (a * 0.16) + ')';
+            ctx.lineWidth = 1 + 4 * a;
+            ctx.beginPath(); ctx.moveTo(pts[i - 1][0], pts[i - 1][1]); ctx.lineTo(pts[i][0], pts[i][1]); ctx.stroke();
           }
-          prev = pt;
         }
+        // bright thin core
+        for (let i = 1; i <= steps; i++) {
+          if (pts[i - 1] && pts[i]) {
+            const a = 1 - i / steps;
+            ctx.strokeStyle = 'rgba(130,255,175,' + (a * 0.9) + ')';
+            ctx.lineWidth = 0.6 + 1.3 * a;
+            ctx.beginPath(); ctx.moveTo(pts[i - 1][0], pts[i - 1][1]); ctx.lineTo(pts[i][0], pts[i][1]); ctx.stroke();
+          }
+        }
+        // head dot
         const hp = bez(Math.max(0, Math.min(1, head)));
-        ctx.fillStyle = '#aaffcc';
-        ctx.shadowColor = '#22e66b'; ctx.shadowBlur = 10;
-        ctx.beginPath(); ctx.arc(hp[0], hp[1], 2.2, 0, 6.2832); ctx.fill();
-        ctx.shadowBlur = 0;
-      }
-
-      // 3. Inset markers (AK/HI) + state abbreviation labels
-      for (const st of globe.states) {
-        const c = st.centroid;
-        if (st.inset) {
-          ctx.fillStyle = st.count > 0 ? stateColor(st.ratio, st.count) : 'rgba(110,140,150,0.5)';
-          if (st.ratio > 0) { ctx.shadowColor = 'rgba(34,230,107,0.7)'; ctx.shadowBlur = 8 * st.ratio; }
-          ctx.beginPath(); ctx.arc(c[0], c[1], 4, 0, 6.2832); ctx.fill();
-          ctx.shadowBlur = 0;
-        }
-        const isHover = globe.hover === st.code;
-        ctx.fillStyle = isHover ? '#ffffff' : (st.count > 0 ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.5)');
-        ctx.font = 'bold 9px system-ui, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(st.code, c[0], c[1]);
+        ctx.fillStyle = '#d0ffe2';
+        ctx.beginPath(); ctx.arc(hp[0], hp[1], 2, 0, 6.2832); ctx.fill();
       }
 
       globe.raf = requestAnimationFrame(drawMap);
