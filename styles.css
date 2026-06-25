@@ -57,14 +57,20 @@ body.login-page { display: flex; align-items: center; justify-content: center; b
 .sidebar-user span { display: block; margin-bottom: 0.15rem; line-height: 1.4; }
 
 /* Shipment contents (medications) cell */
-.contents-cell { max-width: 280px; }
-.med-line { font-size: 0.8125rem; line-height: 1.35; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 280px; }
+.contents-cell { max-width: 320px; }
+.med-line { font-size: 0.8125rem; line-height: 1.35; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 320px; }
 .med-line .med-str { color: var(--text-muted); font-size: 0.75rem; }
 .med-line .med-qty { color: var(--teal); font-weight: 600; font-size: 0.75rem; }
-.med-more { margin-top: 0.15rem; }
-.med-more summary { cursor: pointer; color: var(--teal); font-size: 0.75rem; font-weight: 600; list-style: none; }
-.med-more summary::-webkit-details-marker { display: none; }
-.med-more summary:hover { text-decoration: underline; }
+/* expander for multi-medication orders */
+.order-meds summary { cursor: pointer; color: var(--teal); font-size: 0.8125rem; font-weight: 600; list-style: none; }
+.order-meds summary::-webkit-details-marker { display: none; }
+.order-meds summary::before { content: '▸ '; }
+.order-meds[open] summary::before { content: '▾ '; }
+.order-meds summary:hover { text-decoration: underline; }
+.med-detail { padding: 0.4rem 0 0.4rem 0.75rem; border-left: 2px solid var(--border); margin: 0.35rem 0 0 0.25rem; }
+.med-sub { font-size: 0.7rem; color: var(--text-muted); margin-top: 0.15rem; }
+.med-sub .med-rx { font-family: ui-monospace, monospace; color: var(--text-muted); }
+.multi-track { color: var(--orange, #f59e0b); font-size: 0.8125rem; font-weight: 600; cursor: help; }
 .sidebar-nav { padding: 0.75rem 0; flex: 1; }
 .nav-item { display: flex; align-items: center; gap: 0.625rem; padding: 0.625rem 1.25rem; font-size: 0.875rem; color: rgba(255,255,255,0.7); cursor: pointer; transition: all 0.15s; border: none; background: none; width: 100%; text-align: left; }
 .nav-item:hover, .nav-item.active { color: var(--white); background: rgba(255,255,255,0.1); }

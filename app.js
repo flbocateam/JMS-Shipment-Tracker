@@ -202,18 +202,27 @@ const TABLE_ROW_CAP = 300;
 function _esc(s) {
   return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
-function _medLine(it) {
-  const name = _esc(it.name || '—');
-  const str = it.str ? ' <span class="med-str" title="' + _esc(it.str) + '">' + _esc(it.str) + '</span>' : '';
-  const qty = it.qty ? ' <span class="med-qty">×' + _esc(it.qty) + '</span>' : '';
-  return '<div class="med-line">' + name + str + qty + '</div>';
+// One medication's name + strength + quantity
+function _medMain(s) {
+  const name = _esc(s.drug_name || '—');
+  const str = s.drug_strength ? ' <span class="med-str" title="' + _esc(s.drug_strength) + '">' + _esc(s.drug_strength) + '</span>' : '';
+  const qty = s.quantity ? ' <span class="med-qty">×' + _esc(s.quantity) + '</span>' : '';
+  return name + str + qty;
 }
+// Contents cell: single med inline; multiple meds collapse into an expander
+// where each line shows its prescription ID, pharmacy, and tracking link.
 function _contentsCell(items) {
   if (!items.length) return '<span style="color:var(--text-muted)">—</span>';
-  if (items.length <= 3) return items.map(_medLine).join('');
-  return items.slice(0, 2).map(_medLine).join('') +
-    '<details class="med-more"><summary>+' + (items.length - 2) + ' more</summary>' +
-    items.slice(2).map(_medLine).join('') + '</details>';
+  if (items.length === 1) return '<div class="med-line">' + _medMain(items[0]) + '</div>';
+  const detail = items.map(s => {
+    const rxFull = String(s.prescription_id || '');
+    const rx = rxFull ? '<span class="med-rx" title="Prescription ID: ' + _esc(rxFull) + '">Rx ' + _esc(rxFull.slice(0, 8)) + '</span>' : '';
+    const ph = s.pharmacy_name ? '<span>' + _esc(s.pharmacy_name) + '</span>' : '';
+    const trk = String(s.tracking_number || '').trim() ? trackingLink(s) : '<span style="color:var(--text-muted)">no tracking</span>';
+    const sub = [rx, ph, trk].filter(Boolean).join(' &middot; ');
+    return '<div class="med-detail"><div class="med-line">' + _medMain(s) + '</div><div class="med-sub">' + sub + '</div></div>';
+  }).join('');
+  return '<details class="order-meds"><summary>' + items.length + ' medications</summary>' + detail + '</details>';
 }
 
 // Group line-item rows into orders (same order_id → one order; blank order_id → its own row)
@@ -223,9 +232,27 @@ function groupByOrder(shipments) {
     const oid = String(s.order_id || '').trim();
     const key = oid || ('pi:' + (s.prescription_item_id || Math.random()));
     if (!map.has(key)) map.set(key, { rep: s, items: [] });
-    map.get(key).items.push({ name: s.drug_name, str: s.drug_strength, qty: s.quantity });
+    map.get(key).items.push(s);
   }
   return [...map.values()];
+}
+
+// Order-level pharmacy cell: one name, or "Multiple" when meds ship from different pharmacies
+function _pharmacyCell(items) {
+  const set = [...new Set(items.map(x => String(x.pharmacy_name || '').trim()).filter(Boolean))];
+  if (!set.length) return '—';
+  return set.length === 1 ? set[0] : 'Multiple';
+}
+// Order-level tracking cell: one link when all meds share a tracking number,
+// "Multiple (N)" when they differ (each link is shown in the Contents expander)
+function _trackingCell(items) {
+  const set = [...new Set(items.map(x => String(x.tracking_number || '').trim()).filter(Boolean))];
+  if (!set.length) return '—';
+  if (set.length === 1) {
+    const item = items.find(x => String(x.tracking_number || '').trim() === set[0]);
+    return trackingLink(item);
+  }
+  return '<span class="multi-track" title="Different tracking numbers — expand Contents to see each medication’s tracking">Multiple (' + set.length + ')</span>';
 }
 
 function renderTable(shipments, tableBodyId, showRepCol, globalLastUpdated, globalUpdatedBy, assignments) {
@@ -257,10 +284,10 @@ function renderTable(shipments, tableBodyId, showRepCol, globalLastUpdated, glob
       '<td>' + (s.region || '—') + '</td>' +
       '<td>' + formatShortDate(s.order_date) + '</td>' +
       '<td>' + formatShortDate(s.ship_date) + '</td>' +
-      '<td>' + (s.pharmacy_name || '—') + '</td>' +
+      '<td>' + _pharmacyCell(items) + '</td>' +
       '<td>' + (s.order_id || '—') + '</td>' +
       '<td class="contents-cell">' + _contentsCell(items) + '</td>' +
-      '<td>' + trackingLink(s) + '</td>' +
+      '<td>' + _trackingCell(items) + '</td>' +
       '</tr>';
   }).join('') + capRow;
 }
