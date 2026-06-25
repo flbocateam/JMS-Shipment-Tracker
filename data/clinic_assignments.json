@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-25T03:34:59.000Z",
+  "last_updated": "2026-06-25T03:43:03.000Z",
   "assignments": {
     "249ff778-d9f9-43d3-8694-dac6ecbae794": {
       "account_manager": "Ashlyn Smith",
@@ -3482,6 +3482,21 @@
       "account_manager": "Maria Michelli",
       "clinic_name": "Stillwater Infusion Company",
       "salesperson": "Dylan White"
+    },
+    "7a022df3-59ed-4c9b-aefa-0e0c9397076f": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Florida Regenerative Health Centers",
+      "salesperson": "Ashlyn Smith"
+    },
+    "3fb77ae0-b863-4db8-b1b0-23cae5a3cb14": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "MANU Telehealth",
+      "salesperson": "Ashlyn Smith"
+    },
+    "9f1bf1ee-4ffa-4e14-b1c6-5f6247affefa": {
+      "account_manager": "Ashlyn Smith",
+      "clinic_name": "Simply Wurth It, Medical Weight Loss - O'Fallon",
+      "salesperson": "Jack L'Hommedieu"
     }
   }
 }
