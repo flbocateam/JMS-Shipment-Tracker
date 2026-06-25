@@ -275,13 +275,15 @@ async function commitShipments(newRows, uploaderEmail, commitMessage, maxRetries
       if (fileJson.encoding === 'base64' && fileJson.content) {
         // Small file: content is inline base64
         current = JSON.parse(atob(fileJson.content.replace(/\n/g, '')));
-      } else if (fileJson.download_url) {
-        // Large file (>1MB): GitHub omits inline content, fetch from raw URL
-        const rawResp = await fetch(fileJson.download_url);
-        if (!rawResp.ok) throw new Error('Could not download existing shipments');
-        current = await rawResp.json();
       } else {
-        current = { shipments: [] };
+        // Large file: download_url is CDN-cached and may be stale.
+        // Use the Git Blobs API with the blob SHA — always returns committed state.
+        const blobResp = await fetch('https://api.github.com/repos/' + REPO + '/git/blobs/' + fileJson.sha, {
+          headers: { ...headers, Accept: 'application/vnd.github+json' }
+        });
+        if (!blobResp.ok) throw new Error('Could not fetch shipments blob');
+        const blob = await blobResp.json();
+        current = JSON.parse(atob(blob.content.replace(/\n/g, '')));
       }
     } catch (e) {
       throw new Error('Could not read existing shipments before merging: ' + e.message);
@@ -610,8 +612,16 @@ function filterShipments(shipments, { status, search, repFilter, amFilter, dateR
       }
     }
     if (cutoff) {
-      const od = s.order_date ? new Date(s.order_date) : null;
-      if (!od || od < cutoff) return false;
+      // Parse date-only strings (YYYY-MM-DD) as local time, not UTC.
+      // new Date("2026-06-24") parses as UTC midnight which is the prior evening
+      // in US timezones and would exclude today's orders from the "today" filter.
+      const raw = s.order_date ? String(s.order_date).split('T')[0] : null;
+      if (!raw) return false;
+      const parts = raw.split('-');
+      const od = parts.length === 3
+        ? new Date(+parts[0], +parts[1] - 1, +parts[2])  // local midnight
+        : new Date(s.order_date);
+      if (!od || isNaN(od) || od < cutoff) return false;
     }
     if (search) {
       const q = search.toLowerCase();
