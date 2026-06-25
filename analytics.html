@@ -432,15 +432,16 @@
       globe.arcs = arr.map((f, i) => ({ o: f.o, d: f.d, v: f.v, phase: (i * 0.137) % 1, speed: 0.45 + 0.55 * (f.v / max) }));
     }
 
-    function renderMapKPIs(dated, agg) {
+    function renderMapKPIs(mapped, agg, totalInView) {
       const activeStates = Object.keys(agg).length;
-      const totalOrders = dated.length;
+      const totalOrders = mapped.length;
       const avgPerState = activeStates > 0 ? Math.round(totalOrders / activeStates) : 0;
       const topState = Object.entries(agg).reduce((a, b) => a[1].orders.length > b[1].orders.length ? a : b, ['—', { orders: [] }]);
       const rangeLabel = { today:'today', yesterday:'yesterday', last7:'last 7 days', last30:'last 30 days', last90:'last 90 days', all:'all time' }[currentRange] || currentRange;
+      const sub = totalInView > totalOrders ? (rangeLabel + ' · ' + totalOrders.toLocaleString() + ' of ' + totalInView.toLocaleString() + ' have a region') : rangeLabel;
 
       document.getElementById('map-kpi-grid').innerHTML =
-        kpiCard(totalOrders.toLocaleString(), 'Total Orders', rangeLabel) +
+        kpiCard(totalOrders.toLocaleString(), 'Mapped Orders', sub) +
         kpiCard(topState[0], 'Top State', topState[1].orders.length.toLocaleString() + ' orders') +
         kpiCard(activeStates.toLocaleString(), 'Active States', 'states with orders') +
         kpiCard(avgPerState.toLocaleString(), 'Avg Orders/State', 'per active state');
@@ -450,9 +451,13 @@
       const filtered = currentRepFilter ? allShipments.filter(s => s.rep_name === currentRepFilter) : allShipments;
       const cutoff = getDateRangeCutoff(currentRange || 'all');
       const dated = cutoff ? filtered.filter(s => s.order_date && new Date(s.order_date) >= cutoff) : filtered;
-      stateData = aggregateByState(dated);
+      // Only orders with a recognized state region appear on the map. Most historical
+      // ProRx rows have a blank region; percentages/KPIs use this mapped total.
+      const mapped = dated.filter(s => STATE_CENTROIDS[String(s.region || '').trim().toUpperCase()]);
+      globe.totalMapped = mapped.length;
+      stateData = aggregateByState(mapped);
 
-      renderMapKPIs(dated, stateData);
+      renderMapKPIs(mapped, stateData, dated.length);
 
       const emptyEl = document.getElementById('globe-empty');
       if (!GEO) { emptyEl.style.display = 'flex'; emptyEl.textContent = 'Loading map…'; }
@@ -460,10 +465,10 @@
 
       setupGlobe();
       resizeGlobe();
-      buildArcs(dated);
+      buildArcs(mapped);
 
-      emptyEl.style.display = dated.length ? 'none' : 'flex';
-      emptyEl.textContent = 'No orders in this period';
+      emptyEl.style.display = mapped.length ? 'none' : 'flex';
+      emptyEl.textContent = dated.length ? 'No orders with a state/region in this period' : 'No orders in this period';
 
       if (!globe.started) { globe.started = true; globe.raf = requestAnimationFrame(drawMap); }
     }
@@ -547,7 +552,7 @@
 
     function showStateTooltip(code, clientX, clientY) {
       const count = stateData[code]?.orders.length || 0;
-      const total = (currentRepFilter ? allShipments.filter(s => s.rep_name === currentRepFilter) : allShipments).length || 1;
+      const total = globe.totalMapped || 1; // mapped orders in the current date/rep view
       const pct = Math.round((count / total) * 100);
       const name = US_STATES[code] || code;
       let t = document.getElementById('state-tooltip');
