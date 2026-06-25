@@ -222,19 +222,21 @@
     };
 
     // Pharmacy ship-from origins → state (for animated shipping arcs)
+    // Only these 5 pharmacies appear on the map. All others (SmartScripts,
+    // TexasRx, etc.) are intentionally OMITTED from the map view.
     const PHARM_ORIGINS = [
-      { match: 'boudreaux', state: 'LA' },
-      { match: 'vios',      state: 'MI' },
-      { match: 'emerald',   state: 'FL' },
-      { match: 'rite away', state: 'TX' },
+      { match: 'boudreaux', state: 'LA' },                 // Boudreaux's New Drug Store
+      { match: 'vios',      state: 'MI' },                 // Vios
+      { match: 'emerald',   state: 'FL' },                 // Emerald Compounding
+      { match: 'rite away', state: 'TX' },                 // Rite Away Compounding
       { match: 'riteaway',  state: 'TX' },
-      { match: 'rite-away', state: 'TX' },
+      { match: 'america',   state: 'AL' },                 // ABC = America's Best Care Plus
       { match: 'abc',       state: 'AL' }
     ];
     function pharmToState(name) {
       const n = String(name || '').toLowerCase();
       for (const p of PHARM_ORIGINS) if (n.includes(p.match)) return p.state;
-      return null;
+      return null; // not an allowed pharmacy → omitted from the map
     }
 
     // Continental-US projection bounds (AK & HI drawn as insets)
@@ -451,9 +453,10 @@
       const filtered = currentRepFilter ? allShipments.filter(s => s.rep_name === currentRepFilter) : allShipments;
       const cutoff = getDateRangeCutoff(currentRange || 'all');
       const dated = cutoff ? filtered.filter(s => s.order_date && new Date(s.order_date) >= cutoff) : filtered;
-      // Only orders with a recognized state region appear on the map. Most historical
-      // ProRx rows have a blank region; percentages/KPIs use this mapped total.
-      const mapped = dated.filter(s => STATE_CENTROIDS[String(s.region || '').trim().toUpperCase()]);
+      // Map shows only orders from the 5 allowed pharmacies (pharmToState != null)
+      // that have a recognized state region. SmartScripts/TexasRx/others are omitted.
+      const mapped = dated.filter(s =>
+        STATE_CENTROIDS[String(s.region || '').trim().toUpperCase()] && pharmToState(s.pharmacy_name));
       globe.totalMapped = mapped.length;
       stateData = aggregateByState(mapped);
 
