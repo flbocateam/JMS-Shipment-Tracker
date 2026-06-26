@@ -6,6 +6,43 @@ const AUTH_KEY = 'jms_user';
 const PAT_KEY = 'jms_github_pat';
 const REPO = 'flbocateam/JMS-Shipment-Tracker';
 
+// ── Activity / presence logging (Google Apps Script endpoint) ──
+// Writes are open (any browser posts its own activity); reads require a key.
+const ACTIVITY_URL = 'https://script.google.com/macros/s/AKfycbxnAIINOHF9NVG_0-hrSE71LAr8m2l-KGBygi0CGJpAmVqc58FOLQOWvA-a4sXYV167/exec';
+const ACTIVITY_KEY_STORE = 'jms_activity_key';
+
+// Fire-and-forget: log a login or heartbeat ("ping") for the current user.
+function logActivity(event) {
+  if (!ACTIVITY_URL) return;
+  const u = getUser();
+  if (!u || !u.email) return;
+  try {
+    fetch(ACTIVITY_URL, {
+      method: 'POST', mode: 'no-cors', keepalive: true,
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ email: u.email, name: u.name, role: u.role, event: event || 'ping', page: (location.pathname.split('/').pop() || 'page') })
+    });
+  } catch (_) {}
+}
+let _presenceTimer = null;
+function startPresence() {
+  if (!ACTIVITY_URL || !getUser()) return;
+  logActivity('ping');
+  if (_presenceTimer) clearInterval(_presenceTimer);
+  _presenceTimer = setInterval(() => { if (document.visibilityState === 'visible') logActivity('ping'); }, 60000);
+}
+// Read the activity summary via JSONP (avoids CORS on cross-origin GET)
+function fetchActivitySummary(key, cb) {
+  if (!ACTIVITY_URL) { cb({ ok: false, error: 'not configured' }); return; }
+  const id = 'jmsAct' + Math.floor(performance.now()) + Math.floor(Math.random() * 1e6);
+  const s = document.createElement('script');
+  const done = (data) => { try { delete window[id]; } catch (_) {} s.remove(); };
+  window[id] = (data) => { cb(data); done(); };
+  s.onerror = () => { cb({ ok: false, error: 'network' }); done(); };
+  s.src = ACTIVITY_URL + '?key=' + encodeURIComponent(key) + '&callback=' + id;
+  document.body.appendChild(s);
+}
+
 // ── Nav Icons ────────────────────────────────────────────────
 const ICONS = {
   shipments: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="12" height="9" rx="1"/><path d="M5 5V3.5A1.5 1.5 0 0 1 6.5 2h3A1.5 1.5 0 0 1 11 3.5V5"/><path d="M2 8h12"/></svg>',
@@ -40,6 +77,7 @@ function checkAuth(requiredRole) {
   const user = getUser();
   if (!user) { window.location.href = 'index.html'; return null; }
   if (requiredRole && user.role !== requiredRole) { window.location.href = 'index.html'; return null; }
+  startPresence(); // begin heartbeat so this user shows "online"
   return user;
 }
 
@@ -788,6 +826,20 @@ function initSidebar() {
     localStorage.setItem('jms_nav_collapsed', collapsed ? '1' : '0');
   };
   sidebar.insertBefore(btn, sidebar.firstChild);
+
+  // Activity link — only for admin & vice_president, on every page except the activity page itself
+  const u = getUser();
+  const nav = sidebar.querySelector('.sidebar-nav');
+  const onActivityPage = /activity\.html$/.test(location.pathname);
+  if (nav && u && (u.role === 'admin' || u.role === 'vice_president') && !onActivityPage && !nav.querySelector('[data-nav="activity"]')) {
+    const a = document.createElement('button');
+    a.className = 'nav-item';
+    a.setAttribute('data-nav', 'activity');
+    a.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 8h3l2 5 3-10 2 5h3"/></svg> Activity';
+    a.onclick = () => { window.location.href = 'activity.html'; };
+    nav.appendChild(a);
+  }
+
   // tooltips so icons are identifiable when collapsed
   sidebar.querySelectorAll('.nav-item').forEach(b => { const t = b.textContent.trim(); if (t && !b.title) b.title = t; });
 }

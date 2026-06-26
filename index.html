@@ -25,6 +25,9 @@
       <div id="login-error" class="error-msg" style="display:none"></div>
       <button type="submit" class="btn btn-primary btn-full" id="submit-btn">Sign In</button>
     </form>
+    <p style="margin-top:1.25rem;font-size:0.7rem;color:var(--text-muted);text-align:center;line-height:1.5">
+      Internal tool for authorized BoomRx staff only. Sign-in activity and usage are logged for security and operational purposes.
+    </p>
   </div>
   <script src="lib/bcryptjs.min.js"></script>
   <script>window.bcrypt = window.bcrypt || (window.dcodeIO && window.dcodeIO.bcrypt);</script>
@@ -58,6 +61,12 @@
         const valid = await bcrypt.compare(pin, hash);
         if (!valid) { showError('Invalid email or PIN.'); return; }
         sessionStorage.setItem('jms_user', JSON.stringify({ role: user.role, name: user.name, email: user.email }));
+        // Log the login for the internal activity tracker (fire-and-forget)
+        try {
+          const ACTIVITY_URL = 'https://script.google.com/macros/s/AKfycbxnAIINOHF9NVG_0-hrSE71LAr8m2l-KGBygi0CGJpAmVqc58FOLQOWvA-a4sXYV167/exec';
+          fetch(ACTIVITY_URL, { method: 'POST', mode: 'no-cors', keepalive: true, headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({ email: user.email, name: user.name, role: user.role, event: 'login', page: 'login' }) });
+        } catch (_) {}
         window.location.href = user.role === 'admin' ? 'admin.html' : 'dashboard.html';
       } catch (err) {
         showError('Login failed. Please try again.');

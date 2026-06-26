@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Activity — JMS Shipment Tracker</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <style>
+    .act-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1rem; margin-bottom:1.5rem; }
+    .metric-card { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:1.25rem 1.5rem; }
+    .metric-val { font-size:2rem; font-weight:700; color:var(--teal); line-height:1; }
+    .metric-label { font-size:0.8125rem; color:var(--text-muted); margin-top:0.375rem; }
+    .section-title { font-size:1rem; font-weight:600; margin:1.5rem 0 0.75rem; }
+    .online-list { display:flex; flex-wrap:wrap; gap:0.6rem; }
+    .online-chip { display:flex; align-items:center; gap:0.5rem; background:var(--card); border:1px solid var(--border); border-radius:999px; padding:0.45rem 0.9rem; font-size:0.85rem; }
+    .dot { width:9px; height:9px; border-radius:50%; flex:none; }
+    .dot.on { background:#22c55e; box-shadow:0 0 0 3px rgba(34,197,94,0.2); }
+    .dot.off { background:#9ca3af; }
+    table.act { width:100%; border-collapse:collapse; font-size:0.875rem; }
+    table.act th { text-align:left; padding:0.55rem 0.75rem; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-muted); border-bottom:2px solid var(--border); background:var(--bg-alt); }
+    table.act td { padding:0.6rem 0.75rem; border-bottom:1px solid var(--border); }
+    table.act tr:last-child td { border-bottom:none; }
+    .role-tag { font-size:0.7rem; text-transform:capitalize; color:var(--text-muted); }
+    .muted { color:var(--text-muted); }
+    .key-box { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:1.5rem; max-width:460px; }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="sidebar">
+      <div class="sidebar-brand"><h2>JMS Shipment Tracker</h2><p>BoomRx</p></div>
+      <div class="sidebar-user" id="sidebar-user"></div>
+      <nav class="sidebar-nav" id="sidebar-nav">
+        <button class="nav-item" onclick="window.location.href='dashboard.html'">Shipments</button>
+        <button class="nav-item" onclick="window.location.href='analytics.html'">Analytics</button>
+        <button class="nav-item active" data-nav="activity-current">Activity</button>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="btn btn-outline" style="width:100%;color:rgba(255,255,255,0.7);border-color:rgba(255,255,255,0.2)" onclick="logout()">Sign Out</button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div><h1>User Activity</h1><p>Who's online now and how often each user signs in. Admin &amp; VP only.</p></div>
+        <button class="btn btn-outline" id="refresh-btn" onclick="load()">Refresh</button>
+      </div>
+
+      <div id="key-prompt" style="display:none">
+        <div class="key-box">
+          <h3 style="margin-bottom:0.5rem">Enter activity view key</h3>
+          <p class="muted" style="font-size:0.85rem;margin-bottom:1rem">This protects the activity data. Enter the secret key (shared with you and Mark). Stored only in this browser.</p>
+          <input type="password" id="key-input" placeholder="View key" autocomplete="off" style="width:100%;margin-bottom:0.75rem">
+          <button class="btn btn-primary" onclick="saveKey()">Unlock</button>
+          <span id="key-err" style="color:var(--red);font-size:0.85rem;margin-left:0.75rem"></span>
+        </div>
+      </div>
+
+      <div id="act-view" style="display:none">
+        <div class="act-grid" id="act-kpis"></div>
+        <div class="section-title">Online now</div>
+        <div class="online-list" id="online-list"><span class="muted">Loading…</span></div>
+        <div class="section-title">Usage history</div>
+        <div class="table-card" style="padding:0;overflow:hidden">
+          <table class="act"><thead><tr>
+            <th>User</th><th>Role</th><th>Status</th><th>Last active</th><th>Last login</th><th>Logins (7d)</th><th>Logins (total)</th>
+          </tr></thead><tbody id="act-rows"></tbody></table>
+        </div>
+        <p class="muted" id="act-foot" style="font-size:0.72rem;margin-top:0.75rem"></p>
+      </div>
+    </main>
+  </div>
+
+  <script src="lib/bcryptjs.min.js"></script>
+  <script>window.bcrypt = window.bcrypt || (window.dcodeIO && window.dcodeIO.bcrypt);</script>
+  <script src="app.js"></script>
+  <script>
+    let currentUser = null, refreshTimer = null;
+
+    function init() {
+      currentUser = checkAuth();
+      if (!currentUser) return;
+      // admin + VP only
+      if (currentUser.role !== 'admin' && currentUser.role !== 'vice_president') {
+        window.location.href = 'dashboard.html'; return;
+      }
+      document.getElementById('sidebar-user').innerHTML =
+        '<strong>' + currentUser.name + '</strong>' +
+        '<span style="font-size:0.75rem;opacity:0.7;text-transform:capitalize">' + currentUser.role.replace('_', ' ') + '</span>' +
+        currentUser.email;
+
+      if (localStorage.getItem(ACTIVITY_KEY_STORE)) showView();
+      else document.getElementById('key-prompt').style.display = '';
+    }
+
+    function saveKey() {
+      const k = document.getElementById('key-input').value.trim();
+      if (!k) return;
+      localStorage.setItem(ACTIVITY_KEY_STORE, k);
+      showView();
+    }
+
+    function showView() {
+      document.getElementById('key-prompt').style.display = 'none';
+      document.getElementById('act-view').style.display = '';
+      load();
+      if (refreshTimer) clearInterval(refreshTimer);
+      refreshTimer = setInterval(load, 30000); // auto-refresh green dots
+    }
+
+    function fmtAgo(ts) {
+      if (!ts) return '—';
+      const s = Math.floor((Date.now() - ts) / 1000);
+      if (s < 60) return 'just now';
+      if (s < 3600) return Math.floor(s / 60) + 'm ago';
+      if (s < 86400) return Math.floor(s / 3600) + 'h ago';
+      return Math.floor(s / 86400) + 'd ago';
+    }
+    function fmtDate(ts) {
+      if (!ts) return '—';
+      return new Date(ts).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    }
+
+    function load() {
+      const key = localStorage.getItem(ACTIVITY_KEY_STORE) || '';
+      fetchActivitySummary(key, data => {
+        if (!data || !data.ok) {
+          if (data && data.error === 'unauthorized') {
+            localStorage.removeItem(ACTIVITY_KEY_STORE);
+            document.getElementById('act-view').style.display = 'none';
+            document.getElementById('key-prompt').style.display = '';
+            document.getElementById('key-err').textContent = 'Wrong key — try again.';
+            return;
+          }
+          document.getElementById('online-list').innerHTML = '<span class="muted">Could not load activity (' + ((data && data.error) || 'error') + ').</span>';
+          return;
+        }
+        render(data);
+      });
+    }
+
+    function render(data) {
+      const users = data.users || [];
+      const online = users.filter(u => u.online);
+      const active7 = users.filter(u => u.logins7d > 0).length;
+
+      document.getElementById('act-kpis').innerHTML =
+        kpi(online.length, 'Online now') +
+        kpi(active7, 'Active (7 days)') +
+        kpi(users.length, 'Known users') +
+        kpi(users.reduce((a, u) => a + (u.logins7d || 0), 0), 'Logins (7 days)');
+
+      document.getElementById('online-list').innerHTML = online.length
+        ? online.map(u => '<div class="online-chip"><span class="dot on"></span>' + esc(u.name || u.email) +
+            ' <span class="role-tag">' + roleLabel(u.role) + '</span></div>').join('')
+        : '<span class="muted">No one is online right now.</span>';
+
+      document.getElementById('act-rows').innerHTML = users.map(u =>
+        '<tr>' +
+        '<td>' + esc(u.name || '—') + '<div class="muted" style="font-size:0.72rem">' + esc(u.email) + '</div></td>' +
+        '<td class="role-tag">' + roleLabel(u.role) + '</td>' +
+        '<td><span class="dot ' + (u.online ? 'on' : 'off') + '" style="display:inline-block;margin-right:0.4rem"></span>' + (u.online ? 'Online' : 'Offline') + '</td>' +
+        '<td>' + fmtAgo(u.lastSeen) + '</td>' +
+        '<td>' + fmtDate(u.lastLogin) + '</td>' +
+        '<td>' + (u.logins7d || 0) + '</td>' +
+        '<td>' + (u.logins || 0) + '</td>' +
+        '</tr>'
+      ).join('') || '<tr><td colspan="7" class="muted" style="padding:1.5rem;text-align:center">No activity recorded yet.</td></tr>';
+
+      document.getElementById('act-foot').textContent =
+        'Updated ' + new Date(data.generatedAt).toLocaleTimeString() + ' · "Online" = active in the last 3 minutes · auto-refreshes every 30s';
+    }
+
+    function kpi(val, label) {
+      return '<div class="metric-card"><div class="metric-val">' + val + '</div><div class="metric-label">' + label + '</div></div>';
+    }
+    function roleLabel(r) {
+      return ({ admin: 'Admin', account_manager: 'Account Manager', vice_president: 'Vice President', owner: 'Owner', rep: 'Rep' }[r] || r || '—');
+    }
+    function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+    init();
+  </script>
+</body>
+</html>
