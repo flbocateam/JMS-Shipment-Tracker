@@ -31,16 +31,14 @@ function startPresence() {
   if (_presenceTimer) clearInterval(_presenceTimer);
   _presenceTimer = setInterval(() => { if (document.visibilityState === 'visible') logActivity('ping'); }, 60000);
 }
-// Read the activity summary via JSONP (avoids CORS on cross-origin GET)
+// Read the activity summary. The Apps Script returns Access-Control-Allow-Origin:*,
+// so a plain cross-origin fetch works (no JSONP/injected-script needed).
 function fetchActivitySummary(key, cb) {
   if (!ACTIVITY_URL) { cb({ ok: false, error: 'not configured' }); return; }
-  const id = 'jmsAct' + Math.floor(performance.now()) + Math.floor(Math.random() * 1e6);
-  const s = document.createElement('script');
-  const done = (data) => { try { delete window[id]; } catch (_) {} s.remove(); };
-  window[id] = (data) => { cb(data); done(); };
-  s.onerror = () => { cb({ ok: false, error: 'network' }); done(); };
-  s.src = ACTIVITY_URL + '?key=' + encodeURIComponent(key) + '&callback=' + id;
-  document.body.appendChild(s);
+  fetch(ACTIVITY_URL + '?key=' + encodeURIComponent(key), { method: 'GET' })
+    .then(r => r.json())
+    .then(d => cb(d))
+    .catch(() => cb({ ok: false, error: 'network' }));
 }
 
 // ── Nav Icons ────────────────────────────────────────────────
