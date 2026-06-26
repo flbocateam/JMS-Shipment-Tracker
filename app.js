@@ -383,8 +383,39 @@ async function commitToGitHub(filename, data, commitMessage) {
   return putResp.json();
 }
 
-// Concurrent-safe shipment commit: on SHA conflict (409/422), re-fetches live data,
-// merges our new rows into it, and retries — up to maxRetries times.
+const BRANCH = 'main';
+
+// Commit a (possibly large) file via the Git Data API: create blob → tree →
+// commit → update ref. The Contents API PUT fails ("Failed to fetch") on files
+// this size (~25MB); the Git Data API is GitHub's supported path for large files.
+async function commitFileViaGitData(path, contentBase64, message, headers) {
+  const api = 'https://api.github.com/repos/' + REPO;
+  const post = async (url, body) => {
+    const r = await fetch(url, { method: 'POST', headers, body: JSON.stringify(body) });
+    if (!r.ok) { let m = 'GitHub error ' + r.status; try { m = (await r.json()).message || m; } catch {} const e = new Error(m); e.status = r.status; throw e; }
+    return r.json();
+  };
+  // 1. blob (large base64 content)
+  const blob = await post(api + '/git/blobs', { content: contentBase64, encoding: 'base64' });
+  // 2. current ref / parent commit
+  const refResp = await fetch(api + '/git/ref/heads/' + BRANCH, { headers });
+  if (!refResp.ok) throw new Error('Could not read branch ref');
+  const parentSha = (await refResp.json()).object.sha;
+  // 3. base tree
+  const baseCommitResp = await fetch(api + '/git/commits/' + parentSha, { headers });
+  const baseTree = (await baseCommitResp.json()).tree.sha;
+  // 4. new tree with our file
+  const tree = await post(api + '/git/trees', { base_tree: baseTree, tree: [{ path, mode: '100644', type: 'blob', sha: blob.sha }] });
+  // 5. new commit
+  const commit = await post(api + '/git/commits', { message, tree: tree.sha, parents: [parentSha] });
+  // 6. move the branch
+  const upd = await fetch(api + '/git/refs/heads/' + BRANCH, { method: 'PATCH', headers, body: JSON.stringify({ sha: commit.sha }) });
+  if (!upd.ok) { let m = 'GitHub error ' + upd.status; try { m = (await upd.json()).message || m; } catch {} const e = new Error(m); e.status = upd.status; throw e; }
+  return commit.sha;
+}
+
+// Concurrent-safe shipment commit: reads current data (Git Blobs API), merges
+// new rows, commits via Git Data API. Retries on ref conflict with fresh data.
 async function commitShipments(newRows, uploaderEmail, commitMessage, maxRetries) {
   maxRetries = maxRetries || 3;
   const headers = _ghHeaders();
@@ -392,25 +423,18 @@ async function commitShipments(newRows, uploaderEmail, commitMessage, maxRetries
   let attempt = 0;
   while (attempt < maxRetries) {
     attempt++;
-    // Always fetch fresh copy so SHA is current
+    // Read current shipments (use Git Blobs API for the >1MB file)
     const getResp = await fetch(apiUrl, { headers });
     if (!getResp.ok) throw new Error('Could not read shipments.json from GitHub');
     const fileJson = await getResp.json();
-    const sha = fileJson.sha;
     let current;
     try {
       if (fileJson.encoding === 'base64' && fileJson.content) {
-        // Small file: content is inline base64
         current = JSON.parse(atob(fileJson.content.replace(/\n/g, '')));
       } else {
-        // Large file: download_url is CDN-cached and may be stale.
-        // Use the Git Blobs API with the blob SHA — always returns committed state.
-        const blobResp = await fetch('https://api.github.com/repos/' + REPO + '/git/blobs/' + fileJson.sha, {
-          headers: { ...headers, Accept: 'application/vnd.github+json' }
-        });
+        const blobResp = await fetch('https://api.github.com/repos/' + REPO + '/git/blobs/' + fileJson.sha, { headers });
         if (!blobResp.ok) throw new Error('Could not fetch shipments blob');
-        const blob = await blobResp.json();
-        current = JSON.parse(atob(blob.content.replace(/\n/g, '')));
+        current = JSON.parse(atob((await blobResp.json()).content.replace(/\n/g, '')));
       }
     } catch (e) {
       throw new Error('Could not read existing shipments before merging: ' + e.message);
@@ -418,15 +442,15 @@ async function commitShipments(newRows, uploaderEmail, commitMessage, maxRetries
     // Merge: upsert new rows into live data, newest import_date wins
     const merged = upsertShipments(current.shipments || [], newRows);
     const newData = { ...current, shipments: merged, last_updated: new Date().toISOString(), updated_by: uploaderEmail };
-    const content = btoa(unescape(encodeURIComponent(JSON.stringify(newData, null, 2))));
-    const putResp = await fetch(apiUrl, { method: 'PUT', headers, body: JSON.stringify({ message: commitMessage || 'Import shipments', content, sha }) });
-    if (putResp.ok) return { result: await putResp.json(), data: newData };
-    if (putResp.status === 409 || putResp.status === 422) {
-      if (attempt < maxRetries) continue; // SHA conflict — retry with fresh data
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(newData))));
+    try {
+      await commitFileViaGitData('data/shipments.json', content, commitMessage || 'Import shipments', headers);
+      return { data: newData };
+    } catch (e) {
+      // ref moved underneath us (concurrent import) → retry with fresh data
+      if ((e.status === 409 || e.status === 422) && attempt < maxRetries) continue;
+      throw e;
     }
-    let msg = 'GitHub API error ' + putResp.status;
-    try { const e = await putResp.json(); msg = e.message || msg; } catch {}
-    throw new Error(msg);
   }
   throw new Error('Upload failed after ' + maxRetries + ' attempts due to concurrent edits. Please try again.');
 }
@@ -462,28 +486,12 @@ async function restoreToCommit(commitSha, uploaderEmail) {
   // blob.content is already base64-encoded — use it directly, no decode/re-encode
   const rawBase64 = blob.content.replace(/\n/g, '');
 
-  // 3. Get the current HEAD SHA (needed for the PUT)
-  const headResp = await fetch(apiUrl, { headers });
-  if (!headResp.ok) throw new Error('Could not read current shipments.json (' + headResp.status + ')');
-  const headMeta = await headResp.json();
-  const headSha = headMeta.sha;
+  // 3. Commit the historical content as a new HEAD via the Git Data API
+  //    (large-file safe — the Contents API PUT fails on ~25MB files)
+  await commitFileViaGitData('data/shipments.json', rawBase64,
+    'Restore shipments to ' + commitSha.slice(0, 7) + ' (by ' + uploaderEmail + ')', headers);
 
-  // 4. PUT the historical content as the new HEAD — no JSON parse/stringify at all
-  const putResp = await fetch(apiUrl, {
-    method: 'PUT', headers,
-    body: JSON.stringify({
-      message: 'Restore shipments to ' + commitSha.slice(0, 7) + ' (by ' + uploaderEmail + ')',
-      content: rawBase64,
-      sha: headSha
-    })
-  });
-  if (!putResp.ok) {
-    let msg = 'GitHub API error ' + putResp.status;
-    try { const e = await putResp.json(); msg = e.message || msg; } catch {}
-    throw new Error(msg);
-  }
-
-  // 5. Decode just enough to return the shipments array to the UI
+  // 4. Decode just enough to return the shipments array to the UI
   let historic;
   try { historic = JSON.parse(atob(rawBase64)); } catch (e) { historic = { shipments: [] }; }
   return historic;
