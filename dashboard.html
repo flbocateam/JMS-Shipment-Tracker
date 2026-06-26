@@ -15,11 +15,7 @@
         <p>BoomRx</p>
       </div>
       <div class="sidebar-user" id="sidebar-user"></div>
-      <nav class="sidebar-nav">
-        <button class="nav-item active"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="12" height="9" rx="1"/><path d="M5 5V3.5A1.5 1.5 0 0 1 6.5 2h3A1.5 1.5 0 0 1 11 3.5V5"/><path d="M2 8h12"/></svg> Shipments</button>
-        <button class="nav-item" onclick="window.location.href='analytics.html'"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><rect x="2" y="9" width="3" height="5" rx="0.5" fill="currentColor" stroke="none"/><rect x="6.5" y="6" width="3" height="8" rx="0.5" fill="currentColor" stroke="none"/><rect x="11" y="3" width="3" height="11" rx="0.5" fill="currentColor" stroke="none"/></svg> Analytics</button>
-        <button class="nav-item" id="import-nav-btn" style="display:none" onclick="window.location.href='import.html'"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M5 5l3-3 3 3"/><path d="M3 11v2a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-2"/></svg> Import Data</button>
-      </nav>
+      <nav class="sidebar-nav" id="sidebar-nav"></nav>
       <div class="sidebar-footer">
         <button class="btn btn-outline" style="width:100%;color:rgba(255,255,255,0.7);border-color:rgba(255,255,255,0.2)" onclick="logout()">Sign Out</button>
       </div>
@@ -94,6 +90,7 @@
     async function init() {
       currentUser = checkAuth();
       if (!currentUser) return;
+      renderNav('shipments');
 
       const elevated = isElevatedRole(currentUser.role);
 
@@ -103,8 +100,6 @@
         currentUser.email;
 
       document.getElementById('page-subtitle').textContent = elevated ? 'All rep shipments' : 'Your assigned shipments';
-
-      if (canWrite(currentUser.role)) document.getElementById('import-nav-btn').style.display = '';
 
       // Table header
       document.getElementById('table-head').innerHTML = '<tr>' +

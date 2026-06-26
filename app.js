@@ -49,11 +49,39 @@ const ICONS = {
   users: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="5" r="2.5"/><path d="M2.5 14c0-3.038 2.462-5.5 5.5-5.5s5.5 2.462 5.5 5.5"/></svg>',
   settings: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="8" r="2.5"/><path d="M8 1v1.5M8 13.5V15M1 8h1.5M13.5 8H15M2.929 2.929l1.06 1.06M12.01 12.01l1.06 1.06M13.07 2.929l-1.06 1.06M3.99 12.01l-1.06 1.06"/></svg>',
   history: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="M8 4.5V8l2.5 2"/></svg>',
-  preview: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z"/><circle cx="8" cy="8" r="2"/></svg>'
+  preview: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z"/><circle cx="8" cy="8" r="2"/></svg>',
+  activity: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 8h3l2 5 3-10 2 5h3"/></svg>'
 };
 
 function navIcon(key) {
   return ICONS[key] || '';
+}
+
+// ── Shared sidebar nav (identical on every standalone page) ───
+// activeKey: 'shipments' | 'analytics' | 'import' | 'activity'
+// Builds the full menu the current user is entitled to, so nothing is ever
+// "missing" depending on which page you're on.
+function renderNav(activeKey) {
+  const nav = document.getElementById('sidebar-nav');
+  if (!nav) return;
+  const u = getUser() || {};
+  const role = u.role;
+  const btn = (key, label, icon, href) =>
+    '<button class="nav-item' + (key === activeKey ? ' active' : '') + '" title="' + label + '" onclick="window.location.href=\'' + href + '\'">' + navIcon(icon) + ' ' + label + '</button>';
+
+  let html = '';
+  html += btn('shipments', 'Shipments', 'shipments', role === 'admin' ? 'admin.html' : 'dashboard.html');
+  html += btn('analytics', 'Analytics', 'analytics', 'analytics.html');
+  if (canWrite(role)) html += btn('import', 'Import Data', 'import', 'import.html');
+  if (role === 'admin' || role === 'vice_president') html += btn('activity', 'Activity', 'activity', 'activity.html');
+  if (role === 'admin') {
+    html += '<div class="nav-divider"></div>';
+    [['users', 'Users'], ['settings', 'Settings'], ['history', 'History'], ['preview', 'Preview As']]
+      .forEach(([tab, label]) => {
+        html += '<button class="nav-item" title="' + label + '" onclick="window.location.href=\'admin.html?tab=' + tab + '\'">' + navIcon(tab) + ' ' + label + '</button>';
+      });
+  }
+  nav.innerHTML = html;
 }
 
 // Roles that can see all shipments and use AM/rep filters
@@ -824,21 +852,7 @@ function initSidebar() {
     localStorage.setItem('jms_nav_collapsed', collapsed ? '1' : '0');
   };
   sidebar.insertBefore(btn, sidebar.firstChild);
-
-  // Activity link — only for admin & vice_president, on every page except the activity page itself
-  const u = getUser();
-  const nav = sidebar.querySelector('.sidebar-nav');
-  const onActivityPage = /activity\.html$/.test(location.pathname);
-  if (nav && u && (u.role === 'admin' || u.role === 'vice_president') && !onActivityPage && !nav.querySelector('[data-nav="activity"]')) {
-    const a = document.createElement('button');
-    a.className = 'nav-item';
-    a.setAttribute('data-nav', 'activity');
-    a.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 8h3l2 5 3-10 2 5h3"/></svg> Activity';
-    a.onclick = () => { window.location.href = 'activity.html'; };
-    nav.appendChild(a);
-  }
-
-  // tooltips so icons are identifiable when collapsed
+  // tooltips so icons are identifiable when collapsed (renderNav also sets title)
   sidebar.querySelectorAll('.nav-item').forEach(b => { const t = b.textContent.trim(); if (t && !b.title) b.title = t; });
 }
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initSidebar);

@@ -31,11 +31,7 @@
     <aside class="sidebar">
       <div class="sidebar-brand"><h2>JMS Shipment Tracker</h2><p>BoomRx</p></div>
       <div class="sidebar-user" id="sidebar-user"></div>
-      <nav class="sidebar-nav" id="sidebar-nav">
-        <button class="nav-item" onclick="window.location.href='dashboard.html'">Shipments</button>
-        <button class="nav-item" onclick="window.location.href='analytics.html'">Analytics</button>
-        <button class="nav-item active" data-nav="activity-current">Activity</button>
-      </nav>
+      <nav class="sidebar-nav" id="sidebar-nav"></nav>
       <div class="sidebar-footer">
         <button class="btn btn-outline" style="width:100%;color:rgba(255,255,255,0.7);border-color:rgba(255,255,255,0.2)" onclick="logout()">Sign Out</button>
       </div>
@@ -85,6 +81,7 @@
       if (currentUser.role !== 'admin' && currentUser.role !== 'vice_president') {
         window.location.href = 'dashboard.html'; return;
       }
+      renderNav('activity');
       document.getElementById('sidebar-user').innerHTML =
         '<strong>' + currentUser.name + '</strong>' +
         '<span style="font-size:0.75rem;opacity:0.7;text-transform:capitalize">' + currentUser.role.replace('_', ' ') + '</span>' +
