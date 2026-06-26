@@ -73,7 +73,7 @@ function renderNav(activeKey) {
   html += btn('shipments', 'Shipments', 'shipments', role === 'admin' ? 'admin.html' : 'dashboard.html');
   html += btn('analytics', 'Analytics', 'analytics', 'analytics.html');
   if (canWrite(role)) html += btn('import', 'Import Data', 'import', 'import.html');
-  if (role === 'admin' || role === 'vice_president') html += btn('activity', 'Activity', 'activity', 'activity.html');
+  if (canSeeActivity(u)) html += btn('activity', 'Activity', 'activity', 'activity.html');
   if (role === 'admin') {
     html += '<div class="nav-divider"></div>';
     [['users', 'Users'], ['settings', 'Settings'], ['history', 'History'], ['preview', 'Preview As']]
@@ -92,6 +92,13 @@ function isElevatedRole(role) {
 // Roles that can write data (import shipments, manage users)
 function canWrite(role) {
   return role === 'admin' || role === 'account_manager' || role === 'vice_president';
+}
+
+// Who can see the Activity view: Jack (owner) + any Vice President only.
+// Gated by email (not just role) so other admins (e.g. Nicole) do NOT see it.
+function canSeeActivity(user) {
+  const u = user || getUser() || {};
+  return u.role === 'vice_president' || String(u.email || '').toLowerCase() === 'jack@boomrx.com';
 }
 
 // ── Auth ─────────────────────────────────────────────────────

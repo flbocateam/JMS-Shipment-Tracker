@@ -77,9 +77,9 @@
     function init() {
       currentUser = checkAuth();
       if (!currentUser) return;
-      // admin + VP only
-      if (currentUser.role !== 'admin' && currentUser.role !== 'vice_president') {
-        window.location.href = 'dashboard.html'; return;
+      // Jack (owner) + VPs only
+      if (!canSeeActivity(currentUser)) {
+        window.location.href = currentUser.role === 'admin' ? 'admin.html' : 'dashboard.html'; return;
       }
       renderNav('activity');
       document.getElementById('sidebar-user').innerHTML =
