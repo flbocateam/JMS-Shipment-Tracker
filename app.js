@@ -70,23 +70,26 @@ async function loadConfig() {
 }
 
 async function loadShipments() {
-  // When PAT is available, ask the GitHub Contents API for the current blob's
-  // download_url — that URL is content-addressed (changes every commit) so
-  // fetching it bypasses the Pages CDN and always returns the latest import.
+  // When PAT is available, read via the Git Blobs API — returns the exact
+  // committed content with NO CDN caching, so a just-imported file is visible
+  // immediately. (download_url goes through raw.githubusercontent's CDN and can
+  // serve a stale copy right after a commit.)
   const pat = localStorage.getItem(PAT_KEY);
   if (pat) {
     try {
-      const apiUrl = 'https://api.github.com/repos/' + REPO + '/contents/data/shipments.json';
-      const meta = await fetch(apiUrl, { headers: { Authorization: 'token ' + pat, Accept: 'application/vnd.github+json' } });
+      const headers = { Authorization: 'token ' + pat, Accept: 'application/vnd.github+json' };
+      const meta = await fetch('https://api.github.com/repos/' + REPO + '/contents/data/shipments.json', { headers });
       if (meta.ok) {
         const j = await meta.json();
-        // Large files (>1MB) come back with no inline content but a download_url
-        // that embeds the blob SHA — unique per commit, no CDN staleness.
-        const url = j.download_url || 'data/shipments.json';
-        const r = await fetch(url);
-        if (r.ok) return r.json();
+        if (j.encoding === 'base64' && j.content) {
+          return JSON.parse(atob(j.content.replace(/\n/g, '')));
+        }
+        const blob = await fetch('https://api.github.com/repos/' + REPO + '/git/blobs/' + j.sha, { headers });
+        if (blob.ok) {
+          return JSON.parse(atob((await blob.json()).content.replace(/\n/g, '')));
+        }
       }
-    } catch (_) { /* fall through */ }
+    } catch (_) { /* fall through to CDN */ }
   }
   const r = await fetch('data/shipments.json');
   if (!r.ok) throw new Error('Failed to load shipments');
