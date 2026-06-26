@@ -183,6 +183,10 @@
       currentUser = checkAuth('admin');
       if (!currentUser) return;
       if (canSeeActivity(currentUser)) document.getElementById('admin-activity-link').style.display = '';
+      // Users + Preview As are Jack-only — hide the tabs for any other admin
+      if (!isJack(currentUser)) {
+        document.querySelectorAll('.nav-item[data-tab="users"], .nav-item[data-tab="preview"]').forEach(b => b.style.display = 'none');
+      }
 
       document.getElementById('sidebar-user').innerHTML = '<strong>' + currentUser.name + '</strong>' + currentUser.email;
 
@@ -252,10 +256,13 @@
     }
 
     function switchTab(tab) {
+      // Users + Preview As are Jack-only — block for any other admin
+      if ((tab === 'users' || tab === 'preview') && !isJack(currentUser)) tab = 'shipments';
       document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
       document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
       document.getElementById('tab-' + tab).classList.add('active');
-      document.querySelector('.nav-item[data-tab="' + tab + '"]').classList.add('active');
+      const navBtn = document.querySelector('.nav-item[data-tab="' + tab + '"]');
+      if (navBtn) navBtn.classList.add('active');
       if (tab === 'history') loadHistory();
     }
 

@@ -76,10 +76,14 @@ function renderNav(activeKey) {
   if (canSeeActivity(u)) html += btn('activity', 'Activity', 'activity', 'activity.html');
   if (role === 'admin') {
     html += '<div class="nav-divider"></div>';
-    [['users', 'Users'], ['settings', 'Settings'], ['history', 'History'], ['preview', 'Preview As']]
-      .forEach(([tab, label]) => {
-        html += '<button class="nav-item" title="' + label + '" onclick="window.location.href=\'admin.html?tab=' + tab + '\'">' + navIcon(tab) + ' ' + label + '</button>';
-      });
+    const tabs = [];
+    if (isJack(u)) tabs.push(['users', 'Users']);   // Jack only
+    tabs.push(['settings', 'Settings']);
+    tabs.push(['history', 'History']);
+    if (isJack(u)) tabs.push(['preview', 'Preview As']); // Jack only
+    tabs.forEach(([tab, label]) => {
+      html += '<button class="nav-item" title="' + label + '" onclick="window.location.href=\'admin.html?tab=' + tab + '\'">' + navIcon(tab) + ' ' + label + '</button>';
+    });
   }
   nav.innerHTML = html;
 }
@@ -99,6 +103,13 @@ function canWrite(role) {
 function canSeeActivity(user) {
   const u = user || getUser() || {};
   return u.role === 'vice_president' || String(u.email || '').toLowerCase() === 'jack@boomrx.com';
+}
+
+// Jack only — user management ("Add User"/Users tab) and "Preview As" are
+// restricted to Jack, hidden from all other admins (e.g. Nicole).
+function isJack(user) {
+  const u = user || getUser() || {};
+  return String(u.email || '').toLowerCase() === 'jack@boomrx.com';
 }
 
 // ── Auth ─────────────────────────────────────────────────────
