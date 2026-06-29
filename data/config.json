@@ -3,7 +3,7 @@
     "name": "Jack",
     "email": "jack@boomrx.com",
     "password_hash": "$2a$10$wPQb7uf/0WkIxUkv8iC7o.SEdpCs9/vDQXfwnfdJFSdpl2x1RltUS",
-    "role": "admin"
+    "role": "admin_developer"
   },
   "account_managers": [
     {

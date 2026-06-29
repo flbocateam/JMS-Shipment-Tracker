@@ -39,7 +39,7 @@
 
     <main class="main-content">
       <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start">
-        <div><h1>User Activity</h1><p>Who's online now and how often each user signs in. Admin &amp; VP only.</p></div>
+        <div><h1>User Activity</h1><p>Who's online now and how often each user signs in.</p></div>
         <button class="btn btn-outline" id="refresh-btn" onclick="load()">Refresh</button>
       </div>
 
@@ -77,10 +77,8 @@
     function init() {
       currentUser = checkAuth();
       if (!currentUser) return;
-      // Jack (owner) + VPs only
-      if (!canSeeActivity(currentUser)) {
-        window.location.href = currentUser.role === 'admin' ? 'admin.html' : 'dashboard.html'; return;
-      }
+      // Jack (Admin Developer) + VPs only
+      if (!canSeeActivity(currentUser)) { window.location.href = 'dashboard.html'; return; }
       renderNav('activity');
       document.getElementById('sidebar-user').innerHTML =
         '<strong>' + currentUser.name + '</strong>' +
@@ -173,7 +171,7 @@
       return '<div class="metric-card"><div class="metric-val">' + val + '</div><div class="metric-label">' + label + '</div></div>';
     }
     function roleLabel(r) {
-      return ({ admin: 'Admin', account_manager: 'Account Manager', vice_president: 'Vice President', owner: 'Owner', rep: 'Rep' }[r] || r || '—');
+      return ({ admin_developer: 'Admin Developer', admin: 'Admin', account_manager: 'Account Manager', vice_president: 'Vice President', owner: 'Owner', rep: 'Rep' }[r] || r || '—');
     }
     function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 

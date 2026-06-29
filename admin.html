@@ -180,13 +180,11 @@
     let currentFilter = { status: 'all', search: '', repFilter: '', amFilter: '', dateRange: 'last30' };
 
     async function init() {
-      currentUser = checkAuth('admin');
+      currentUser = checkAuth();
       if (!currentUser) return;
-      if (canSeeActivity(currentUser)) document.getElementById('admin-activity-link').style.display = '';
-      // Users + Preview As are Jack-only — hide the tabs for any other admin
-      if (!isJack(currentUser)) {
-        document.querySelectorAll('.nav-item[data-tab="users"], .nav-item[data-tab="preview"]').forEach(b => b.style.display = 'none');
-      }
+      // admin.html is the Admin Developer (Jack) console only
+      if (currentUser.role !== 'admin_developer') { window.location.href = 'dashboard.html'; return; }
+      document.getElementById('admin-activity-link').style.display = '';
 
       document.getElementById('sidebar-user').innerHTML = '<strong>' + currentUser.name + '</strong>' + currentUser.email;
 
@@ -283,7 +281,7 @@
       ];
       const note = '<p style="font-size:0.8125rem;color:var(--text-muted);margin-bottom:1rem;padding:0.75rem 1rem;background:var(--bg);border-radius:6px;border:1px solid var(--border)">PINs are stored as secure one-way hashes and cannot be viewed. Use <strong>Reset PIN</strong> to set a new PIN for any user.</p>';
       if (!allUsers.length) { container.innerHTML = note + '<p style="color:var(--text-muted)">No users yet.</p>'; return; }
-      const roleLabel = r => ({ admin: 'Admin', account_manager: 'Account Manager', vice_president: 'Vice President', owner: 'Owner', rep: 'Rep' }[r] || r);
+      const roleLabel = r => ({ admin_developer: 'Admin Developer', admin: 'Admin', account_manager: 'Account Manager', vice_president: 'Vice President', owner: 'Owner', rep: 'Rep' }[r] || r);
       container.innerHTML = note + allUsers.map(u => {
         const inactive = u.active === false;
         const toggleBtn = inactive
@@ -462,7 +460,7 @@
         ...(configData.account_managers || []),
         ...(configData.reps || []).map(u => ({ ...u, role: u.role || 'rep' }))
       ];
-      const roleLabel = r => ({ admin: 'Admin', account_manager: 'Account Manager', vice_president: 'Vice President', owner: 'Owner', rep: 'Rep' }[r] || r);
+      const roleLabel = r => ({ admin_developer: 'Admin Developer', admin: 'Admin', account_manager: 'Account Manager', vice_president: 'Vice President', owner: 'Owner', rep: 'Rep' }[r] || r);
       allUsers.forEach(u => {
         const o = document.createElement('option');
         o.value = JSON.stringify({ role: u.role, name: u.name, email: u.email });

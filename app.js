@@ -70,32 +70,29 @@ function renderNav(activeKey) {
     '<button class="nav-item' + (key === activeKey ? ' active' : '') + '" title="' + label + '" onclick="window.location.href=\'' + href + '\'">' + navIcon(icon) + ' ' + label + '</button>';
 
   let html = '';
-  html += btn('shipments', 'Shipments', 'shipments', role === 'admin' ? 'admin.html' : 'dashboard.html');
+  html += btn('shipments', 'Shipments', 'shipments', role === 'admin_developer' ? 'admin.html' : 'dashboard.html');
   html += btn('analytics', 'Analytics', 'analytics', 'analytics.html');
-  if (canWrite(role)) html += btn('import', 'Import Data', 'import', 'import.html');
-  if (canSeeActivity(u)) html += btn('activity', 'Activity', 'activity', 'activity.html');
-  if (role === 'admin') {
+  if (canWrite(role)) html += btn('import', 'Import Data', 'import', 'import.html');   // AM, Owner, Admin, VP, Admin Dev
+  if (canSeeActivity(u)) html += btn('activity', 'Activity', 'activity', 'activity.html'); // VP + Jack
+  // Admin Developer (Jack) only: full management section
+  if (isJack(u)) {
     html += '<div class="nav-divider"></div>';
-    const tabs = [];
-    if (isJack(u)) tabs.push(['users', 'Users']);   // Jack only
-    tabs.push(['settings', 'Settings']);
-    tabs.push(['history', 'History']);
-    if (isJack(u)) tabs.push(['preview', 'Preview As']); // Jack only
-    tabs.forEach(([tab, label]) => {
-      html += '<button class="nav-item" title="' + label + '" onclick="window.location.href=\'admin.html?tab=' + tab + '\'">' + navIcon(tab) + ' ' + label + '</button>';
-    });
+    [['users', 'Users'], ['settings', 'Settings'], ['history', 'History'], ['preview', 'Preview As']]
+      .forEach(([tab, label]) => {
+        html += '<button class="nav-item" title="' + label + '" onclick="window.location.href=\'admin.html?tab=' + tab + '\'">' + navIcon(tab) + ' ' + label + '</button>';
+      });
   }
   nav.innerHTML = html;
 }
 
 // Roles that can see all shipments and use AM/rep filters
 function isElevatedRole(role) {
-  return role === 'admin' || role === 'account_manager' || role === 'vice_president' || role === 'owner';
+  return role === 'admin_developer' || role === 'admin' || role === 'account_manager' || role === 'vice_president' || role === 'owner';
 }
 
-// Roles that can write data (import shipments, manage users)
+// Roles that can write/import data (also drives the Import Data tab visibility)
 function canWrite(role) {
-  return role === 'admin' || role === 'account_manager' || role === 'vice_president';
+  return role === 'admin_developer' || role === 'admin' || role === 'account_manager' || role === 'vice_president' || role === 'owner';
 }
 
 // Who can see the Activity view: Jack (owner) + any Vice President only.
