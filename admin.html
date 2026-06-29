@@ -21,7 +21,6 @@
         <button class="nav-item" onclick="window.location.href='import.html'"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M5 5l3-3 3 3"/><path d="M3 11v2a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-2"/></svg> Import Data</button>
         <button class="nav-item" id="admin-activity-link" style="display:none" onclick="window.location.href='activity.html'"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 8h3l2 5 3-10 2 5h3"/></svg> Activity</button>
         <button class="nav-item" data-tab="users"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="5" r="2.5"/><path d="M2.5 14c0-3.038 2.462-5.5 5.5-5.5s5.5 2.462 5.5 5.5"/></svg> Users</button>
-        <button class="nav-item" data-tab="settings"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="8" r="2.5"/><path d="M8 1v1.5M8 13.5V15M1 8h1.5M13.5 8H15M2.929 2.929l1.06 1.06M12.01 12.01l1.06 1.06M13.07 2.929l-1.06 1.06M3.99 12.01l-1.06 1.06"/></svg> Settings</button>
         <button class="nav-item" data-tab="history"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="M8 4.5V8l2.5 2"/></svg> History</button>
         <button class="nav-item" data-tab="preview"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z"/><circle cx="8" cy="8" r="2"/></svg> Preview As</button>
       </nav>
@@ -35,7 +34,7 @@
       <div class="banner" id="pat-banner" style="display:none">
         <span class="banner-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="#B45309" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1L15 14H1L8 1z"/><line x1="8" y1="6" x2="8" y2="9"/><circle cx="8" cy="11.5" r="0.5" fill="#B45309"/></svg></span>
         <div>
-          <strong>GitHub token not configured.</strong> To enable saving changes, enter your GitHub Personal Access Token in <a href="#" onclick="switchTab('settings');return false">Settings</a>. This token is stored only in your browser and never uploaded anywhere.
+          <strong>GitHub token not configured.</strong> To enable saving changes, set your GitHub Personal Access Token on the <a href="import.html">Import Data</a> page. It is stored only in your browser and never uploaded anywhere.
         </div>
       </div>
 
@@ -83,37 +82,6 @@
           <button class="btn btn-primary" onclick="showAddUserModal()">+ Add User</button>
         </div>
         <div id="users-list"></div>
-      </div>
-
-      <!-- ── Settings Tab ── -->
-      <div class="tab-panel" id="tab-settings">
-        <div class="page-header"><h1>Settings</h1></div>
-        <div class="table-card" style="padding:1.5rem;max-width:520px;margin-bottom:1.5rem">
-          <h3 style="margin-bottom:1.25rem">GitHub Personal Access Token</h3>
-          <p style="font-size:0.875rem;color:var(--text-muted);margin-bottom:1rem">
-            Required to save import changes and user updates to GitHub. Stored only in your browser's localStorage — never sent to any server.
-          </p>
-          <div class="form-group">
-            <label>Personal Access Token</label>
-            <input type="password" id="pat-input" placeholder="github_pat_…" autocomplete="off">
-          </div>
-          <button class="btn btn-primary" onclick="savePAT()">Save Token</button>
-          <span id="pat-save-status" style="margin-left:1rem;font-size:0.875rem;color:var(--teal)"></span>
-        </div>
-        <div class="table-card" style="padding:1.5rem;max-width:520px">
-          <h3 style="margin-bottom:1.25rem">Admin Account</h3>
-          <div class="form-group">
-            <label>Current Password</label>
-            <input type="password" id="current-password" placeholder="Enter your current password">
-          </div>
-          <div class="form-group">
-            <label>New Password</label>
-            <input type="password" id="new-password" placeholder="Enter new password">
-          </div>
-          <div id="pw-error" class="error-msg" style="display:none;margin-bottom:0.75rem"></div>
-          <button class="btn btn-primary" id="pw-update-btn" onclick="updateAdminPassword()">Update Password</button>
-          <span id="pw-save-status" style="margin-left:1rem;font-size:0.875rem;color:var(--teal)"></span>
-        </div>
       </div>
 
       <!-- ── History Tab ── -->
@@ -188,11 +156,8 @@
 
       document.getElementById('sidebar-user').innerHTML = '<strong>' + currentUser.name + '</strong>' + currentUser.email;
 
-      // PAT banner
+      // PAT banner (token is set on the Import page)
       if (!localStorage.getItem('jms_github_pat')) document.getElementById('pat-banner').style.display = 'flex';
-      // Show existing PAT masked
-      const existingPAT = localStorage.getItem('jms_github_pat');
-      if (existingPAT) document.getElementById('pat-input').placeholder = '••••••••••••••• (set)';
 
       // Tab nav
       document.querySelectorAll('.nav-item[data-tab]').forEach(btn => {
@@ -410,45 +375,6 @@
       }
       try { await commitToGitHub('data/config.json', configData, (currentlyActive ? 'Deactivate' : 'Activate') + ' user ' + email); renderUsers(); }
       catch (err) { alert('Error: ' + err.message); }
-    }
-
-    // ── Settings ───────────────────────────────────────────
-    function savePAT() {
-      const val = document.getElementById('pat-input').value.trim();
-      if (!val) return;
-      localStorage.setItem('jms_github_pat', val);
-      document.getElementById('pat-save-status').textContent = '✓ Saved';
-      document.getElementById('pat-banner').style.display = 'none';
-      document.getElementById('pat-input').value = '';
-      document.getElementById('pat-input').placeholder = '••••••••••••••• (set)';
-      setTimeout(() => document.getElementById('pat-save-status').textContent = '', 3000);
-    }
-
-    async function updateAdminPassword() {
-      const currentPw = document.getElementById('current-password').value;
-      const newPw = document.getElementById('new-password').value;
-      const errEl = document.getElementById('pw-error');
-      const btn = document.getElementById('pw-update-btn');
-      const statusEl = document.getElementById('pw-save-status');
-      errEl.style.display = 'none';
-      if (!currentPw || !newPw) { errEl.textContent = 'Both current and new password are required.'; errEl.style.display = 'block'; return; }
-      btn.disabled = true; btn.textContent = 'Verifying…';
-      try {
-        // Re-fetch config to get latest SHA and verify current password against stored hash
-        const freshConfig = await loadConfig();
-        const valid = await bcrypt.compare(currentPw, freshConfig.admin.password_hash);
-        if (!valid) { errEl.textContent = 'Current password is incorrect.'; errEl.style.display = 'block'; btn.disabled = false; btn.textContent = 'Update Password'; return; }
-        btn.textContent = 'Saving…';
-        const newHash = await bcrypt.hash(newPw, 10);
-        freshConfig.admin.password_hash = newHash;
-        configData = freshConfig; // keep in-memory config in sync
-        await commitToGitHub('data/config.json', configData, 'Update admin password');
-        statusEl.textContent = '✓ Password updated. Allow 1–2 minutes for changes to take effect before signing in.';
-        document.getElementById('current-password').value = '';
-        document.getElementById('new-password').value = '';
-        setTimeout(() => statusEl.textContent = '', 4000);
-      } catch (err) { errEl.textContent = 'Error: ' + err.message; errEl.style.display = 'block'; }
-      btn.disabled = false; btn.textContent = 'Update Password';
     }
 
     // ── Preview As ─────────────────────────────────────────

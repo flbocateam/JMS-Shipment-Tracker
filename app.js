@@ -77,7 +77,7 @@ function renderNav(activeKey) {
   // Admin Developer (Jack) only: full management section
   if (isJack(u)) {
     html += '<div class="nav-divider"></div>';
-    [['users', 'Users'], ['settings', 'Settings'], ['history', 'History'], ['preview', 'Preview As']]
+    [['users', 'Users'], ['history', 'History'], ['preview', 'Preview As']]
       .forEach(([tab, label]) => {
         html += '<button class="nav-item" title="' + label + '" onclick="window.location.href=\'admin.html?tab=' + tab + '\'">' + navIcon(tab) + ' ' + label + '</button>';
       });
@@ -90,9 +90,10 @@ function isElevatedRole(role) {
   return role === 'admin_developer' || role === 'admin' || role === 'account_manager' || role === 'vice_president' || role === 'owner';
 }
 
-// Roles that can write/import data (also drives the Import Data tab visibility)
+// Roles that can write/import data (also drives the Import Data tab visibility).
+// Owner is read-only — NO import.
 function canWrite(role) {
-  return role === 'admin_developer' || role === 'admin' || role === 'account_manager' || role === 'vice_president' || role === 'owner';
+  return role === 'admin_developer' || role === 'admin' || role === 'account_manager' || role === 'vice_president';
 }
 
 // Who can see the Activity view: Jack (owner) + any Vice President only.
